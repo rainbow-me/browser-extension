@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rainbow Extension — Issue Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ============ THEME — Gruvbox-inspired warm dark ============ */
+  :root {
+    --font-body: 'Sora', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+
+    --bg: #1d2021;
+    --bg2: #282828;
+    --surface: #32302f;
+    --surface2: #3c3836;
+    --surface-elevated: #504945;
+    --border: rgba(235, 219, 178, 0.08);
+    --border-bright: rgba(235, 219, 178, 0.16);
+    --text: #ebdbb2;
+    --text-dim: #a89984;
+
+    --red: #fb4934;
+    --red-dim: rgba(251, 73, 52, 0.12);
+    --orange: #fe8019;
+    --orange-dim: rgba(254, 128, 25, 0.12);
+    --yellow: #fabd2f;
+    --yellow-dim: rgba(250, 189, 47, 0.12);
+    --green: #b8bb26;
+    --green-dim: rgba(184, 187, 38, 0.12);
+    --aqua: #8ec07c;
+    --aqua-dim: rgba(142, 192, 124, 0.12);
+    --blue: #83a598;
+    --blue-dim: rgba(131, 165, 152, 0.12);
+    --purple: #d3869b;
+    --purple-dim: rgba(211, 134, 155, 0.12);
+
+    --accent: var(--orange);
+    --accent-dim: var(--orange-dim);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fbf1c7;
+      --bg2: #f9f5d7;
+      --surface: #f2e5bc;
+      --surface2: #ebdbb2;
+      --surface-elevated: #d5c4a1;
+      --border: rgba(60, 56, 54, 0.1);
+      --border-bright: rgba(60, 56, 54, 0.2);
+      --text: #3c3836;
+      --text-dim: #7c6f64;
+
+      --red: #cc241d;
+      --red-dim: rgba(204, 36, 29, 0.1);
+      --orange: #d65d0e;
+      --orange-dim: rgba(214, 93, 14, 0.1);
+      --yellow: #d79921;
+      --yellow-dim: rgba(215, 153, 33, 0.1);
+      --green: #98971a;
+      --green-dim: rgba(152, 151, 26, 0.1);
+      --aqua: #689d6a;
+      --aqua-dim: rgba(104, 157, 106, 0.1);
+      --blue: #458588;
+      --blue-dim: rgba(69, 133, 136, 0.1);
+      --purple: #b16286;
+      --purple-dim: rgba(177, 98, 134, 0.1);
+
+      --accent: var(--orange);
+      --accent-dim: var(--orange-dim);
+    }
+  }
+
+  /* ============ RESET ============ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 15% 0%, var(--purple-dim) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 100%, var(--aqua-dim) 0%, transparent 40%);
+    color: var(--text);
+    font-family: var(--font-body);
+    padding: 40px;
+    min-height: 100vh;
+    overflow-wrap: break-word;
+  }
+
+  /* ============ LAYOUT — sidebar TOC ============ */
+  .wrap {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 0 40px;
+  }
+  .main { min-width: 0; }
+
+  /* ============ TOC ============ */
+  .toc {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    padding: 14px 0;
+    grid-row: 1 / -1;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+  }
+  .toc::-webkit-scrollbar { width: 3px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--surface-elevated); border-radius: 2px; }
+
+  .toc-title {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    padding: 0 0 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc a {
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    line-height: 1.4;
+    margin-bottom: 1px;
+  }
+  .toc a:hover { color: var(--text); background: var(--surface); }
+  .toc a.active { color: var(--text); border-left-color: var(--accent); }
+  .toc .toc-group {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    padding: 10px 8px 4px;
+    opacity: 0.6;
+  }
+
+  /* ============ ANIMATION ============ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeScale {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .anim {
+    animation: fadeUp 0.4s ease-out both;
+    animation-delay: calc(var(--i, 0) * 0.05s);
+  }
+  .anim-scale {
+    animation: fadeScale 0.35s ease-out both;
+    animation-delay: calc(var(--i, 0) * 0.06s);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ============ TYPOGRAPHY ============ */
+  h1 {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+    text-wrap: balance;
+  }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 32px;
+    font-family: var(--font-mono);
+  }
+  h2 { font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+
+  .sec-head {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 20px 0 12px;
+    margin-top: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    scroll-margin-top: 20px;
+  }
+
+  /* ============ KPI ROW ============ */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .kpi-card__value {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-card__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  /* ============ ISSUE CARD ============ */
+  .issue {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--text-dim);
+    border-radius: 0 10px 10px 0;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .issue--critical { border-left-color: var(--red); }
+  .issue--high { border-left-color: var(--orange); }
+  .issue--medium { border-left-color: var(--yellow); }
+  .issue--low { border-left-color: var(--blue); }
+  .issue--feature { border-left-color: var(--purple); }
+
+  .issue-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .issue-title {
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  /* ============ BADGES ============ */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .badge--critical { background: var(--red-dim); color: var(--red); }
+  .badge--high { background: var(--orange-dim); color: var(--orange); }
+  .badge--medium { background: var(--yellow-dim); color: var(--yellow); }
+  .badge--low { background: var(--blue-dim); color: var(--blue); }
+  .badge--feature { background: var(--purple-dim); color: var(--purple); }
+  .badge--fix { background: var(--green-dim); color: var(--green); }
+
+  /* ============ CONTENT ============ */
+  .issue p, .issue li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .issue p + p { margin-top: 10px; }
+  .issue ul, .issue ol {
+    padding-left: 18px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  .issue li { margin-bottom: 4px; }
+  .issue strong { color: var(--yellow); font-weight: 600; }
+
+  .file-ref {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0 6px;
+  }
+  .file-ref::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    background: var(--blue-dim);
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* ============ CODE BLOCKS ============ */
+  .code-wrap {
+    margin: 12px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .code-label {
+    background: var(--surface2);
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-block {
+    background: var(--bg2);
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.65;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface-elevated) transparent;
+  }
+  .code-block::-webkit-scrollbar { height: 4px; }
+  .code-block::-webkit-scrollbar-thumb { background: var(--surface-elevated); border-radius: 2px; }
+
+  /* Inline code */
+  code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .hl-red { color: var(--red); }
+  .hl-green { color: var(--green); }
+  .hl-yellow { color: var(--yellow); }
+  .hl-blue { color: var(--blue); }
+  .hl-aqua { color: var(--aqua); }
+  .hl-purple { color: var(--purple); }
+  .hl-orange { color: var(--orange); }
+  .hl-dim { color: var(--text-dim); }
+  .hl-comment { color: var(--text-dim); font-style: italic; }
+
+  /* ============ CALLOUT ============ */
+  .callout {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 12px 0;
+    color: var(--text-dim);
+  }
+  .callout--red { border-left: 3px solid var(--red); }
+  .callout--orange { border-left: 3px solid var(--orange); }
+  .callout--green { border-left: 3px solid var(--green); }
+  .callout--blue { border-left: 3px solid var(--blue); }
+  .callout strong { color: var(--text); }
+
+  /* ============ DATA TABLE ============ */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .data-table thead { position: sticky; top: 0; z-index: 2; }
+  .data-table th {
+    background: var(--surface2);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 2px solid var(--border-bright);
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .data-table tbody tr:nth-child(even) { background: var(--accent-dim); }
+  .data-table tbody tr { transition: background 0.15s; }
+  .data-table tbody tr:hover { background: var(--border); }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table code {
+    font-size: 10px;
+  }
+
+  /* ============ BEFORE/AFTER ============ */
+  .diff-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+  .diff-panels > * { min-width: 0; overflow-wrap: break-word; }
+  .diff-hdr {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 14px;
+  }
+  .diff-hdr--before {
+    background: var(--red-dim);
+    color: var(--red);
+    border-bottom: 2px solid var(--red);
+  }
+  .diff-hdr--after {
+    background: var(--green-dim);
+    color: var(--green);
+    border-bottom: 2px solid var(--green);
+  }
+  .diff-body {
+    padding: 14px;
+    background: var(--bg2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  /* ============ RELATED FILES ============ */
+  .related-files {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .related-files summary {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 4px 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .related-files summary::-webkit-details-marker { display: none; }
+  .related-files summary::before {
+    content: '\25B8';
+    font-size: 10px;
+    transition: transform 0.15s;
+  }
+  .related-files[open] summary::before { transform: rotate(90deg); }
+  .related-files .rf-list {
+    list-style: none;
+    padding: 8px 0 0 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .related-files .rf-list li {
+    padding-left: 14px;
+    position: relative;
+  }
+  .related-files .rf-list li::before {
+    content: '\203A';
+    position: absolute;
+    left: 0;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  /* ============ MERMAID ============ */
+  .mermaid-wrap {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 24px;
+    overflow: auto;
+    margin: 16px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .mermaid-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+  .mermaid-wrap::-webkit-scrollbar-track { background: transparent; }
+  .mermaid-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .mermaid-wrap .mermaid {
+    transition: transform 0.2s ease;
+    transform-origin: top center;
+  }
+
+  .mermaid-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .zoom-controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 2px;
+    z-index: 10;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+  }
+  .zoom-controls button {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .zoom-controls button:hover { background: var(--border); color: var(--text); }
+
+  .mermaid-wrap.is-zoomed { cursor: grab; }
+  .mermaid-wrap.is-panning { cursor: grabbing; user-select: none; }
+
+  /* Mermaid SVG overrides */
+  .mermaid .nodeLabel { color: var(--text) !important; }
+  .mermaid .edgeLabel { color: var(--text-dim) !important; background-color: var(--bg2) !important; }
+  .mermaid .edgeLabel rect { fill: var(--bg2) !important; }
+  .mermaid .node rect, .mermaid .node circle, .mermaid .node polygon { stroke-width: 1.5px; }
+
+  /* ============ SECTION CONNECTOR ============ */
+  .section-gap {
+    height: 8px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1000px) {
+    .wrap { grid-template-columns: 1fr; padding-top: 0; }
+    body { padding-top: 0; padding: 20px; }
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      max-height: none;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      grid-row: auto;
+    }
+    .toc::-webkit-scrollbar { display: none; }
+    .toc-title, .toc .toc-group { display: none; }
+    .toc a {
+      white-space: nowrap;
+      flex-shrink: 0;
+      border-left: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 4px 4px 0 0;
+      padding: 6px 10px;
+      font-size: 10px;
+    }
+    .toc a.active { border-left: none; border-bottom-color: var(--accent); background: var(--surface); }
+    .main { padding-top: 20px; }
+    .sec-head { scroll-margin-top: 52px; }
+    .diff-panels { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 24px; }
+    .issue { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ========== TOC ========== -->
+  <nav class="toc" id="toc">
+    <div class="toc-title">Issues</div>
+    <a href="#overview">Overview</a>
+    <div class="toc-group">Broken Features</div>
+    <a href="#s1">Swap From/To Same</a>
+    <a href="#s2">Pending Tx Vanishes</a>
+    <a href="#s3">Settings Item Gone</a>
+    <div class="toc-group">Delegation</div>
+    <a href="#s4">Firebase Cascading</a>
+    <a href="#s5">Active&rarr;Inactive Flip</a>
+    <a href="#s6">PK Import Disabled</a>
+    <div class="toc-group">UI/UX</div>
+    <a href="#s7">Smart Account Label</a>
+    <a href="#s8">Revoke Centering</a>
+    <a href="#s9">Move to Per-Account</a>
+    <div class="toc-group">Polish</div>
+    <a href="#s10">Learn More Link</a>
+    <a href="#s11">Card Border</a>
+    <a href="#s12">Disable Btn Style</a>
+  </nav>
+
+  <!-- ========== MAIN ========== -->
+  <div class="main">
+
+    <h1 class="anim" style="--i:0">Rainbow Extension Issues</h1>
+    <p class="subtitle anim" style="--i:1">12 issues &mdash; grouped by severity &mdash; delegation, swap, settings, UI</p>
+
+    <!-- KPI Summary -->
+    <div id="overview" class="sec-head anim" style="--i:2; color: var(--text-dim)">Overview</div>
+
+    <div class="kpi-row">
+      <div class="kpi-card anim-scale" style="--i:3">
+        <div class="kpi-card__value">12</div>
+        <div class="kpi-card__label">Total Issues</div>
+      </div>
+      <div class="kpi-card anim-scale" style="--i:4">
+        <div class="kpi-card__value" style="color:var(--red)">1</div>
+        <div class="kpi-card__label">Critical</div>
+      </div>
+      <div class="kpi-card anim-scale" style="--i:5">
+        <div class="kpi-card__value" style="color:var(--orange)">4</div>
+        <div class="kpi-card__label">High</div>
+      </div>
+      <div class="kpi-card anim-scale" style="--i:6">
+        <div class="kpi-card__value" style="color:var(--yellow)">4</div>
+        <div class="kpi-card__label">Medium</div>
+      </div>
+      <div class="kpi-card anim-scale" style="--i:7">
+        <div class="kpi-card__value" style="color:var(--blue)">3</div>
+        <div class="kpi-card__label">Polish</div>
+      </div>
+    </div>
+
+    <div class="callout callout--orange anim" style="--i:8">
+      <strong>Common root cause:</strong> Multiple issues stem from non-reactive reads of <code>config.delegation_enabled</code> from the Firebase proxy object, bypassing the existing <code>useRemoteConfig()</code> hook that uses <code>useSyncExternalStore</code>. Fixing the flag reactivity resolves ~4 issues at once.
+    </div>
+
+    <!-- ============================== -->
+    <!--  SECTION 1: BROKEN FEATURES    -->
+    <!-- ============================== -->
+
+    <div id="s1" class="sec-head anim" style="--i:9; color: var(--orange)">1 &mdash; Swap From/To Shows Same Address</div>
+
+    <div class="issue issue--high anim" style="--i:10">
+      <div class="issue-header">
+        <div class="issue-title">Type 4 (EIP-7702) swaps show user's own address for both From and To</div>
+        <span class="badge badge--high">High</span>
+      </div>
+
+      <p>When a swap executes as an atomic EIP-7702 batch, the transaction detail screen shows <strong>"From: You &rarr; To: You"</strong> instead of showing the DEX router as the <code>To</code> address.</p>
+
+      <div class="file-ref">src/core/raps/execute.ts:369</div>
+
+      <p><strong>Root cause:</strong> The batched transaction result's <code>transaction.to</code> is the user's own EOA (the EIP-7702 delegation envelope address). Line 369 overwrites the correct DEX router address from <code>pendingTransaction.to</code>:</p>
+
+      <div class="code-wrap">
+        <div class="code-label">execute.ts &mdash; addNewTransaction call</div>
+        <div class="code-block"><span class="hl-dim">transaction: {</span>
+  ...pendingTransaction,       <span class="hl-comment">// pendingTransaction.to = quote.to (DEX router) ✓</span>
+  hash: result.hash <span class="hl-blue">as</span> TxHash,
+  nonce: isDelegating ? baseNonce + 1 : baseNonce,
+  batch: <span class="hl-yellow">true</span>,
+  delegation: isDelegating,
+  data: transaction.data,
+  <span class="hl-red">to: transaction.to ?? undefined,</span>  <span class="hl-comment">// ← overwrites with user's EOA ✗</span>
+  value: transaction.value ? String(transaction.value) : <span class="hl-green">'0'</span>,
+  gasLimit: transaction.gas?.toString(),
+<span class="hl-dim">}</span></div>
+      </div>
+
+      <p>The <code>pendingTransaction</code> (built by <code>buildSwapTransaction</code> in <code>swap.ts:280-308</code>) has the correct <code>to: quote.to</code> (DEX router). But <code>transaction.to</code> from the batched result = the delegated account itself.</p>
+
+      <div class="diff-panels">
+        <div class="diff-hdr diff-hdr--before">Before (buggy)</div>
+        <div class="diff-hdr diff-hdr--after">After (fix)</div>
+        <div class="diff-body"><span class="hl-red">to: transaction.to ?? undefined,</span>
+<span class="hl-comment">// Overwrites DEX router with user's EOA</span></div>
+        <div class="diff-body"><span class="hl-comment">// Remove this line entirely for swap-type RAPs.</span>
+<span class="hl-comment">// pendingTransaction.to already has the correct</span>
+<span class="hl-comment">// DEX router address from the swap quote.</span></div>
+      </div>
+
+      <details class="related-files">
+        <summary>Related files (3)</summary>
+        <ul class="rf-list">
+          <li><code>src/core/raps/execute.ts</code> :369 &mdash; the overwrite</li>
+          <li><code>src/core/raps/actions/swap.ts</code> :280-308 &mdash; buildSwapTransaction, sets correct to</li>
+          <li><code>src/entries/popup/pages/home/Activity/ActivityDetails.tsx</code> :80-111 &mdash; ToFrom display</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s2" class="sec-head anim" style="--i:11; color: var(--orange)">2 &mdash; Pending Transaction Vanishes from Activity</div>
+
+    <div class="issue issue--high anim" style="--i:12">
+      <div class="issue-header">
+        <div class="issue-title">Pending Type 2 (EIP-1559) transaction disappears, reappears seconds later</div>
+        <span class="badge badge--high">High</span>
+      </div>
+
+      <p>A pending transaction vanishes from the Activity List before the backend has indexed it. It reappears 5&ndash;16 seconds later when the retry refetch succeeds.</p>
+
+      <p><strong>Root cause:</strong> Race condition between pending tx removal and indexed tx arrival. The Activity List combines two data sources that briefly have zero overlap:</p>
+
+      <div class="mermaid-wrap">
+        <div class="zoom-controls">
+          <button onclick="zoomDiagram(this, 1.2)" title="Zoom in">+</button>
+          <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">&minus;</button>
+          <button onclick="resetZoom(this)" title="Reset zoom">&#8634;</button>
+        </div>
+        <div class="mermaid-label">Sequence: pending tx race condition</div>
+        <pre class="mermaid">
+sequenceDiagram
+  participant BG as Background Poller
+  participant PS as Pending Store
+  participant BE as Backend API
+  participant UI as Activity List
+
+  BG->>BG: Detect tx mined (5s poll)
+  BG->>BG: Wait 1500ms
+  BG->>BE: Refetch indexed transactions
+  BG->>PS: removePendingTransactionsForAddress()
+  Note over UI: TX GONE (both sources empty)
+  Note over BE: Still indexing...
+  BE-->>UI: Indexed tx arrives (5-16s later)
+  Note over UI: TX reappears
+        </pre>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">useWatchPendingTransactions.ts &mdash; the race</div>
+        <div class="code-block"><span class="hl-blue">await</span> wait(<span class="hl-yellow">1500</span>);               <span class="hl-comment">// wait for backend enhancement</span>
+<span class="hl-blue">await</span> refetchQueries();           <span class="hl-comment">// refetch indexed txs</span>
+
+<span class="hl-comment">// Immediately removes before confirming indexed tx arrived:</span>
+<span class="hl-blue">if</span> (minedTransactions.length > <span class="hl-yellow">0</span>) {
+  <span class="hl-red">removePendingTransactionsForAddress</span>({
+    address,
+    transactionsToRemove: minedTransactions.map(<span class="hl-dim">...</span>),
+  });
+}</div>
+      </div>
+
+      <div class="callout callout--green">
+        <strong>Fix:</strong> Don't remove from pending store until the indexed tx is confirmed in the React Query cache. Check that <code>queryClient.getQueryData(consolidatedTransactionsQueryKey)</code> includes the tx hash before removing.
+      </div>
+
+      <details class="related-files">
+        <summary>Related files (4)</summary>
+        <ul class="rf-list">
+          <li><code>src/entries/popup/hooks/useWatchPendingTransactions.ts</code> :252, 270-276</li>
+          <li><code>src/entries/popup/pages/home/Activity/ActivitiesList.tsx</code> :74-77, 204-217</li>
+          <li><code>src/core/state/transactions/pendingTransactions/index.ts</code> :63-110</li>
+          <li><code>src/entries/popup/hooks/useTransactionListForPendingTxs.ts</code> :64-140</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s3" class="sec-head anim" style="--i:13; color: var(--orange)">3 &mdash; Settings Menu Item Disappears</div>
+
+    <div class="issue issue--high anim" style="--i:14">
+      <div class="issue-header">
+        <div class="issue-title">Delegations menu item vanishes from Settings after navigation</div>
+        <span class="badge badge--high">High</span>
+      </div>
+
+      <p><strong>Scenarios:</strong></p>
+      <ol>
+        <li>Navigate Settings &rarr; Delegations &rarr; press back &rarr; Delegations item is gone</li>
+        <li>Navigate Wallet &rarr; Settings &rarr; Delegations item sometimes absent</li>
+      </ol>
+
+      <div class="file-ref">src/entries/popup/pages/settings/settings.tsx:233</div>
+
+      <p><strong>Root cause:</strong> The Settings component reads <code>config.delegation_enabled</code> directly from the raw Firebase proxy object instead of using <code>useRemoteConfig('delegation_enabled')</code>. On first render, the default <code>true</code> is used. Firebase loads asynchronously and may set it to <code>false</code>. The component doesn't re-render because it's not subscribed via <code>useSyncExternalStore</code>.</p>
+
+      <div class="code-wrap">
+        <div class="code-label">settings.tsx:233 &mdash; non-reactive read</div>
+        <div class="code-block">{isWatchingWallet || <span class="hl-red">!config.delegation_enabled</span> ? <span class="hl-yellow">null</span> : (
+  &lt;MenuItem
+    last hasRightArrow
+    onClick={() => navigate(ROUTES.SETTINGS__DELEGATIONS)}
+    <span class="hl-dim">...</span>
+  /&gt;
+)}</div>
+      </div>
+
+      <div class="diff-panels">
+        <div class="diff-hdr diff-hdr--before">Before</div>
+        <div class="diff-hdr diff-hdr--after">After</div>
+        <div class="diff-body"><span class="hl-red">config.delegation_enabled</span>
+<span class="hl-red">config.approvals_enabled</span>
+<span class="hl-comment">// raw proxy object reads</span></div>
+        <div class="diff-body"><span class="hl-green">const delegationEnabled = useRemoteConfig('delegation_enabled');</span>
+<span class="hl-green">const approvalsEnabled = useRemoteConfig('approvals_enabled');</span>
+<span class="hl-comment">// reactive hook with useSyncExternalStore</span></div>
+      </div>
+
+      <p>Same issue exists for <code>config.approvals_enabled</code> at line 199.</p>
+
+      <details class="related-files">
+        <summary>Related files (2)</summary>
+        <ul class="rf-list">
+          <li><code>src/entries/popup/pages/settings/settings.tsx</code> :199, 215, 233</li>
+          <li><code>src/core/firebase/remoteConfig.ts</code> :69 (defaults), :110 (useRemoteConfig hook)</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- ============================== -->
+    <!--  SECTION 2: DELEGATION BUGS    -->
+    <!-- ============================== -->
+
+    <div id="s4" class="sec-head anim" style="--i:15; color: var(--red)">4 &mdash; Firebase Flag Cascading Failures</div>
+
+    <div class="issue issue--critical anim" style="--i:16">
+      <div class="issue-header">
+        <div class="issue-title"><code>delegation_enabled = false</code> in Firebase causes cascading Delegations UI failures</div>
+        <span class="badge badge--critical">Critical</span>
+      </div>
+
+      <p>When Firebase returns <code>delegation_enabled: false</code>, the entire Delegations UI breaks despite the wallet having <strong>real on-chain delegations</strong>. The popup and background service worker check <strong>different feature flags</strong>, creating a split-brain state.</p>
+
+      <div class="callout callout--red">
+        <strong>Confirmed with store dump:</strong> Base chain (8453) has <code>DELEGATION_STATUS_RAINBOW_DELEGATED</code> on-chain, <code>disabledAddresses</code> is empty, but UI shows "Disabled". Transaction <code>0x7fc0...4c80</code> executed as Type 4 EIP-7702 silently without any UI indication.
+      </div>
+
+      <!-- Architecture diagram -->
+      <div class="mermaid-wrap">
+        <div class="zoom-controls">
+          <button onclick="zoomDiagram(this, 1.2)" title="Zoom in">+</button>
+          <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">&minus;</button>
+          <button onclick="resetZoom(this)" title="Reset zoom">&#8634;</button>
+        </div>
+        <div class="mermaid-label">Flag propagation &mdash; popup vs background disconnect</div>
+        <pre class="mermaid">
+flowchart TD
+  FB["Firebase Remote Config"]
+  PROXY["Config Proxy Object"]
+  FB -->|"delegation_enabled = false"| PROXY
+  FB -->|"atomic_swaps_enabled = true"| BG
+
+  subgraph popup ["Popup (non-reactive reads)"]
+    ACT["activation.ts:18"]
+    SET["settings.tsx:233"]
+    DQ["delegations.ts:112"]
+    PROXY -->|"reads false"| ACT
+    PROXY -->|"reads false"| SET
+    PROXY -->|"reads false"| DQ
+  end
+
+  subgraph background ["Background Service Worker"]
+    BG["execute.ts:230"]
+    SD["supportsDelegation()"]
+    BG -->|"checks atomic_swaps"| SD
+  end
+
+  ACT -->|"enabled: false"| DISABLED["UI: Shows Disabled"]
+  SET -->|"false"| GONE["Menu Item Gone"]
+  DQ -->|"false"| QOFF["Query Disabled"]
+  SD -->|"supported: true"| SILENT["Silent EIP-7702 Delegation"]
+
+  classDef bad fill:#fb493422,stroke:#fb4934,stroke-width:2px
+  classDef good fill:#b8bb2622,stroke:#b8bb26,stroke-width:2px
+  classDef neutral fill:#83a59822,stroke:#83a598,stroke-width:1.5px
+
+  class DISABLED,GONE,QOFF bad
+  class SILENT good
+  class FB,PROXY,BG,ACT,SET,DQ,SD neutral
+        </pre>
+      </div>
+
+      <p><strong>The split-brain manifests as:</strong></p>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>What the code shows</th>
+                <th>What on-chain reality is</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>isActivated = false</code> &rarr; "Disabled" badge</td><td>Base chain IS delegated (<code>DELEGATION_STATUS_RAINBOW_DELEGATED</code>)</td></tr>
+              <tr><td><code>useDelegations</code> query disabled &rarr; no list</td><td>Query cache HAS Base delegation (served stale)</td></tr>
+              <tr><td>"Activate Smart Wallet" button visible</td><td>Nothing to activate &mdash; already delegated</td></tr>
+              <tr><td>Clicking Activate = no-op</td><td><code>enableDelegation()</code> removes from <code>disabledAddresses</code>, but it was never there</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p><strong>Timing table:</strong></p>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Moment</th>
+                <th><code>delegation_enabled</code></th>
+                <th>UI shows</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Extension opens (fresh mount)</td><td><code>true</code> (hardcoded default)</td><td>Active</td></tr>
+              <tr><td>Firebase loads async</td><td><code>false</code> (from Firebase)</td><td>Still Active (non-reactive)</td></tr>
+              <tr><td>User navigates away &amp; back</td><td><code>false</code> (proxy updated)</td><td style="color:var(--red)">Disabled &larr; bug manifests</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p><strong>Architectural problem:</strong> <code>delegation_enabled</code> is conflated as both a <strong>feature gate</strong> (should this feature exist?) and an <strong>activation status override</strong> (is this wallet active?). These must be separated:</p>
+
+      <div class="code-wrap">
+        <div class="code-label">activation.ts &mdash; proposed fix direction</div>
+        <div class="code-block"><span class="hl-blue">export function</span> <span class="hl-green">useActivationStatus</span>({ address }: { address: Address }) {
+  <span class="hl-blue">const</span> delegationEnabled = <span class="hl-green">useRemoteConfig</span>(<span class="hl-yellow">'delegation_enabled'</span>);
+  <span class="hl-blue">const</span> disabled = useDelegationDisabled(address);
+  <span class="hl-comment">// Get actual on-chain status from the store</span>
+  <span class="hl-blue">const</span> activeDelegations = store.getActiveDelegations(address);
+  <span class="hl-blue">const</span> hasOnChainDelegation = activeDelegations.length > <span class="hl-yellow">0</span>;
+
+  <span class="hl-blue">return</span> {
+    <span class="hl-comment">// Active if: not locally disabled AND</span>
+    <span class="hl-comment">// (has real on-chain delegation OR feature is enabled)</span>
+    enabled: !disabled && (hasOnChainDelegation || delegationEnabled),
+    isLoading: <span class="hl-yellow">false</span>,
+    enable, disable,
+  };
+}</div>
+      </div>
+
+      <p><strong>Additionally:</strong> <code>atomic_swaps_enabled</code> and <code>delegation_enabled</code> must be kept in sync in Firebase, or the background execution must also check <code>delegation_enabled</code> before bundling EIP-7702 authorizations.</p>
+
+      <details class="related-files">
+        <summary>Related files (6)</summary>
+        <ul class="rf-list">
+          <li><code>src/core/resources/delegations/activation.ts</code> :18 &mdash; broken enabled computation</li>
+          <li><code>src/core/raps/execute.ts</code> :230-254 &mdash; background checks atomic_swaps_enabled</li>
+          <li><code>node_modules/@rainbow-me/delegation/dist/index.mjs</code> :360, 681</li>
+          <li><code>src/core/resources/delegations/delegations.ts</code> :112 &mdash; query gated by flag</li>
+          <li><code>src/entries/popup/pages/home/Delegations/Delegations.tsx</code> :222-238</li>
+          <li><code>src/entries/popup/hooks/useWillExecuteDelegation.ts</code> :27 &mdash; correct pattern</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s5" class="sec-head anim" style="--i:17; color: var(--orange)">5 &mdash; Active &rarr; Inactive Flip</div>
+
+    <div class="issue issue--high anim" style="--i:18">
+      <div class="issue-header">
+        <div class="issue-title">Delegations page spontaneously flips Active &rarr; Inactive without user action</div>
+        <span class="badge badge--high">High</span>
+        <span class="badge badge--fix">Same root cause as #4</span>
+      </div>
+
+      <p>This is a direct symptom of the Firebase cascading bug above. Two coupled issues cause it:</p>
+
+      <p><strong>Issue A &mdash; <code>activation.ts:18</code></strong> reads <code>remoteConfig.delegation_enabled</code> from the raw proxy (non-reactive).</p>
+      <p><strong>Issue B &mdash; <code>delegations.ts:120</code></strong> runs <code>refetchInterval: 30000</code>. Every 30 seconds the query refetches, triggering a re-render. On that re-render, <code>useActivationStatus</code> recomputes and reads the now-updated <code>false</code> from Firebase.</p>
+
+      <div class="code-wrap">
+        <div class="code-label">activation.ts:18 &amp; delegations.ts:112 &mdash; the two reads</div>
+        <div class="code-block"><span class="hl-comment">// activation.ts:18 — non-reactive</span>
+enabled: <span class="hl-red">remoteConfig.delegation_enabled</span> && !disabled,
+
+<span class="hl-comment">// delegations.ts:112 — also non-reactive</span>
+<span class="hl-blue">const</span> enabled = <span class="hl-red">remoteConfig.delegation_enabled</span> && (queryEnabled ?? <span class="hl-yellow">true</span>) && !!address;
+
+<span class="hl-comment">// delegations.ts:120 — triggers re-render every 30s</span>
+refetchInterval: <span class="hl-yellow">30000</span>,</div>
+      </div>
+
+      <p><strong>Fix:</strong> Replace both raw reads with <code>useRemoteConfig('delegation_enabled')</code>. The hook already exists and <code>useWillExecuteDelegation.ts:27</code> already uses it correctly.</p>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s6" class="sec-head anim" style="--i:19; color: var(--yellow)">6 &mdash; New PK Import Shows Disabled</div>
+
+    <div class="issue issue--medium anim" style="--i:20">
+      <div class="issue-header">
+        <div class="issue-title">Newly imported Private Key shows Smart Wallet as "Disabled" by default</div>
+        <span class="badge badge--medium">Medium</span>
+        <span class="badge badge--fix">Same root cause as #4</span>
+      </div>
+
+      <p>A freshly imported Private Key address should show Smart Wallet as <strong>Active/Enabled</strong> by default. Instead, it renders with the "Disabled" badge and "Activate" button.</p>
+
+      <p><strong>Root cause:</strong> By the time the user navigates to Delegations after PK import, Firebase has resolved with <code>delegation_enabled: false</code>. Since <code>activation.ts:18</code> reads from the raw proxy, the first render sees <code>false</code>.</p>
+
+      <p><strong>Store dump confirms:</strong> <code>disabledAddresses</code> is properly serialized and empty:</p>
+
+      <div class="code-wrap">
+        <div class="code-label">Zustand store dump</div>
+        <div class="code-block"><span class="hl-yellow">"disabledAddresses"</span>: { <span class="hl-yellow">"__type"</span>: <span class="hl-green">"Set"</span>, <span class="hl-yellow">"values"</span>: [] }</div>
+      </div>
+
+      <p>The address is NOT locally disabled. This rules out Set serialization as the issue. The sole cause is the Firebase flag read.</p>
+    </div>
+
+    <!-- ============================== -->
+    <!--  SECTION 3: UI/UX             -->
+    <!-- ============================== -->
+
+    <div id="s7" class="sec-head anim" style="--i:21; color: var(--yellow)">7 &mdash; Smart Account Label Duplicative</div>
+
+    <div class="issue issue--medium anim" style="--i:22">
+      <div class="issue-header">
+        <div class="issue-title">"Smart Account" label is duplicated in delegation transaction details; should replace <code>To</code> field</div>
+        <span class="badge badge--medium">Medium</span>
+      </div>
+
+      <p>In the "Revoked" and "Delegate" transaction detail view, the layout shows:</p>
+
+      <div class="code-wrap">
+        <div class="code-label">Current layout (wrong)</div>
+        <div class="code-block">From           &rarr;  You (0x0fca...2504)
+To             &rarr;  You (0x0fca...2504)        <span class="hl-comment">&larr; both user's EOA (EIP-7702)</span>
+<span class="hl-red">Smart Account  &rarr;  Smart Account</span>  <span class="hl-comment">&larr; label = value (duplicative)</span>
+Hash           &rarr;  0xd767...</div>
+      </div>
+
+      <p><strong>Two problems:</strong></p>
+      <ol>
+        <li><strong>"Smart Account" row is duplicative</strong> &mdash; <code>DelegationContractRow</code> passes <code>title</code> as both the label prop AND as <code>contract.name</code>, so it reads "Smart Account &rarr; Smart Account"</li>
+        <li><strong>Should replace <code>To</code>, not be a separate row</strong> &mdash; for delegation txs, the <code>To</code> should show the delegation contract</li>
+      </ol>
+
+      <div class="code-wrap">
+        <div class="code-label">Desired layout</div>
+        <div class="code-block"><span class="hl-green">From    &rarr;  You (0x0fca...2504)
+To      &rarr;  Smart Account  &#9673;   &larr; delegation contract with Rainbow icon
+Hash    &rarr;  0xd767...</span></div>
+      </div>
+
+      <div class="file-ref">src/entries/popup/pages/home/Activity/ActivityDetails.tsx:113-154</div>
+
+      <p><strong>Fix direction:</strong> For <code>delegate</code>/<code>revoke_delegation</code> tx types, set <code>transaction.to</code> = delegation contract address and <code>transaction.contract</code> = <code>{ name: 'Smart Account', iconUrl: RainbowIcon }</code> at parse time. Then remove <code>DelegationContractRow</code>.</p>
+
+      <details class="related-files">
+        <summary>Related files (2)</summary>
+        <ul class="rf-list">
+          <li><code>src/entries/popup/pages/home/Activity/ActivityDetails.tsx</code> :113-154, 80-111, 828-834</li>
+          <li><code>src/core/utils/transactions.ts</code> :174-186 &mdash; getAddressTo needs delegation case</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s8" class="sec-head anim" style="--i:23; color: var(--yellow)">8 &mdash; Revoke Delegation Centering</div>
+
+    <div class="issue issue--medium anim" style="--i:24">
+      <div class="issue-header">
+        <div class="issue-title">Revoke Delegation UI content not properly vertically centered</div>
+        <span class="badge badge--medium">Medium</span>
+      </div>
+
+      <div class="file-ref">src/entries/popup/pages/home/Delegations/RevokeDelegationPage.tsx:425-581</div>
+
+      <p>The layout uses <code>flex: 1</code> + <code>justifyContent: 'center'</code> for the middle box, but the sticky footer sits in normal document flow. The <code>flex: 1</code> calculation doesn't properly exclude the footer height, causing content to appear shifted upward.</p>
+
+      <div class="code-wrap">
+        <div class="code-label">Current layout structure</div>
+        <div class="code-block">&lt;Box style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}&gt;
+  &lt;Navbar /&gt;                                         <span class="hl-comment">{/* ~56px */}</span>
+
+  &lt;Box style={{ flex: 1, justifyContent: 'center' }}&gt; <span class="hl-comment">{/* fills remaining */}</span>
+    &lt;Stack&gt; <span class="hl-comment">{/* icon + subtitle + details */}</span> &lt;/Stack&gt;
+  &lt;/Box&gt;
+
+  &lt;Box style={{ position: 'sticky', bottom: 0 }}&gt;    <span class="hl-comment">{/* ~200px footer */}</span>
+  &lt;/Box&gt;
+&lt;/Box&gt;</div>
+      </div>
+
+      <p><strong>Fix:</strong> Use explicit <code>Rows</code>/<code>Row</code> layout (already used elsewhere in the page) to divide into Navbar | scrollable content | fixed footer, or remove <code>justifyContent: 'center'</code> and use padding instead.</p>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s9" class="sec-head anim" style="--i:25; color: var(--purple)">9 &mdash; Move Smart Wallet to Per-Account</div>
+
+    <div class="issue issue--feature anim" style="--i:26">
+      <div class="issue-header">
+        <div class="issue-title">Move Smart Wallet (Delegations) UI to per-account context menu</div>
+        <span class="badge badge--feature">Feature</span>
+      </div>
+
+      <p>Delegations is per-account, not a global setting. It should be accessed from the individual account's context menu in Wallets &amp; Keys, and the page title should show the wallet name.</p>
+
+      <p><strong>Three parts:</strong></p>
+
+      <p><strong>Part 1 &mdash; Add "Edit Smart Wallet" to per-account context menu</strong></p>
+      <div class="file-ref">src/entries/popup/pages/settings/walletsAndKeys/walletDetails.tsx:40-115</div>
+      <p>Add a new item to <code>InfoButtonOptions</code> (the three-dot menu). Should only appear for non-hardware-wallet accounts:</p>
+
+      <div class="code-wrap">
+        <div class="code-label">New menu item in InfoButtonOptions</div>
+        <div class="code-block">{
+  onSelect: () => navigate(ROUTES.SETTINGS__DELEGATIONS),
+  label: i18n.t(<span class="hl-green">'settings...wallet_details.edit_smart_wallet'</span>),
+  symbol: <span class="hl-green">'bolt.shield.fill'</span>,
+}</div>
+      </div>
+
+      <p><strong>Part 2 &mdash; Page title shows wallet name</strong></p>
+      <div class="file-ref">src/entries/popup/Routes.tsx:509</div>
+      <p>Currently uses <code>i18n.t('delegations.title')</code>. Should display the wallet's custom name from <code>useWalletNamesStore</code>. Have the Delegations component own its Navbar (like <code>RevokeDelegationPage</code> does).</p>
+
+      <p><strong>Part 3 &mdash; Remove from global Settings menu</strong></p>
+      <div class="file-ref">src/entries/popup/pages/settings/settings.tsx:233-251</div>
+      <p>Once the per-account entry point exists, remove the global Settings &rarr; Delegations item.</p>
+    </div>
+
+    <!-- ============================== -->
+    <!--  SECTION 4: VISUAL POLISH      -->
+    <!-- ============================== -->
+
+    <div id="s10" class="sec-head anim" style="--i:27; color: var(--blue)">10 &mdash; Dangling "Learn more..." Link</div>
+
+    <div class="issue issue--low anim" style="--i:28">
+      <div class="issue-header">
+        <div class="issue-title">"Learn more..." text with no click handler on Delegations UI</div>
+        <span class="badge badge--low">Low</span>
+      </div>
+
+      <div class="file-ref">src/entries/popup/pages/home/Delegations/Delegations.tsx:99-109</div>
+
+      <p>The <code>BackupInfo</code> component renders blue "Learn more..." text that looks interactive but does nothing:</p>
+
+      <div class="code-wrap">
+        <div class="code-label">BackupInfo component</div>
+        <div class="code-block"><span class="hl-blue">const</span> BackupInfo = () =&gt; (
+  &lt;Stack space=<span class="hl-green">"8px"</span>&gt;
+    &lt;Text color=<span class="hl-green">"labelTertiary"</span>&gt;
+      {i18n.t(<span class="hl-green">'delegations.smart_wallet.backup_info'</span>)}
+    &lt;/Text&gt;
+    &lt;Text color=<span class="hl-green">"blue"</span>&gt;
+      {i18n.t(<span class="hl-green">'delegations.smart_wallet.learn_more'</span>)}  <span class="hl-red">{/* &larr; no onClick */}</span>
+    &lt;/Text&gt;
+  &lt;/Stack&gt;
+);</div>
+      </div>
+
+      <p>Rendered in both activated and non-activated states (lines 389, 402).</p>
+
+      <p><strong>Fix:</strong> Either remove the "Learn more..." text, or wire it to <code>goToNewTab({ url: ... })</code> if a docs page exists.</p>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s11" class="sec-head anim" style="--i:29; color: var(--blue)">11 &mdash; Smart Wallet Card Border</div>
+
+    <div class="issue issue--low anim" style="--i:30">
+      <div class="issue-header">
+        <div class="issue-title">SmartWalletCard border gradient too vivid against dark background</div>
+        <span class="badge badge--low">Low</span>
+      </div>
+
+      <div class="file-ref">src/entries/popup/pages/home/Delegations/Delegations.tsx:37-44</div>
+
+      <p>The border gradient uses fully opaque hex colors (<code>#5F5AFA</code> purple &rarr; <code>#FF7AB8</code> pink), which pop too aggressively against the dark card background.</p>
+
+      <div class="diff-panels">
+        <div class="diff-hdr diff-hdr--before">Before (too bright)</div>
+        <div class="diff-hdr diff-hdr--after">After (translucent)</div>
+        <div class="diff-body">linear-gradient(180deg,
+  <span class="hl-red">#5F5AFA</span> 0%,
+  <span class="hl-red">#FF7AB8</span> 100%
+) border-box</div>
+        <div class="diff-body">linear-gradient(180deg,
+  <span class="hl-green">rgba(95, 90, 250, 0.4)</span> 0%,
+  <span class="hl-green">rgba(255, 122, 184, 0.4)</span> 100%
+) border-box</div>
+      </div>
+
+      <p>Adjust alpha (~30&ndash;50%) until the border feels subtle but still visible.</p>
+    </div>
+
+    <!-- ---- -->
+
+    <div id="s12" class="sec-head anim" style="--i:31; color: var(--blue)">12 &mdash; Disable Button Style</div>
+
+    <div class="issue issue--low anim" style="--i:32">
+      <div class="issue-header">
+        <div class="issue-title">"Disable Smart Wallet" uses same blue Button as "Activate" &mdash; should use muted red MenuItem</div>
+        <span class="badge badge--low">Low</span>
+      </div>
+
+      <div class="file-ref">src/entries/popup/pages/home/Delegations/Delegations.tsx:380-388</div>
+
+      <p>Both "Activate" and "Disable" use <code>&lt;Button color="blue" variant="flat"&gt;</code> &mdash; visually identical despite Disable being a destructive action.</p>
+
+      <div class="diff-panels">
+        <div class="diff-hdr diff-hdr--before">Current (blue button)</div>
+        <div class="diff-hdr diff-hdr--after">Proposed (red MenuItem)</div>
+        <div class="diff-body">&lt;Button
+  color=<span class="hl-red">"blue"</span>
+  height="44px"
+  variant="flat"
+  width="full"
+  onClick={handleDisable}
+&gt;
+  {i18n.t('delegations.disable_smart_wallet')}
+&lt;/Button&gt;</div>
+        <div class="diff-body">&lt;Menu&gt;
+  &lt;MenuItem first last
+    leftComponent={
+      &lt;Symbol
+        symbol=<span class="hl-green">"xmark.circle.fill"</span>
+        color=<span class="hl-green">"red"</span>
+        size={18} /&gt;
+    }
+    titleComponent={
+      &lt;MenuItem.Title
+        color=<span class="hl-green">"red"</span>
+        text={i18n.t('...')} /&gt;
+    }
+    onClick={handleDisable}
+  /&gt;
+&lt;/Menu&gt;</div>
+      </div>
+
+      <p>Reference patterns: "Clear Pending Transactions" in <code>transactions.tsx:113-127</code> and "Add Custom Network" in <code>customChain/list.tsx:155-173</code>.</p>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /wrap -->
+
+<!-- ========== MERMAID + ZOOM JS ========== -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    look: 'classic',
+    themeVariables: {
+      primaryColor: isDark ? '#3c3836' : '#f2e5bc',
+      primaryBorderColor: isDark ? '#83a598' : '#458588',
+      primaryTextColor: isDark ? '#ebdbb2' : '#3c3836',
+      secondaryColor: isDark ? '#32302f' : '#f9f5d7',
+      secondaryBorderColor: isDark ? '#8ec07c' : '#689d6a',
+      secondaryTextColor: isDark ? '#ebdbb2' : '#3c3836',
+      tertiaryColor: isDark ? '#504945' : '#ebdbb2',
+      tertiaryBorderColor: isDark ? '#d3869b' : '#b16286',
+      tertiaryTextColor: isDark ? '#ebdbb2' : '#3c3836',
+      lineColor: isDark ? '#a89984' : '#7c6f64',
+      fontSize: '14px',
+      fontFamily: "'Sora', system-ui, sans-serif",
+      noteBkgColor: isDark ? '#504945' : '#f2e5bc',
+      noteTextColor: isDark ? '#ebdbb2' : '#3c3836',
+      noteBorderColor: isDark ? '#fabd2f' : '#d79921',
+    }
+  });
+</script>
+
+<script>
+// Zoom controls
+function updateZoomState(wrap) {
+  var target = wrap.querySelector('.mermaid');
+  var zoom = parseFloat(target.dataset.zoom || '1');
+  wrap.classList.toggle('is-zoomed', zoom > 1);
+}
+
+function zoomDiagram(btn, factor) {
+  var wrap = btn.closest('.mermaid-wrap');
+  var target = wrap.querySelector('.mermaid');
+  var current = parseFloat(target.dataset.zoom || '1');
+  var next = Math.min(Math.max(current * factor, 0.3), 5);
+  target.dataset.zoom = next;
+  target.style.transform = 'scale(' + next + ')';
+  updateZoomState(wrap);
+}
+
+function resetZoom(btn) {
+  var wrap = btn.closest('.mermaid-wrap');
+  var target = wrap.querySelector('.mermaid');
+  target.dataset.zoom = '1';
+  target.style.transform = 'scale(1)';
+  updateZoomState(wrap);
+}
+
+document.querySelectorAll('.mermaid-wrap').forEach(function(wrap) {
+  wrap.addEventListener('wheel', function(e) {
+    if (!e.ctrlKey && !e.metaKey) return;
+    e.preventDefault();
+    var target = wrap.querySelector('.mermaid');
+    var current = parseFloat(target.dataset.zoom || '1');
+    var factor = e.deltaY < 0 ? 1.1 : 0.9;
+    var next = Math.min(Math.max(current * factor, 0.3), 5);
+    target.dataset.zoom = next;
+    target.style.transform = 'scale(' + next + ')';
+    updateZoomState(wrap);
+  }, { passive: false });
+
+  var startX, startY, scrollL, scrollT;
+  wrap.addEventListener('mousedown', function(e) {
+    if (e.target.closest('.zoom-controls')) return;
+    var target = wrap.querySelector('.mermaid');
+    if (parseFloat(target.dataset.zoom || '1') <= 1) return;
+    wrap.classList.add('is-panning');
+    startX = e.clientX;
+    startY = e.clientY;
+    scrollL = wrap.scrollLeft;
+    scrollT = wrap.scrollTop;
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!wrap.classList.contains('is-panning')) return;
+    wrap.scrollLeft = scrollL - (e.clientX - startX);
+    wrap.scrollTop = scrollT - (e.clientY - startY);
+  });
+  window.addEventListener('mouseup', function() {
+    wrap.classList.remove('is-panning');
+  });
+});
+
+// Scroll spy for TOC
+(function() {
+  const toc = document.getElementById('toc');
+  const links = toc.querySelectorAll('a');
+  const sections = [];
+
+  links.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ id, el, link });
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const match = sections.find(s => s.el === entry.target);
+        if (match) {
+          match.link.classList.add('active');
+          if (window.innerWidth <= 1000) {
+            match.link.scrollIntoView({
+              behavior: 'smooth', block: 'nearest', inline: 'center'
+            });
+          }
+        }
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+
+  sections.forEach(s => observer.observe(s.el));
+
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', '#' + id);
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
