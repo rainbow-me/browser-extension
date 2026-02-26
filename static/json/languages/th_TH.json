@@ -190,7 +190,7 @@
           "title": "รายละเอียดกระเป๋าสตางค์",
           "view_recovery_phrase": "ดูวลีการกู้คืน",
           "create_new_wallet": "สร้างกระเป๋าสตางค์ใหม่",
-          "edit_smart_wallet": "Edit Smart Wallet",
+          "edit_smart_wallet": "แก้ไขสมาร์ทวอลเล็ต",
           "rename_wallet": "เปลี่ยนชื่อกระเป๋าสตางค์",
           "unhide_wallet": "เปิดซ่อนกระเป๋าสตางค์",
           "delete_wallet": "ลบกระเป๋าสตางค์",
@@ -275,7 +275,7 @@
       "title": "การอนุมัติ"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "การมอบสิทธิ์"
     },
     "currency": {
       "title": "สกุลเงิน",
@@ -303,9 +303,9 @@
       "command_k_internal_shortcuts_enabled": "เปิดใช้งาน ⌘K Shortcut ภายใน",
       "custom_rpc": "Custom RPC",
       "degen_mode": "โหมด Degen",
-      "atomic_swaps_enabled": "Atomic Swaps",
-      "rewards_scheduled_drop": "Rewards Scheduled Drop",
-      "delegation_enabled": "Delegation Enabled"
+      "atomic_swaps_enabled": "สวอปแบบอะตอมิก",
+      "rewards_scheduled_drop": "ดรอปตามกำหนดการของรางวัล",
+      "delegation_enabled": "เปิดใช้งานการมอบสิทธิ์"
     }
   },
   "transactions": {
@@ -402,17 +402,17 @@
       "failed": "การถอนความยินยอมล้มเหลว"
     },
     "delegate": {
-      "pending": "Delegating",
+      "pending": "กำลังมอบสิทธิ์",
       "confirmed": "อนุมัติแล้ว",
-      "failed": "Delegation Failed"
+      "failed": "การมอบสิทธิ์ล้มเหลว"
     },
     "revoke_delegation": {
       "pending": "กำลังถอนความยินยอม",
       "confirmed": "ถอนความยินยอมเรียบร้อย",
       "failed": "การถอนความยินยอมล้มเหลว"
     },
-    "delegate_description": "Wallet Delegation",
-    "revoke_delegation_description": "Wallet Delegation",
+    "delegate_description": "การมอบสิทธิ์ของวอลเล็ต",
+    "revoke_delegation_description": "การมอบสิทธิ์ของวอลเล็ต",
     "sale": {
       "pending": "กำลังขาย",
       "confirmed": "ขายเรียบร้อย",
@@ -524,7 +524,7 @@
         "disable_flashbots": "ปิดการใช้งาน Flashbots",
         "copy_uuid": "คัดลอก UUID",
         "clear_transactions": "ล้างธุรกรรมที่รอดำเนินการ",
-        "trigger_security_alert": "Trigger Security Alert"
+        "trigger_security_alert": "ทริกเกอร์การแจ้งเตือนความปลอดภัย"
       },
       "search_tags": {
         "swap": "ซื้อ, ขาย, แลกเปลี่ยน, สั่งซื้อ, เปลี่ยน, dex, เส้นทาง",
@@ -553,7 +553,7 @@
         "diagnostics": "การวินิจฉัย",
         "refresh_data": "รีเฟรช, โหลดใหม่, ล้างแคช, รีเซ็ต, อัปเดต",
         "clear_transactions": "ล้าง, รีเซ็ต, ที่อยู่ระหว่างดำเนินการ, ธุรกรรม, นอนซ์, นอนซ์",
-        "trigger_security_alert": "delegation, revoke, mock, debug, test"
+        "trigger_security_alert": "การมอบหมาย, เพิกถอน, จำลอง, ดีบัก, ทดสอบ"
       }
     },
     "command_rows": {
@@ -580,7 +580,7 @@
       "title": "ยอดคงเหลือและกิจกรรมได้รับการรีเฟรชแล้ว"
     },
     "trigger_security_alert_toast": {
-      "title": "Security Alert Triggered"
+      "title": "ทริกเกอร์การแจ้งเตือนความปลอดภัยแล้ว"
     },
     "contact_toast": {
       "title_added": "เพิ่มผู้ติดต่อแล้ว",
@@ -688,80 +688,80 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
-    "no_delegations": "No Active Delegations",
-    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
-    "revoke_all": "Revoke All Delegations",
+    "title": "การมอบสิทธิ์",
+    "no_delegations": "ไม่มีการมอบหมายที่ใช้งานอยู่",
+    "no_delegations_description": "คุณไม่มีการมอบหมาย EIP-7702 ที่ใช้งานอยู่ให้จัดการ",
+    "revoke_all": "เพิกถอนการมอบหมายทั้งหมด",
     "smart_wallet": {
-      "title": "Smart Wallet",
+      "title": "กระเป๋าเงินอัจฉริยะ",
       "active": "กำลังใช้งาน",
       "disabled": "ปิดการใช้งาน",
-      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
-      "learn_more": "Learn more..."
+      "description": "กระเป๋าเงินอัจฉริยะช่วยให้ประสบการณ์ใช้งานกระเป๋าเงินเร็วขึ้น ถูกลง และเชื่อถือได้มากขึ้น",
+      "backup_info_enabled": "คุณจะพลาดธุรกรรมที่เร็วขึ้นและต้นทุนเครือข่ายที่ต่ำลง",
+      "backup_info_disabled": "การอัปเดตจะมีผลในการสวอปครั้งถัดไปของคุณ",
+      "learn_more": "เรียนรู้เพิ่มเติม..."
     },
-    "activated_networks": "Activated Networks",
-    "other_smart_accounts": "Other Smart Accounts",
-    "third_party_indicator_tooltip": "This is a third-party delegation",
-    "activate_smart_wallet": "Activate Smart Wallet",
-    "disable_smart_wallet": "Disable Smart Wallet",
+    "activated_networks": "เครือข่ายที่เปิดใช้งานแล้ว",
+    "other_smart_accounts": "บัญชีอัจฉริยะอื่นๆ",
+    "third_party_indicator_tooltip": "นี่คือการมอบหมายจากบุคคลที่สาม",
+    "activate_smart_wallet": "เปิดใช้งานกระเป๋าเงินอัจฉริยะ",
+    "disable_smart_wallet": "ปิดใช้งานกระเป๋าเงินอัจฉริยะ",
     "view_on_explorer": "ดูบน Explorer",
     "revoke": {
-      "title": "Revoke Delegation",
-      "subtitle": "Remove delegation from this contract",
-      "security_title": "Security Alert",
-      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "title": "เพิกถอนการมอบหมาย",
+      "subtitle": "นำการมอบหมายออกจากสัญญานี้",
+      "security_title": "การแจ้งเตือนความปลอดภัย",
+      "security_subtitle": "ตรวจพบการมอบหมายที่ไม่รู้จัก เพิกถอนเพื่อทำให้กระเป๋าเงินของคุณปลอดภัย",
       "reason": {
         "disable_smart_wallet": {
-          "title": "Disable Smart Wallet",
-          "subtitle": "Revoke all delegations to disable smart wallets."
+          "title": "ปิดใช้งานกระเป๋าเงินอัจฉริยะ",
+          "subtitle": "เพิกถอนการมอบหมายทั้งหมดเพื่อปิดใช้งานกระเป๋าเงินอัจฉริยะ"
         },
         "disable_single_network": {
-          "title": "Revoke Delegation",
-          "subtitle": "Remove delegation from this network."
+          "title": "เพิกถอนการมอบหมาย",
+          "subtitle": "นำการมอบหมายออกจากเครือข่ายนี้"
         },
         "disable_third_party": {
-          "title": "Revoke Third-Party Delegation",
-          "subtitle": "Remove delegation from this third-party contract."
+          "title": "เพิกถอนการมอบหมายจากบุคคลที่สาม",
+          "subtitle": "นำการมอบหมายออกจากสัญญาของบุคคลที่สามนี้"
         },
         "alert_vulnerability": {
-          "title": "Security Alert",
-          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+          "title": "การแจ้งเตือนความปลอดภัย",
+          "subtitle": "ตรวจพบการมอบหมายที่มีช่องโหว่ เพิกถอนเพื่อทำให้กระเป๋าเงินของคุณปลอดภัย"
         },
         "alert_bug": {
-          "title": "Security Alert",
-          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+          "title": "การแจ้งเตือนความปลอดภัย",
+          "subtitle": "ตรวจพบการมอบหมายที่มีปัญหา เพิกถอนเพื่อทำให้กระเป๋าเงินของคุณปลอดภัย"
         },
         "alert_unrecognized": {
-          "title": "Security Alert",
-          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+          "title": "การแจ้งเตือนความปลอดภัย",
+          "subtitle": "ตรวจพบการมอบหมายที่ไม่รู้จัก เพิกถอนเพื่อทำให้กระเป๋าเงินของคุณปลอดภัย"
         },
         "alert_unspecified": {
-          "title": "Security Alert",
-          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+          "title": "การแจ้งเตือนความปลอดภัย",
+          "subtitle": "ตรวจพบการมอบหมายที่ไม่รู้จัก เพิกถอนเพื่อทำให้กระเป๋าเงินของคุณปลอดภัย"
         }
       },
-      "security_notice": "Security Notice",
+      "security_notice": "ประกาศด้านความปลอดภัย",
       "chain_label": "เชื่อมโยง",
       "contract_label": "สัญญา",
-      "progress": "%{current} of %{total}",
-      "action": "Revoke Delegation",
-      "revoking": "Revoking...",
-      "success": "Successfully Revoked",
+      "progress": "%{current} จาก %{total}",
+      "action": "เพิกถอนการมอบหมาย",
+      "revoking": "กำลังเพิกถอน...",
+      "success": "เพิกถอนสำเร็จแล้ว",
       "try_again": "ลองใหม่",
       "cancel": "ยกเลิก",
       "done": "เสร็จสิ้น",
-      "next": "Next",
-      "confirm_hw": "Confirm on Device"
+      "next": "ถัดไป",
+      "confirm_hw": "ยืนยันบนอุปกรณ์"
     },
     "proactive_revoke": {
-      "title": "Security Alert",
-      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+      "title": "การแจ้งเตือนความปลอดภัย",
+      "description": "ตรวจพบการมอบหมายที่ไม่รู้จัก เพิกถอนเพื่อทำให้กระเป๋าเงินของคุณปลอดภัย"
     },
     "confirm_disable": {
-      "title": "Disable Smart Wallet",
-      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "title": "ปิดใช้งานกระเป๋าเงินอัจฉริยะ",
+      "description": "ปิดใช้งานกระเป๋าเงินอัจฉริยะสำหรับธุรกรรมในอนาคต คุณสามารถเปิดใช้งานกระเป๋าเงินอัจฉริยะอีกครั้งได้ทุกเมื่อ",
       "action": "ปิดการใช้งาน",
       "cancel": "ยกเลิก"
     }
@@ -935,8 +935,8 @@
       "more_details": "รายละเอียดเพิ่มเติม",
       "confirmation": "%{Action} %{sellSymbol} ถึง %{buySymbol}",
       "go_back": "ย้อนกลับ",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "ค่าธรรมเนียมการเปิดใช้งานกระเป๋าเงินอัจฉริยะ",
+      "will_delegate_callout": "การสวอปนี้จะเปิดใช้งานกระเป๋าเงินอัจฉริยะของคุณบนเครือข่ายนี้"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,8 @@
         "action_label": "เข้าใจแล้ว"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "ค่าธรรมเนียมการเปิดใช้งานกระเป๋าเงินอัจฉริยะ",
+        "description": "ค่าธรรมเนียมแบบครั้งเดียวนี้จะเปิดใช้งานกระเป๋าเงินอัจฉริยะของคุณบนเครือข่ายนี้ ช่วยให้สวอปได้เร็วขึ้นและถูกลงโดยรวมการอนุมัติและการสวอปไว้ในธุรกรรมเดียว"
       }
     }
   },
@@ -1464,7 +1464,7 @@
     "token_contract": "สัญญาโทเค็น",
     "token_standard": "มาตรฐานโทเค็น",
     "revoke_approval": "ยกเลิกการอนุมัติ",
-    "smart_account": "Smart Account",
+    "smart_account": "บัญชีอัจฉริยะ",
     "error_title": "ไม่สามารถโหลดกิจกรรมได้",
     "error_message": "เราไม่สามารถดึงธุรกรรมนี้ได้ \nลองอีกครั้งหรือกลับไปที่กิจกรรมของคุณ",
     "error_retry": "ลองใหม่",
@@ -1581,9 +1581,9 @@
     "close_cta": "ยกเลิก",
     "handle_copy_title": "คัดลอก Tx Hash",
     "revoke_approval": "ยกเลิกการอนุมัติ",
-    "estimating_fee": "Estimating fee…",
-    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
+    "estimating_fee": "กำลังประเมินค่าธรรมเนียม…",
+    "tx_confirmed_or_not_found": "ธุรกรรมอาจได้รับการยืนยันไปแล้วหรือไม่พบธุรกรรม",
+    "eip7702_auth_list_unavailable": "ไม่สามารถเร่งธุรกรรมนี้ได้: ไม่มีข้อมูลการมอบหมาย ลองใหม่อีกครั้งภายหลังหรือใช้ RPC อื่น",
     "speed_up_failed": {
       "title": "การเร่งล้มเหลว",
       "description": "ความพยายามในการเร่งธุรกรรมอาจล้มเหลวในช่วงที่เครือข่ายคับคั่ง เพิ่มขีดจำกัดก๊าซ หรือเมื่อธุรกรรมเดิมได้รับการยืนยันก่อน"
