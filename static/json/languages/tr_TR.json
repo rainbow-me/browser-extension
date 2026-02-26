@@ -275,7 +275,7 @@
       "title": "Onaylar"
     },
     "delegations": {
-      "title": "Yetkilendirmeler"
+      "title": "Akıllı Cüzdan"
     },
     "currency": {
       "title": "Para Birimi",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "Yetkilendirmeler",
+    "title": "Akıllı Cüzdan",
     "no_delegations": "Aktif Delegasyon Yok",
     "no_delegations_description": "Yönetilecek herhangi bir aktif EIP-7702 delegasyonunuz yok.",
     "revoke_all": "Tüm Delegasyonları İptal Et",
@@ -697,8 +697,8 @@
       "active": "Aktif",
       "disabled": "Devre Dışı",
       "description": "Akıllı cüzdanlar daha hızlı, daha ucuz ve daha güvenilir bir cüzdan deneyimi sağlar.",
-      "backup_info_enabled": "Daha hızlı işlemleri ve daha düşük ağ maliyetlerini kaçırırsınız",
-      "backup_info_disabled": "Güncellemeler bir sonraki takasınızda geçerli olacak",
+      "enabled_description": "Daha hızlı işlemleri ve daha düşük gas maliyetlerini kaçırırsınız",
+      "disabled_description": "Güncellemeler bir sonraki takasınızda geçerli olacak",
       "learn_more": "Daha fazla bilgi edinin..."
     },
     "activated_networks": "Etkinleştirilen Ağlar",
@@ -935,8 +935,8 @@
       "more_details": "Daha fazla ayrıntı",
       "confirmation": "%{Action} %{sellSymbol} yerine %{buySymbol}",
       "go_back": "Geri git",
-      "smart_wallet_activation_fee": "Akıllı Cüzdan Etkinleştirme Ücreti",
-      "will_delegate_callout": "Bu takas, bu ağda akıllı cüzdanınızı etkinleştirecek."
+      "smart_wallet_activation_fee": "Tahmini Akıllı Cüzdan Ücreti",
+      "will_delegate_callout": "Akıllı cüzdan aktivasyonunu içerir"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "Anladım"
       },
       "smart_wallet_activation": {
-        "title": "Akıllı Cüzdan Etkinleştirme Ücreti",
-        "description": "Bu tek seferlik ücret, bu ağda akıllı cüzdanınızı etkinleştirir. Onayı ve takası tek bir işlemde birleştirerek daha hızlı ve daha ucuz takaslar sağlar."
+        "title": "Akıllı Cüzdan aktivasyonu",
+        "description_1": "Bu işlem, bu ağda tek seferlik bir Akıllı Cüzdan aktivasyonu içerir. Bu, cüzdanınızı toplu işlemleri ve diğer akıllı hesap özelliklerini destekleyecek şekilde yükseltir.",
+        "description_2": "Aktivasyon ücreti, bu takasın ağ ücretine dahildir."
       }
     }
   },
