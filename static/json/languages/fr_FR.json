@@ -275,7 +275,7 @@
       "title": "Autorisations"
     },
     "delegations": {
-      "title": "Délégations"
+      "title": "Smart Wallet"
     },
     "currency": {
       "title": "Devise",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "Délégations",
+    "title": "Smart Wallet",
     "no_delegations": "Aucune délégation active",
     "no_delegations_description": "Vous n’avez aucune délégation EIP-7702 active à gérer.",
     "revoke_all": "Révoquer toutes les délégations",
@@ -697,8 +697,8 @@
       "active": "Actif",
       "disabled": "Désactivé",
       "description": "Les smart wallets permettent une expérience de portefeuille plus rapide, moins chère et plus fiable.",
-      "backup_info_enabled": "Vous passerez à côté de transactions plus rapides et de frais réseau plus bas",
-      "backup_info_disabled": "Les mises à jour prendront effet lors de votre prochain swap",
+      "enabled_description": "Vous passerez à côté de transactions plus rapides et de frais de gas réduits",
+      "disabled_description": "Les mises à jour prendront effet lors de votre prochain swap",
       "learn_more": "En savoir plus..."
     },
     "activated_networks": "Réseaux activés",
@@ -935,8 +935,8 @@
       "more_details": "Plus de détails",
       "confirmation": "%{Action} %{sellSymbol} à %{buySymbol}",
       "go_back": "Retour en arrière",
-      "smart_wallet_activation_fee": "Frais d’activation du Smart Wallet",
-      "will_delegate_callout": "Ce swap activera votre smart wallet sur ce réseau."
+      "smart_wallet_activation_fee": "Frais estimés du Smart Wallet",
+      "will_delegate_callout": "Inclut l’activation du Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "Compris"
       },
       "smart_wallet_activation": {
-        "title": "Frais d’activation du Smart Wallet",
-        "description": "Ces frais uniques activent votre smart wallet sur ce réseau. Ils permettent des swaps plus rapides et moins chers en regroupant l’approbation et le swap en une seule transaction."
+        "title": "Activation du Smart Wallet",
+        "description_1": "Cette transaction inclut une activation unique du Smart Wallet sur ce réseau. Cela met à niveau votre portefeuille pour prendre en charge les transactions groupées et d’autres fonctionnalités de compte intelligent.",
+        "description_2": "Les frais d’activation sont inclus dans les frais de réseau pour ce swap."
       }
     }
   },
