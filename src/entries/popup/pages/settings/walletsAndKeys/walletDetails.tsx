@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { useDelegationEnabled } from '~/core/resources/delegations/featureStatus';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
@@ -40,12 +41,14 @@ import { HardwareWalletWipePrompt } from './hardwareWalletWipePrompt';
 const InfoButtonOptions = ({
   account,
   handleViewPrivateKey,
+  handleEditSmartWallet,
   setRenameAccount,
   setRemoveAccount,
   unhideWallet,
 }: {
   account: Address;
   handleViewPrivateKey: (account: Address) => void;
+  handleEditSmartWallet?: (account: Address) => void;
   setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   unhideWallet: ((address: Address) => void) | undefined;
@@ -87,6 +90,19 @@ const InfoButtonOptions = ({
           },
         ]
       : []),
+    ...(handleEditSmartWallet
+      ? [
+          {
+            onSelect: () => {
+              handleEditSmartWallet(account);
+            },
+            label: i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.wallet_details.edit_smart_wallet',
+            ),
+            symbol: 'bolt.shield.fill' as SymbolProps['symbol'],
+          },
+        ]
+      : []),
     {
       onSelect: () => {
         setRemoveAccount(account);
@@ -116,6 +132,7 @@ const InfoButtonOptions = ({
 
 export function WalletDetails() {
   const navigate = useRainbowNavigate();
+  const delegationEnabled = useDelegationEnabled();
   // TODO: remove wallet information from this state tree
   const { state } = useLocation();
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
@@ -147,6 +164,21 @@ export function WalletDetails() {
       );
     },
     [navigate, state?.password, wallet],
+  );
+
+  const { getWalletName } = useWalletNamesStore();
+  const handleEditSmartWallet = useCallback(
+    (account: Address) => {
+      setCurrentAddress(account);
+      navigate(ROUTES.SETTINGS__DELEGATIONS, {
+        state: {
+          address: account,
+          title:
+            getWalletName({ address: account }) ?? i18n.t('delegations.title'),
+        },
+      });
+    },
+    [navigate, setCurrentAddress, getWalletName],
   );
 
   useEffect(() => {
@@ -378,6 +410,12 @@ export function WalletDetails() {
                   account={account}
                   hiddenWallets={hiddenWallets}
                   handleViewPrivateKey={handleViewPrivateKey}
+                  handleEditSmartWallet={
+                    wallet?.type !== KeychainType.HardwareWalletKeychain &&
+                    delegationEnabled
+                      ? handleEditSmartWallet
+                      : undefined
+                  }
                   setRenameAccount={setRenameAccount}
                   renameAccount={renameAccount}
                   setRemoveAccount={setRemoveAccount}
@@ -475,6 +513,7 @@ const WalletRow = ({
   account,
   hiddenWallets,
   handleViewPrivateKey,
+  handleEditSmartWallet,
   setRenameAccount,
   renameAccount,
   setRemoveAccount,
@@ -485,6 +524,7 @@ const WalletRow = ({
   account: Address;
   hiddenWallets: Record<Address, boolean>;
   handleViewPrivateKey: (account: Address) => void;
+  handleEditSmartWallet?: (account: Address) => void;
   setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   renameAccount?: Address;
   setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
@@ -505,6 +545,7 @@ const WalletRow = ({
       type !== KeychainType.HardwareWalletKeychain
         ? handleViewPrivateKey
         : undefined,
+    handleEditSmartWallet,
   } as unknown as typeof InfoButtonOptions;
 
   if (menuOpen && renameAccount) {

@@ -77,6 +77,8 @@ const webpackConfig = {
     minimize: true,
     nodeEnv: 'production',
     sideEffects: true,
+    usedExports: true,
+    concatenateModules: true,
     splitChunks: {
       chunks: 'async',
     },

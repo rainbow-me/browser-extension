@@ -120,7 +120,6 @@ const useGas = ({
       nativeAsset,
       chainId,
       currentCurrency,
-      estimatedGasLimit,
     ],
     queryFn: () => {
       const { data } = gasData as MeteorologyResponse;
@@ -169,7 +168,6 @@ const useGas = ({
       nativeAsset,
       chainId,
       currentCurrency,
-      estimatedGasLimit,
     ],
     queryFn: () => {
       const { data } = gasData as MeteorologyResponse;
@@ -219,7 +217,6 @@ const useGas = ({
       nativeAsset,
       chainId,
       currentCurrency,
-      estimatedGasLimit,
     ],
     queryFn: () => {
       const gasPrice = gweiToWei(debouncedGasPrice || '0');
@@ -267,7 +264,7 @@ const useGas = ({
     if (
       customGasModified &&
       newGasFeeParamsBySpeed &&
-      prevChainId === chainId
+      (prevChainId === chainId || prevChainId === undefined)
     ) {
       newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
     }
@@ -339,7 +336,8 @@ const useGas = ({
   ]);
 
   useEffect(() => {
-    if (prevChainId !== chainId || !chainId) {
+    // Only clear when chain actually changed (not on initial mount when prevChainId is undefined)
+    if ((prevChainId !== undefined && prevChainId !== chainId) || !chainId) {
       clearCustomGasModified();
     }
   }, [chainId, clearCustomGasModified, prevChainId]);

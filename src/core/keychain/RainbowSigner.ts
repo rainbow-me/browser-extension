@@ -8,13 +8,32 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Provider } from '@ethersproject/providers';
-import { Address, ByteArray, Hex, bytesToHex, hexToBytes } from 'viem';
-import { signMessage as viemSignMessage } from 'viem/accounts';
+import {
+  Address,
+  ByteArray,
+  Hex,
+  type SignedAuthorizationList,
+  bytesToHex,
+  hexToBytes,
+} from 'viem';
+import {
+  signMessage as viemSignMessage,
+  signTransaction as viemSignTransaction,
+} from 'viem/accounts';
 
 import { defineReadOnly } from '../utils/define';
 import { addHexPrefix } from '../utils/hex';
 
 import { PrivateKey } from './IKeychain';
+
+/** Transaction request extended with EIP-7702 authorizationList (not in ethers types) */
+type TransactionRequestWithAuthorization = TransactionRequest & {
+  authorizationList?: SignedAuthorizationList;
+};
+
+/** TEMP: EIP-7702 (type 4) transactions require viem - @ethereumjs/tx does not support them.
+ * Remove when ethers→viem migration PR lands. */
+const EIP_7702_TX_TYPE = 4;
 
 export class RainbowSigner extends Signer {
   readonly privateKey!: PrivateKey;
@@ -48,10 +67,47 @@ export class RainbowSigner extends Signer {
   }
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
+    const txType =
+      transaction.type !== undefined ? Number(transaction.type) : undefined;
+
+    // TEMP: EIP-7702 (type 4) - use viem until ethers→viem migration PR lands.
+    if (txType === EIP_7702_TX_TYPE) {
+      const authorizationList = (
+        transaction as TransactionRequestWithAuthorization
+      ).authorizationList;
+      if (!authorizationList?.length) {
+        throw new Error(
+          'EIP-7702 speed up requires authorization list from the original transaction',
+        );
+      }
+      return viemSignTransaction({
+        privateKey: this.privateKey,
+        transaction: {
+          type: 'eip7702',
+          to: transaction.to as Address,
+          data: (transaction.data?.toString() ?? '0x') as Hex,
+          value: transaction.value ? BigInt(transaction.value.toString()) : 0n,
+          nonce:
+            transaction.nonce !== undefined ? Number(transaction.nonce) : 0,
+          chainId: transaction.chainId ?? 1,
+          gas: transaction.gasLimit
+            ? BigInt(transaction.gasLimit.toString())
+            : undefined,
+          maxFeePerGas: transaction.maxFeePerGas
+            ? BigInt(transaction.maxFeePerGas.toString())
+            : undefined,
+          maxPriorityFeePerGas: transaction.maxPriorityFeePerGas
+            ? BigInt(transaction.maxPriorityFeePerGas.toString())
+            : undefined,
+          authorizationList,
+        },
+      });
+    }
+
+    // Legacy, EIP-2930, EIP-1559, EIP-4844: use @ethereumjs/tx
     // We're converting the ethers v5 transaction request to
     // an ethereum JS transaction object so all the crypto operations
     // are made using EthereumJS instead of ethers v5
-
     const txData: LegacyTxData | FeeMarketEIP1559TxData = {
       data: transaction.data?.toString(),
       to: transaction.to,

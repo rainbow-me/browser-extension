@@ -8,6 +8,7 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import config, { useRemoteConfig } from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useDelegationEnabled } from '~/core/resources/delegations/featureStatus';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings';
 import { useErrorStore } from '~/core/state/error';
@@ -23,6 +24,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
 import { BackupReminder } from '../../components/BackupReminder/BackupReminder';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { ProactiveRevokeWatcher } from '../../components/ProactiveRevokeWatcher';
 import { TabBar as NewTabBar, Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
@@ -141,6 +143,7 @@ export const Home = memo(function Home() {
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
   const navigate = useRainbowNavigate();
+  const delegationEnabled = useDelegationEnabled();
   const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { isWatchingWallet } = useWallets();
@@ -225,6 +228,7 @@ export const Home = memo(function Home() {
           <BackupReminder />
           {currentHomeSheet}
           {config.approvals_enabled ? <RevokeApproval /> : null}
+          {delegationEnabled ? <ProactiveRevokeWatcher /> : null}
 
           <PendingTransactionWatcher />
 

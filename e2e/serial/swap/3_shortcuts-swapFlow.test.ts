@@ -224,6 +224,12 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
    * I dont think we should disabling this whole suite.
    */
 
+  // TODO: Add e2e test for atomic swap execution via keyboard navigation
+  // Should test:
+  // - Atomic swap can be initiated and executed using keyboard shortcuts
+  // - Transaction execution flow works with keyboard navigation
+  // - Balance updates correctly after atomic swap via keyboard
+
   it('should be able to initiate swap with keyboard navigation', async () => {
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
     await provider.ready;

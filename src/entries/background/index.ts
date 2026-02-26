@@ -1,6 +1,7 @@
 import { uuid4 } from '@sentry/core';
 
 import { initializeMessenger } from '~/core/messengers';
+import { setupDelegationClient } from '~/core/resources/delegations/setup';
 import { initializeSentry } from '~/core/sentry';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 
@@ -20,6 +21,9 @@ initializeSentry('background');
 localStorageRecycler();
 
 handleOpenExtensionShortcut();
+
+// Configure delegation SDK - required before execute_rap, revokeDelegation etc.
+setupDelegationClient();
 
 startPopupRouter();
 

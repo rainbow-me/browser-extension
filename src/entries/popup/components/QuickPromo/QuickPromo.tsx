@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, KeyboardEvent } from 'react';
 
 import rnbwBg from 'static/assets/rewards/rnbw-bg.png';
 import { analytics } from '~/analytics';
@@ -92,13 +92,22 @@ function CardPromo({
     }
     onClose();
   };
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleClick();
+    }
+  };
 
   // Airdrop banner has custom styling
   if (promoType === 'airdrop_banner') {
     return (
       <Box
-        as="button"
+        as="div"
         onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
         borderRadius="16px"
         padding="16px"
         width="full"
@@ -162,8 +171,11 @@ function CardPromo({
   // Default card variant for other promos
   return (
     <Box
-      as="button"
+      as="div"
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
       background="surfaceSecondaryElevated"
       borderRadius="16px"
       padding="16px"

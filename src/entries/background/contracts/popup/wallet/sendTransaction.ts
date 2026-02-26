@@ -16,6 +16,8 @@ const transactionRequestSchema = z.object({
   value: hexSchema.optional(),
   chainId: z.number().optional(),
   type: z.number().optional(),
+  /** EIP-7702 authorization list - required for type 4 speed up. Pass-through to avoid stripping. */
+  authorizationList: z.array(z.record(z.string(), z.unknown())).optional(),
 });
 
 const transactionResponseSchema = z.object({

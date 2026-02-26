@@ -39,7 +39,7 @@ import { getBatchedProvider } from '../viem/clientToProvider';
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
 import { formatNumber } from './formatNumber';
-import { convertStringToHex } from './hex';
+import { convertStringToHex, ensureTxHashFormat } from './hex';
 import { capitalize } from './strings';
 
 /**
@@ -234,6 +234,8 @@ const getDescription = (
 ) => {
   if (asset?.type === 'nft') return getNftDescription(asset, type);
   if (type === 'cancel') return i18n.t('transactions.cancelled');
+  if (type === 'delegate' || type === 'revoke_delegation')
+    return i18n.t('transactions.delegate_description');
   if (type === 'approve' && !asset?.name && meta.contract_name)
     // this catches a backend bug, where they dont return the asset object inside the meta, which would lead to asset in this function to be null on approvals. In these cases, we can do a slightly better job than showing `meta.action` which is "Approval", instead we can show the contract name. The badge ontop of the description ("Approved") will make sure the user knows that they approved something, so goal of the description in this case is to let the user know what they approved.
     return meta.contract_name;
@@ -378,7 +380,7 @@ export function parseTransaction({
     to: addressTo,
     title: i18n.t(`transactions.${type}.${status}`),
     description,
-    hash,
+    hash: (ensureTxHashFormat(hash) ?? hash) as RainbowTransaction['hash'],
     chainId: +chainId,
     status,
     nonce,
@@ -425,7 +427,8 @@ const parseNewTransaction = (
       getDescription(asset, tx.type, changes, { action: methodName }),
     from: tx.from,
     changes,
-    hash: tx.hash,
+    hash: (ensureTxHashFormat(tx.hash) ??
+      tx.hash) as RainbowTransaction['hash'],
     chainId: tx.chainId,
     lastSubmittedTimestamp: Date.now(),
     nonce: tx.nonce,
@@ -661,6 +664,8 @@ const TransactionOutTypes = [
   'bid',
   'speed_up',
   'revoke',
+  'revoke_delegation',
+  'delegate',
   'deployment',
   'contract_interaction',
 ] as const;

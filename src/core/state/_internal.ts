@@ -38,7 +38,7 @@ export const createExtensionStoreOptions = <S>({
   };
 };
 
-function getSyncedStorage(options: {
+export function getSyncedStorage(options: {
   area: AreaName;
   storageKeyPrefix: string | undefined;
 }): SyncedStorage {

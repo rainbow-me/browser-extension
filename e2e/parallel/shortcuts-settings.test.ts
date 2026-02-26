@@ -29,6 +29,11 @@ import {
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
+const tabsTo = (base: number) =>
+  base +
+  (remoteConfig.approvals_enabled ? 1 : 0) +
+  (remoteConfig.delegation_enabled ? 1 : 0);
+
 let rootURL = getRootUrl();
 let driver: WebDriver;
 
@@ -133,7 +138,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 7 : 6,
+        timesToPress: tabsTo(6),
       });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
@@ -213,7 +218,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 7 : 6,
+        timesToPress: tabsTo(6),
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'privacy');
@@ -358,7 +363,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 8 : 7,
+        timesToPress: tabsTo(7),
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'currency');
@@ -383,7 +388,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 9 : 8,
+        timesToPress: tabsTo(8),
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -402,7 +407,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 9 : 8,
+        timesToPress: tabsTo(8),
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -419,7 +424,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 10 : 9,
+        timesToPress: tabsTo(9),
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       const systemOption = await findElementByText(driver, 'System');

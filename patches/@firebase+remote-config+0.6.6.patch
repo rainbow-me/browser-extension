@@ -1,0 +1,26 @@
+diff --git a/node_modules/@firebase/remote-config/dist/index.cjs.js b/node_modules/@firebase/remote-config/dist/index.cjs.js
+index 1234567..89abcdef 100644
+--- a/node_modules/@firebase/remote-config/dist/index.cjs.js
++++ b/node_modules/@firebase/remote-config/dist/index.cjs.js
+@@ -613,7 +613,7 @@ class RestClient {
+             this.firebaseInstallations.getId(),
+             this.firebaseInstallations.getToken()
+         ]);
+-        const urlBase = window.FIREBASE_REMOTE_CONFIG_URL_BASE ||
++        const urlBase = (typeof window !== 'undefined' ? window : globalThis).FIREBASE_REMOTE_CONFIG_URL_BASE ||
+             'https://firebaseremoteconfig.googleapis.com';
+         const url = `${urlBase}/v1/projects/${this.projectId}/namespaces/${this.namespace}:fetch?key=${this.apiKey}`;
+         const headers = {
+diff --git a/node_modules/@firebase/remote-config/dist/esm/index.esm.js b/node_modules/@firebase/remote-config/dist/esm/index.esm.js
+index 1234567..89abcdef 100644
+--- a/node_modules/@firebase/remote-config/dist/esm/index.esm.js
++++ b/node_modules/@firebase/remote-config/dist/esm/index.esm.js
+@@ -609,7 +609,7 @@ class RestClient {
+             this.firebaseInstallations.getId(),
+             this.firebaseInstallations.getToken()
+         ]);
+-        const urlBase = window.FIREBASE_REMOTE_CONFIG_URL_BASE ||
++        const urlBase = (typeof window !== 'undefined' ? window : globalThis).FIREBASE_REMOTE_CONFIG_URL_BASE ||
+             'https://firebaseremoteconfig.googleapis.com';
+         const url = `${urlBase}/v1/projects/${this.projectId}/namespaces/${this.namespace}:fetch?key=${this.apiKey}`;
+         const headers = {

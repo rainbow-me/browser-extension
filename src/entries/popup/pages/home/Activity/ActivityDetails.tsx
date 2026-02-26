@@ -1,9 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
+import { DelegationStatus, useDelegations } from '@rainbow-me/delegation';
 import { motion } from 'framer-motion';
 import { ReactNode, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { zeroAddress } from 'viem';
 
+import RainbowIcon from 'static/images/icon-16@2x.png';
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
@@ -74,10 +77,25 @@ import { CopyableValue, InfoRow } from '../TokenDetails/About';
 import { ActivityPill } from './ActivityPill';
 import { StatusPill } from './StatusPill';
 
-function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
+function ToFrom({
+  transaction,
+  toOverride,
+}: {
+  transaction: RainbowTransaction;
+  toOverride?: {
+    address: `0x${string}`;
+    chainId?: number;
+    contract?: { name: string; iconUrl?: string };
+  };
+}) {
   const { from, to, contract, direction } = transaction;
   const isFromAContract = !!contract && direction === 'in';
-  const isToAContract = !!contract && direction === 'out';
+  const displayTo = toOverride?.address ?? to;
+  const isToAContract = toOverride
+    ? !!toOverride.contract
+    : !!contract && direction === 'out';
+  const toContract =
+    toOverride?.contract ?? (isToAContract ? contract : undefined);
 
   return (
     <Stack space="24px">
@@ -91,14 +109,15 @@ function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
           />
         }
       />
-      {to && (
+      {displayTo && (
         <InfoRow
           symbol="paperplane.fill"
           label={i18n.t('activity_details.to')}
           value={
             <AddressDisplay
-              address={to}
-              contract={isToAContract ? contract : undefined}
+              address={displayTo}
+              chainId={toOverride?.chainId ?? transaction.chainId}
+              contract={toContract}
             />
           }
         />
@@ -685,6 +704,39 @@ export function ActivityDetails() {
     [transaction],
   );
 
+  const delegations = useDelegations(currentAddress ?? zeroAddress);
+  const delegationToOverride = useMemo(() => {
+    if (
+      !transaction ||
+      (transaction.type !== 'delegate' &&
+        transaction.type !== 'revoke_delegation')
+    ) {
+      return undefined;
+    }
+    const delegation = delegations?.find(
+      (d) => d.chainId === transaction.chainId,
+    );
+    const delegationContract =
+      transaction.type === 'delegate'
+        ? delegation?.currentContract
+        : delegation?.revokeAddress ?? delegation?.currentContract;
+    if (!delegationContract) return undefined;
+    const isRainbowDelegation =
+      delegation?.delegationStatus === DelegationStatus.RAINBOW_DELEGATED;
+    const title = isRainbowDelegation
+      ? i18n.t('activity_details.smart_account')
+      : delegation?.currentContractName ??
+        i18n.t('activity_details.smart_account');
+    return {
+      address: delegationContract as `0x${string}`,
+      chainId: transaction.chainId,
+      contract: {
+        name: title,
+        iconUrl: isRainbowDelegation ? RainbowIcon : undefined,
+      },
+    };
+  }, [transaction, delegations]);
+
   const backToHome = () =>
     navigate(ROUTES.HOME, {
       state: { skipTransitionOnRoute: ROUTES.HOME, tab: 'activity' },
@@ -780,7 +832,10 @@ export function ActivityDetails() {
             padding="20px"
             gap="20px"
           >
-            <ToFrom transaction={transaction} />
+            <ToFrom
+              transaction={transaction}
+              toOverride={delegationToOverride}
+            />
             {additionalDetails && (
               <AdditionalDetails details={additionalDetails} />
             )}

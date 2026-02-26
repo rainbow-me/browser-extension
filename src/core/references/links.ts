@@ -1,4 +1,6 @@
 export const RAINBOW_LEARN_URL = 'https://learn.rainbow.me';
+/** Smart wallet learn URL. Empty = hide link. */
+export const SMART_WALLET_LEARN_URL = '';
 export const RAINBOW_TWITTER_URL = 'https:/twitter.com/rainbowdotme';
 export const RAINBOW_SUPPORT_URL = 'https://rainbow.me/extension/support';
 export const RAINBOW_FEEDBACK_URL = 'https://rainbow.me/extension/feedback';

@@ -1,3 +1,4 @@
+import type { InfiniteData } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Address } from 'viem';
 
@@ -265,11 +266,31 @@ export const useWatchPendingTransactions = ({
       }
     }
 
-    // Remove mined transactions, keep the rest as-is
-    if (minedTransactions.length > 0) {
+    // Remove mined transactions only after they appear in the consolidated transactions cache
+    const cachedData = queryClient.getQueryData(
+      consolidatedTransactionsQueryKey({
+        address,
+        currency: currentCurrency,
+        userChainIds: supportedChainIds,
+      }),
+    ) as InfiniteData<{ transactions: RainbowTransaction[] }> | undefined;
+
+    const isTxInCache = (hash: string, chainId: number) =>
+      cachedData?.pages?.some(
+        (page) =>
+          page.transactions?.some(
+            (tx) => tx.hash === hash && tx.chainId === chainId,
+          ),
+      );
+
+    const transactionsToRemove = minedTransactions.filter((tx) =>
+      isCustomChain(tx.chainId) ? true : isTxInCache(tx.hash, tx.chainId),
+    );
+
+    if (transactionsToRemove.length > 0) {
       removePendingTransactionsForAddress({
         address,
-        transactionsToRemove: minedTransactions.map((tx) => ({
+        transactionsToRemove: transactionsToRemove.map((tx) => ({
           hash: tx.hash,
           chainId: tx.chainId,
         })),

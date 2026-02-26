@@ -48,10 +48,10 @@ const ApproveAppRequestWrapper = ({
 
 export const ApproveAppRequest = () => {
   const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
-  const { mutate: approvePendingRequest } = useMutation(
+  const { mutateAsync: approvePendingRequestAsync } = useMutation(
     popupClientQueryUtils.state.requests.approve.mutationOptions(),
   );
-  const { mutate: rejectPendingRequest } = useMutation(
+  const { mutateAsync: rejectPendingRequestAsync } = useMutation(
     popupClientQueryUtils.state.requests.reject.mutationOptions(),
   );
   const { notificationWindows } = useNotificationWindowStore();
@@ -104,19 +104,32 @@ export const ApproveAppRequest = () => {
   const approveRequest = useCallback(
     async (payload?: unknown) => {
       if (!pendingRequest) return;
-      approvePendingRequest({ id: pendingRequest.id, payload });
+      // Await the ORPC call so the background removes the request from
+      // pendingRequests BEFORE the popup window is closed. Without this,
+      // chrome.windows.onRemoved can fire before the approve is processed,
+      // causing clearPendingRequestsOnUpdate to reject the request instead.
+      try {
+        await approvePendingRequestAsync({ id: pendingRequest.id, payload });
+      } catch {
+        // ORPC call may fail if the port disconnected; the background may
+        // still have processed the approval, so proceed to close the window.
+      }
       handleRequestAction();
     },
-    [approvePendingRequest, handleRequestAction, pendingRequest],
+    [approvePendingRequestAsync, handleRequestAction, pendingRequest],
   );
 
   const rejectRequest = useCallback(
-    ({ preventWindowClose }: { preventWindowClose?: boolean } = {}) => {
+    async ({ preventWindowClose }: { preventWindowClose?: boolean } = {}) => {
       if (!pendingRequest) return;
-      rejectPendingRequest({ id: pendingRequest.id });
+      try {
+        await rejectPendingRequestAsync({ id: pendingRequest.id });
+      } catch {
+        // Same as above - proceed to close even if ORPC call fails.
+      }
       handleRequestAction({ preventWindowClose });
     },
-    [handleRequestAction, pendingRequest, rejectPendingRequest],
+    [handleRequestAction, pendingRequest, rejectPendingRequestAsync],
   );
 
   switch (pendingRequest?.method) {

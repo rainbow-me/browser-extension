@@ -19,11 +19,14 @@ const promosByPage: Record<PromoPage, PromoType[]> = {
   swap: ['degen_mode'],
 };
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
 // Feature flag checks for promos
 const isPromoEnabled = (
   promoType: PromoType,
   isWatchingWallet?: boolean,
 ): boolean => {
+  if (IS_TESTING) return false;
   switch (promoType) {
     case 'airdrop_banner':
       // Don't show airdrop banner for watching wallets

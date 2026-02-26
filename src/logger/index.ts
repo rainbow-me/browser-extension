@@ -244,6 +244,28 @@ export class Logger {
     };
   }
 
+  createServiceLogger(context: string): ServiceLogger {
+    const prefix = `[${context}]: `;
+    return {
+      debug: (message, metadata) =>
+        this.debug(`${prefix}${message}`, metadata ?? {}, context),
+      info: (message, metadata) =>
+        this.info(`${prefix}${message}`, metadata ?? {}),
+      warn: (message, metadata) =>
+        this.warn(`${prefix}${message}`, metadata ?? {}),
+      error: (error, metadata) => {
+        if (typeof error === 'string') {
+          this.error(new RainbowError(`${prefix}${error}`), metadata ?? {});
+          return;
+        }
+        this.error(
+          new RainbowError(`${prefix}${error.message}`, { cause: error }),
+          metadata ?? {},
+        );
+      },
+    };
+  }
+
   protected transport(
     level: LogLevel,
     message: string | RainbowError,
@@ -256,6 +278,16 @@ export class Logger {
     }
   }
 }
+
+/**
+ * Logger interface for SDKs and services. Provides context-prefixed logging.
+ */
+export type ServiceLogger = {
+  debug: (message: string, metadata?: Metadata) => void;
+  info: (message: string, metadata?: Metadata) => void;
+  warn: (message: string, metadata?: Metadata) => void;
+  error: (error: RainbowError | string, metadata?: Metadata) => void;
+};
 
 /**
  * Rainbow's logger. See `@/logger/README` for docs.
