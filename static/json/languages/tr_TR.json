@@ -190,7 +190,7 @@
           "title": "Cüzdan Detayları",
           "view_recovery_phrase": "Kurtarma İfadesini Görüntüle",
           "create_new_wallet": "Yeni Bir Cüzdan Oluştur",
-          "edit_smart_wallet": "Edit Smart Wallet",
+          "edit_smart_wallet": "Akıllı Cüzdanı Düzenle",
           "rename_wallet": "Cüzdanı Yeniden Adlandır",
           "unhide_wallet": "Gizlenmiş Cüzdanı Göster",
           "delete_wallet": "Cüzdanı Sil",
@@ -275,7 +275,7 @@
       "title": "Onaylar"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "Yetkilendirmeler"
     },
     "currency": {
       "title": "Para Birimi",
@@ -303,9 +303,9 @@
       "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir",
       "custom_rpc": "Özel RPC",
       "degen_mode": "Degen Modu",
-      "atomic_swaps_enabled": "Atomic Swaps",
-      "rewards_scheduled_drop": "Rewards Scheduled Drop",
-      "delegation_enabled": "Delegation Enabled"
+      "atomic_swaps_enabled": "Atomik Takaslar",
+      "rewards_scheduled_drop": "Planlı Ödül Dağıtımı",
+      "delegation_enabled": "Yetkilendirme Etkin"
     }
   },
   "transactions": {
@@ -402,17 +402,17 @@
       "failed": "İptal Başarısız"
     },
     "delegate": {
-      "pending": "Delegating",
+      "pending": "Yetkilendiriliyor",
       "confirmed": "Onaylandı",
-      "failed": "Delegation Failed"
+      "failed": "Yetkilendirme Başarısız"
     },
     "revoke_delegation": {
       "pending": "İptal etme",
       "confirmed": "İptal edildi",
       "failed": "İptal Başarısız"
     },
-    "delegate_description": "Wallet Delegation",
-    "revoke_delegation_description": "Wallet Delegation",
+    "delegate_description": "Cüzdan Yetkilendirmesi",
+    "revoke_delegation_description": "Cüzdan Yetkilendirmesi",
     "sale": {
       "pending": "Satış",
       "confirmed": "Satıldı",
@@ -524,7 +524,7 @@
         "disable_flashbots": "Flashbots'i devre dışı bırak",
         "copy_uuid": "UUID'yi kopyala",
         "clear_transactions": "Bekleyen İşlemleri Temizle",
-        "trigger_security_alert": "Trigger Security Alert"
+        "trigger_security_alert": "Güvenlik Uyarısını Tetikle"
       },
       "search_tags": {
         "swap": "satın al, sat, takas, sipariş, değişim, dex, rotalar",
@@ -553,7 +553,7 @@
         "diagnostics": "teşhisler",
         "refresh_data": "yenile, tekrar yükle, önbelleği temizle, sıfırla, güncelle",
         "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler",
-        "trigger_security_alert": "delegation, revoke, mock, debug, test"
+        "trigger_security_alert": "delegasyon, iptal et, sahte, hata ayıklama, test"
       }
     },
     "command_rows": {
@@ -580,7 +580,7 @@
       "title": "Bakiyeler ve Etkinlikler Yenilendi"
     },
     "trigger_security_alert_toast": {
-      "title": "Security Alert Triggered"
+      "title": "Güvenlik Uyarısı Tetiklendi"
     },
     "contact_toast": {
       "title_added": "Kişi Eklendi",
@@ -688,80 +688,80 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
-    "no_delegations": "No Active Delegations",
-    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
-    "revoke_all": "Revoke All Delegations",
+    "title": "Yetkilendirmeler",
+    "no_delegations": "Aktif Delegasyon Yok",
+    "no_delegations_description": "Yönetilecek herhangi bir aktif EIP-7702 delegasyonunuz yok.",
+    "revoke_all": "Tüm Delegasyonları İptal Et",
     "smart_wallet": {
-      "title": "Smart Wallet",
+      "title": "Akıllı Cüzdan",
       "active": "Aktif",
       "disabled": "Devre Dışı",
-      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
-      "learn_more": "Learn more..."
+      "description": "Akıllı cüzdanlar daha hızlı, daha ucuz ve daha güvenilir bir cüzdan deneyimi sağlar.",
+      "backup_info_enabled": "Daha hızlı işlemleri ve daha düşük ağ maliyetlerini kaçırırsınız",
+      "backup_info_disabled": "Güncellemeler bir sonraki takasınızda geçerli olacak",
+      "learn_more": "Daha fazla bilgi edinin..."
     },
-    "activated_networks": "Activated Networks",
-    "other_smart_accounts": "Other Smart Accounts",
-    "third_party_indicator_tooltip": "This is a third-party delegation",
-    "activate_smart_wallet": "Activate Smart Wallet",
-    "disable_smart_wallet": "Disable Smart Wallet",
+    "activated_networks": "Etkinleştirilen Ağlar",
+    "other_smart_accounts": "Diğer Akıllı Hesaplar",
+    "third_party_indicator_tooltip": "Bu, üçüncü taraf bir delegasyondur",
+    "activate_smart_wallet": "Akıllı Cüzdanı Etkinleştir",
+    "disable_smart_wallet": "Akıllı Cüzdanı Devre Dışı Bırak",
     "view_on_explorer": "Arayüzde Görüntüle",
     "revoke": {
-      "title": "Revoke Delegation",
-      "subtitle": "Remove delegation from this contract",
-      "security_title": "Security Alert",
-      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "title": "Delegasyonu İptal Et",
+      "subtitle": "Bu sözleşmedeki delegasyonu kaldır",
+      "security_title": "Güvenlik Uyarısı",
+      "security_subtitle": "Bilinmeyen bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin.",
       "reason": {
         "disable_smart_wallet": {
-          "title": "Disable Smart Wallet",
-          "subtitle": "Revoke all delegations to disable smart wallets."
+          "title": "Akıllı Cüzdanı Devre Dışı Bırak",
+          "subtitle": "Akıllı cüzdanları devre dışı bırakmak için tüm delegasyonları iptal edin."
         },
         "disable_single_network": {
-          "title": "Revoke Delegation",
-          "subtitle": "Remove delegation from this network."
+          "title": "Delegasyonu İptal Et",
+          "subtitle": "Bu ağdaki delegasyonu kaldır."
         },
         "disable_third_party": {
-          "title": "Revoke Third-Party Delegation",
-          "subtitle": "Remove delegation from this third-party contract."
+          "title": "Üçüncü Taraf Delegasyonunu İptal Et",
+          "subtitle": "Bu üçüncü taraf sözleşmesindeki delegasyonu kaldır."
         },
         "alert_vulnerability": {
-          "title": "Security Alert",
-          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Güvenlik açığı olan bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
         },
         "alert_bug": {
-          "title": "Security Alert",
-          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Sorunlu bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
         },
         "alert_unrecognized": {
-          "title": "Security Alert",
-          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Tanınmayan bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
         },
         "alert_unspecified": {
-          "title": "Security Alert",
-          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Bilinmeyen bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
         }
       },
-      "security_notice": "Security Notice",
+      "security_notice": "Güvenlik Bildirimi",
       "chain_label": "Zincir",
       "contract_label": "Sözleşme",
-      "progress": "%{current} of %{total}",
-      "action": "Revoke Delegation",
-      "revoking": "Revoking...",
-      "success": "Successfully Revoked",
+      "progress": "%{total} içinden %{current}",
+      "action": "Delegasyonu İptal Et",
+      "revoking": "İptal ediliyor...",
+      "success": "Başarıyla İptal Edildi",
       "try_again": "Tekrar Deneyin",
       "cancel": "İptal",
       "done": "Tamam",
-      "next": "Next",
-      "confirm_hw": "Confirm on Device"
+      "next": "Sonraki",
+      "confirm_hw": "Cihazda Onayla"
     },
     "proactive_revoke": {
-      "title": "Security Alert",
-      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+      "title": "Güvenlik Uyarısı",
+      "description": "Bilinmeyen bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
     },
     "confirm_disable": {
-      "title": "Disable Smart Wallet",
-      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "title": "Akıllı Cüzdanı Devre Dışı Bırak",
+      "description": "Gelecekteki işlemler için akıllı cüzdanları devre dışı bırakın. Akıllı cüzdanları istediğiniz zaman yeniden etkinleştirebilirsiniz.",
       "action": "Devre Dışı Bırak",
       "cancel": "İptal"
     }
@@ -935,8 +935,8 @@
       "more_details": "Daha fazla ayrıntı",
       "confirmation": "%{Action} %{sellSymbol} yerine %{buySymbol}",
       "go_back": "Geri git",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "Akıllı Cüzdan Etkinleştirme Ücreti",
+      "will_delegate_callout": "Bu takas, bu ağda akıllı cüzdanınızı etkinleştirecek."
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,8 @@
         "action_label": "Anladım"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "Akıllı Cüzdan Etkinleştirme Ücreti",
+        "description": "Bu tek seferlik ücret, bu ağda akıllı cüzdanınızı etkinleştirir. Onayı ve takası tek bir işlemde birleştirerek daha hızlı ve daha ucuz takaslar sağlar."
       }
     }
   },
@@ -1464,7 +1464,7 @@
     "token_contract": "Token Sözleşmesi",
     "token_standard": "Token Standartı",
     "revoke_approval": "Onayı İptal Et",
-    "smart_account": "Smart Account",
+    "smart_account": "Akıllı Hesap",
     "error_title": "Etkinlik yüklenemedi",
     "error_message": "Bu işlemi getiremedik.\nTekrar deneyin veya etkinliklerinize geri dönün.",
     "error_retry": "Tekrar Deneyin",
@@ -1581,9 +1581,9 @@
     "close_cta": "İptal Et",
     "handle_copy_title": "Tx Hash Kopyalandı",
     "revoke_approval": "Onayı İptal Et",
-    "estimating_fee": "Estimating fee…",
-    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
+    "estimating_fee": "Ücret hesaplanıyor…",
+    "tx_confirmed_or_not_found": "İşlem zaten onaylanmış olabilir veya bulunamadı",
+    "eip7702_auth_list_unavailable": "Bu işlem hızlandırılamıyor: delegasyon verileri mevcut değil. Daha sonra tekrar deneyin veya farklı bir RPC kullanın.",
     "speed_up_failed": {
       "title": "Hızlanma başarısız",
       "description": "Bir işlemi hızlandırma girişimleri ağ tıkanıklığı, gaz limit artışları veya orijinal işlem ilk onaylandığında başarısız olabilir"
