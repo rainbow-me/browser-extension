@@ -190,7 +190,7 @@
           "title": "वॉलेट विवरण",
           "view_recovery_phrase": "विभाजन संकेत देखें",
           "create_new_wallet": "नया वॉलेट बनाएं",
-          "edit_smart_wallet": "Edit Smart Wallet",
+          "edit_smart_wallet": "स्मार्ट वॉलेट संपादित करें",
           "rename_wallet": "वॉलेट का नाम बदलें",
           "unhide_wallet": "छिपा हुआ वॉलेट",
           "delete_wallet": "वॉलेट हटाएं",
@@ -275,7 +275,7 @@
       "title": "अनुमतियाँ"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "डेलिगेशन"
     },
     "currency": {
       "title": "मुद्रा",
@@ -303,9 +303,9 @@
       "command_k_internal_shortcuts_enabled": "⌘K आंतरिक शॉर्टकट्स सक्षम करें",
       "custom_rpc": "कस्टम RPC",
       "degen_mode": "Degen मोड",
-      "atomic_swaps_enabled": "Atomic Swaps",
-      "rewards_scheduled_drop": "Rewards Scheduled Drop",
-      "delegation_enabled": "Delegation Enabled"
+      "atomic_swaps_enabled": "एटॉमिक स्वैप्स",
+      "rewards_scheduled_drop": "रिवॉर्ड्स निर्धारित ड्रॉप",
+      "delegation_enabled": "डेलिगेशन सक्षम"
     }
   },
   "transactions": {
@@ -402,17 +402,17 @@
       "failed": "रोकथाम विफल"
     },
     "delegate": {
-      "pending": "Delegating",
+      "pending": "डेलिगेट किया जा रहा है",
       "confirmed": "मंजूरी दी गई",
-      "failed": "Delegation Failed"
+      "failed": "डेलिगेशन विफल"
     },
     "revoke_delegation": {
       "pending": "रोकथाम कर रहे हैं",
       "confirmed": "रद्द कर दिया",
       "failed": "रोकथाम विफल"
     },
-    "delegate_description": "Wallet Delegation",
-    "revoke_delegation_description": "Wallet Delegation",
+    "delegate_description": "वॉलेट डेलिगेशन",
+    "revoke_delegation_description": "वॉलेट डेलिगेशन",
     "sale": {
       "pending": "बेच रहे हैं",
       "confirmed": "बिक चुका",
@@ -524,7 +524,7 @@
         "disable_flashbots": "Flashbots अक्षम करें",
         "copy_uuid": "UUID कॉपी करें",
         "clear_transactions": "लंबित लेन-देन साफ करें",
-        "trigger_security_alert": "Trigger Security Alert"
+        "trigger_security_alert": "सुरक्षा अलर्ट ट्रिगर करें"
       },
       "search_tags": {
         "swap": "खरीद, बेच, व्यापार, ऑर्डर, एक्सचेंज, डेक्स, रूट्स",
@@ -553,7 +553,7 @@
         "diagnostics": "डायग्नोस्टिक्स",
         "refresh_data": "ताज़ा करें, पुनः लोड करें, कैश साफ करें, रीसेट करें, अपडेट करें",
         "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस",
-        "trigger_security_alert": "delegation, revoke, mock, debug, test"
+        "trigger_security_alert": "डेलीगेशन, रद्द करें, मॉक, डिबग, टेस्ट"
       }
     },
     "command_rows": {
@@ -580,7 +580,7 @@
       "title": "बैलेंस और गतिविधि ताज़ा हुई"
     },
     "trigger_security_alert_toast": {
-      "title": "Security Alert Triggered"
+      "title": "सुरक्षा अलर्ट ट्रिगर हो गया"
     },
     "contact_toast": {
       "title_added": "संपर्क जोड़ा गया",
@@ -688,80 +688,80 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
-    "no_delegations": "No Active Delegations",
-    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
-    "revoke_all": "Revoke All Delegations",
+    "title": "डेलिगेशन",
+    "no_delegations": "कोई सक्रिय डेलीगेशन नहीं",
+    "no_delegations_description": "आपके पास प्रबंधित करने के लिए कोई सक्रिय EIP-7702 डेलीगेशन नहीं है।",
+    "revoke_all": "सभी डेलीगेशन रद्द करें",
     "smart_wallet": {
-      "title": "Smart Wallet",
+      "title": "स्मार्ट वॉलेट",
       "active": "सक्रिय",
       "disabled": "निष्क्रिय",
-      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
-      "learn_more": "Learn more..."
+      "description": "स्मार्ट वॉलेट तेज़, सस्ते और अधिक विश्वसनीय वॉलेट अनुभव को सक्षम बनाते हैं।",
+      "backup_info_enabled": "आप तेज़ लेन-देन और कम नेटवर्क लागत का लाभ नहीं उठा पाएंगे",
+      "backup_info_disabled": "अपडेट आपके अगले स्वैप पर लागू होंगे",
+      "learn_more": "और जानें..."
     },
-    "activated_networks": "Activated Networks",
-    "other_smart_accounts": "Other Smart Accounts",
-    "third_party_indicator_tooltip": "This is a third-party delegation",
-    "activate_smart_wallet": "Activate Smart Wallet",
-    "disable_smart_wallet": "Disable Smart Wallet",
+    "activated_networks": "सक्रिय नेटवर्क",
+    "other_smart_accounts": "अन्य स्मार्ट अकाउंट",
+    "third_party_indicator_tooltip": "यह एक थर्ड-पार्टी डेलीगेशन है",
+    "activate_smart_wallet": "स्मार्ट वॉलेट सक्रिय करें",
+    "disable_smart_wallet": "स्मार्ट वॉलेट अक्षम करें",
     "view_on_explorer": "एक्सप्लोरर पर देखें",
     "revoke": {
-      "title": "Revoke Delegation",
-      "subtitle": "Remove delegation from this contract",
-      "security_title": "Security Alert",
-      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "title": "डेलीगेशन रद्द करें",
+      "subtitle": "इस कॉन्ट्रैक्ट से डेलीगेशन हटाएं",
+      "security_title": "सुरक्षा अलर्ट",
+      "security_subtitle": "एक अज्ञात डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।",
       "reason": {
         "disable_smart_wallet": {
-          "title": "Disable Smart Wallet",
-          "subtitle": "Revoke all delegations to disable smart wallets."
+          "title": "स्मार्ट वॉलेट अक्षम करें",
+          "subtitle": "स्मार्ट वॉलेट को अक्षम करने के लिए सभी डेलीगेशन रद्द करें।"
         },
         "disable_single_network": {
-          "title": "Revoke Delegation",
-          "subtitle": "Remove delegation from this network."
+          "title": "डेलीगेशन रद्द करें",
+          "subtitle": "इस नेटवर्क से डेलीगेशन हटाएं।"
         },
         "disable_third_party": {
-          "title": "Revoke Third-Party Delegation",
-          "subtitle": "Remove delegation from this third-party contract."
+          "title": "थर्ड-पार्टी डेलीगेशन रद्द करें",
+          "subtitle": "इस थर्ड-पार्टी कॉन्ट्रैक्ट से डेलीगेशन हटाएं।"
         },
         "alert_vulnerability": {
-          "title": "Security Alert",
-          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक कमजोर डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
         },
         "alert_bug": {
-          "title": "Security Alert",
-          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक समस्या वाला डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
         },
         "alert_unrecognized": {
-          "title": "Security Alert",
-          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक अपरिचित डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
         },
         "alert_unspecified": {
-          "title": "Security Alert",
-          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक अज्ञात डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
         }
       },
-      "security_notice": "Security Notice",
+      "security_notice": "सुरक्षा सूचना",
       "chain_label": "श्रृंखला",
       "contract_label": "संविदा",
-      "progress": "%{current} of %{total}",
-      "action": "Revoke Delegation",
-      "revoking": "Revoking...",
-      "success": "Successfully Revoked",
+      "progress": "%{total} में से %{current}",
+      "action": "डेलीगेशन रद्द करें",
+      "revoking": "रद्द किया जा रहा है...",
+      "success": "सफलतापूर्वक रद्द किया गया",
       "try_again": "फिर से प्रयास करें",
       "cancel": "रद्द करें",
       "done": "हो गया",
-      "next": "Next",
-      "confirm_hw": "Confirm on Device"
+      "next": "अगला",
+      "confirm_hw": "उपकरण पर पुष्टि करें"
     },
     "proactive_revoke": {
-      "title": "Security Alert",
-      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+      "title": "सुरक्षा अलर्ट",
+      "description": "एक अज्ञात डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए रद्द करें।"
     },
     "confirm_disable": {
-      "title": "Disable Smart Wallet",
-      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "title": "स्मार्ट वॉलेट अक्षम करें",
+      "description": "भविष्य के लेन-देन के लिए स्मार्ट वॉलेट अक्षम करें। आप किसी भी समय स्मार्ट वॉलेट फिर से सक्रिय कर सकते हैं।",
       "action": "निष्क्रिय करें",
       "cancel": "रद्द करें"
     }
@@ -935,8 +935,8 @@
       "more_details": "अधिक जानकारी",
       "confirmation": "%{Action} %{sellSymbol} से %{buySymbol}",
       "go_back": "पीछे जाएं",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "स्मार्ट वॉलेट सक्रियण शुल्क",
+      "will_delegate_callout": "यह स्वैप इस नेटवर्क पर आपके स्मार्ट वॉलेट को सक्रिय करेगा।"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,8 @@
         "action_label": "समझ गया"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "स्मार्ट वॉलेट सक्रियण शुल्क",
+        "description": "यह एकबार का शुल्क इस नेटवर्क पर आपके स्मार्ट वॉलेट को सक्रिय करता है। यह अनुमोदन और स्वैप को एक ही लेन-देन में बंडल करके तेज़, सस्ते स्वैप सक्षम करता है।"
       }
     }
   },
@@ -1464,7 +1464,7 @@
     "token_contract": "टोकन अनुबंध",
     "token_standard": "टोकन मानक",
     "revoke_approval": "अनुमति रद्द करें",
-    "smart_account": "Smart Account",
+    "smart_account": "स्मार्ट अकाउंट",
     "error_title": "गतिविधि लोड करने में असमर्थ",
     "error_message": "हम इस लेन-देन को प्राप्त नहीं कर सके।\nपुनः प्रयास करें या अपनी गतिविधि पर वापस जाएँ।",
     "error_retry": "फिर से प्रयास करें",
@@ -1581,9 +1581,9 @@
     "close_cta": "रद्द करें",
     "handle_copy_title": "ट्रांजैक्शन हैश कॉपी हो गया",
     "revoke_approval": "अनुमति रद्द करें",
-    "estimating_fee": "Estimating fee…",
-    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
+    "estimating_fee": "शुल्क का अनुमान लगाया जा रहा है…",
+    "tx_confirmed_or_not_found": "लेन-देन की पुष्टि पहले ही हो चुकी हो सकती है या वह मिल नहीं सका",
+    "eip7702_auth_list_unavailable": "इस लेन-देन को तेज़ नहीं किया जा सकता: डेलीगेशन डेटा उपलब्ध नहीं है। बाद में फिर से कोशिश करें या किसी अन्य RPC का उपयोग करें।",
     "speed_up_failed": {
       "title": "स्पीड अप विफल",
       "description": "नेटवर्क भीड़भाड़, गैस लिमिट बढ़ने, या मूल लेन-देन के पहले पुष्टि होने पर लेन-देन की गति बढ़ाने के प्रयास विफल हो सकते हैं"
