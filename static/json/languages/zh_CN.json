@@ -190,7 +190,7 @@
           "title": "钱包详情",
           "view_recovery_phrase": "查看恢复短语",
           "create_new_wallet": "创建新钱包",
-          "edit_smart_wallet": "Edit Smart Wallet",
+          "edit_smart_wallet": "编辑智能钱包",
           "rename_wallet": "重命名钱包",
           "unhide_wallet": "取消隐藏钱包",
           "delete_wallet": "删除钱包",
@@ -275,7 +275,7 @@
       "title": "授权"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "委托"
     },
     "currency": {
       "title": "货币",
@@ -303,9 +303,9 @@
       "command_k_internal_shortcuts_enabled": "启用 ⌘K 内部快捷键",
       "custom_rpc": "自定义RPC",
       "degen_mode": "Degen模式",
-      "atomic_swaps_enabled": "Atomic Swaps",
-      "rewards_scheduled_drop": "Rewards Scheduled Drop",
-      "delegation_enabled": "Delegation Enabled"
+      "atomic_swaps_enabled": "原子交换",
+      "rewards_scheduled_drop": "奖励定时空投",
+      "delegation_enabled": "已启用委托"
     }
   },
   "transactions": {
@@ -402,17 +402,17 @@
       "failed": "撤销失败"
     },
     "delegate": {
-      "pending": "Delegating",
+      "pending": "正在委托",
       "confirmed": "已授权",
-      "failed": "Delegation Failed"
+      "failed": "委托失败"
     },
     "revoke_delegation": {
       "pending": "撤销中",
       "confirmed": "已撤销",
       "failed": "撤销失败"
     },
-    "delegate_description": "Wallet Delegation",
-    "revoke_delegation_description": "Wallet Delegation",
+    "delegate_description": "钱包委托",
+    "revoke_delegation_description": "钱包委托",
     "sale": {
       "pending": "销售中",
       "confirmed": "已售出",
@@ -524,7 +524,7 @@
         "disable_flashbots": "禁用Flashbots",
         "copy_uuid": "复制UUID",
         "clear_transactions": "清除待处理交易",
-        "trigger_security_alert": "Trigger Security Alert"
+        "trigger_security_alert": "触发安全警报"
       },
       "search_tags": {
         "swap": "买, 卖, 交易, 订单, 兑换, dex, 路线",
@@ -553,7 +553,7 @@
         "diagnostics": "诊断",
         "refresh_data": "刷新、重新加载、清除缓存、重置、更新",
         "clear_transactions": "清除、重置、待处理、事务、nonce、nonces",
-        "trigger_security_alert": "delegation, revoke, mock, debug, test"
+        "trigger_security_alert": "委托，撤销，模拟，调试，测试"
       }
     },
     "command_rows": {
@@ -580,7 +580,7 @@
       "title": "余额和活动已刷新"
     },
     "trigger_security_alert_toast": {
-      "title": "Security Alert Triggered"
+      "title": "安全警报已触发"
     },
     "contact_toast": {
       "title_added": "联系人已添加",
@@ -688,80 +688,80 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
-    "no_delegations": "No Active Delegations",
-    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
-    "revoke_all": "Revoke All Delegations",
+    "title": "委托",
+    "no_delegations": "没有活跃的委托",
+    "no_delegations_description": "你没有任何可管理的活跃 EIP-7702 委托。",
+    "revoke_all": "撤销所有委托",
     "smart_wallet": {
-      "title": "Smart Wallet",
+      "title": "智能钱包",
       "active": "激活",
       "disabled": "已禁用",
-      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
-      "learn_more": "Learn more..."
+      "description": "智能钱包可带来更快、更便宜且更可靠的钱包体验。",
+      "backup_info_enabled": "你将无法享受更快的交易和更低的网络成本",
+      "backup_info_disabled": "更新将在你下一次兑换时生效",
+      "learn_more": "了解更多..."
     },
-    "activated_networks": "Activated Networks",
-    "other_smart_accounts": "Other Smart Accounts",
-    "third_party_indicator_tooltip": "This is a third-party delegation",
-    "activate_smart_wallet": "Activate Smart Wallet",
-    "disable_smart_wallet": "Disable Smart Wallet",
+    "activated_networks": "已激活的网络",
+    "other_smart_accounts": "其他智能账户",
+    "third_party_indicator_tooltip": "这是第三方委托",
+    "activate_smart_wallet": "激活智能钱包",
+    "disable_smart_wallet": "停用智能钱包",
     "view_on_explorer": "在浏览器中查看",
     "revoke": {
-      "title": "Revoke Delegation",
-      "subtitle": "Remove delegation from this contract",
-      "security_title": "Security Alert",
-      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "title": "撤销委托",
+      "subtitle": "从此合约中移除委托",
+      "security_title": "安全警报",
+      "security_subtitle": "检测到未知委托。撤销它以保护你的钱包安全。",
       "reason": {
         "disable_smart_wallet": {
-          "title": "Disable Smart Wallet",
-          "subtitle": "Revoke all delegations to disable smart wallets."
+          "title": "停用智能钱包",
+          "subtitle": "撤销所有委托以停用智能钱包。"
         },
         "disable_single_network": {
-          "title": "Revoke Delegation",
-          "subtitle": "Remove delegation from this network."
+          "title": "撤销委托",
+          "subtitle": "从此网络中移除委托。"
         },
         "disable_third_party": {
-          "title": "Revoke Third-Party Delegation",
-          "subtitle": "Remove delegation from this third-party contract."
+          "title": "撤销第三方委托",
+          "subtitle": "从此第三方合约中移除委托。"
         },
         "alert_vulnerability": {
-          "title": "Security Alert",
-          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+          "title": "安全警报",
+          "subtitle": "检测到存在漏洞的委托。撤销它以保护你的钱包安全。"
         },
         "alert_bug": {
-          "title": "Security Alert",
-          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+          "title": "安全警报",
+          "subtitle": "检测到存在问题的委托。撤销它以保护你的钱包安全。"
         },
         "alert_unrecognized": {
-          "title": "Security Alert",
-          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+          "title": "安全警报",
+          "subtitle": "检测到无法识别的委托。撤销它以保护你的钱包安全。"
         },
         "alert_unspecified": {
-          "title": "Security Alert",
-          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+          "title": "安全警报",
+          "subtitle": "检测到未知委托。撤销它以保护你的钱包安全。"
         }
       },
-      "security_notice": "Security Notice",
+      "security_notice": "安全提示",
       "chain_label": "链",
       "contract_label": "合约",
-      "progress": "%{current} of %{total}",
-      "action": "Revoke Delegation",
-      "revoking": "Revoking...",
-      "success": "Successfully Revoked",
+      "progress": "%{current} / %{total}",
+      "action": "撤销委托",
+      "revoking": "撤销中...",
+      "success": "撤销成功",
       "try_again": "再试一次",
       "cancel": "取消",
       "done": "完成",
-      "next": "Next",
-      "confirm_hw": "Confirm on Device"
+      "next": "下一步",
+      "confirm_hw": "在设备上确认"
     },
     "proactive_revoke": {
-      "title": "Security Alert",
-      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+      "title": "安全警报",
+      "description": "检测到未知委托。撤销以保护你的钱包安全。"
     },
     "confirm_disable": {
-      "title": "Disable Smart Wallet",
-      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "title": "停用智能钱包",
+      "description": "停用未来交易的智能钱包。你可以随时重新激活智能钱包。",
       "action": "禁用",
       "cancel": "取消"
     }
@@ -935,8 +935,8 @@
       "more_details": "更多细节",
       "confirmation": "%{Action} %{sellSymbol} 至 %{buySymbol}",
       "go_back": "返回",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "智能钱包激活费用",
+      "will_delegate_callout": "此次兑换将在此网络上激活你的智能钱包。"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,8 @@
         "action_label": "知道了"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "智能钱包激活费用",
+        "description": "这笔一次性费用将在此网络上激活你的智能钱包。它会将授权和兑换打包为一笔交易，从而实现更快、更便宜的兑换。"
       }
     }
   },
@@ -1464,7 +1464,7 @@
     "token_contract": "代币合约",
     "token_standard": "代币标准",
     "revoke_approval": "撤销授权",
-    "smart_account": "Smart Account",
+    "smart_account": "智能账户",
     "error_title": "无法加载活动",
     "error_message": "我们无法获取此交易。\n请再试一次或返回您的活动。",
     "error_retry": "再试一次",
@@ -1581,9 +1581,9 @@
     "close_cta": "取消",
     "handle_copy_title": "交易哈希已复制",
     "revoke_approval": "撤销授权",
-    "estimating_fee": "Estimating fee…",
-    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
+    "estimating_fee": "正在估算费用…",
+    "tx_confirmed_or_not_found": "交易可能已确认或无法找到",
+    "eip7702_auth_list_unavailable": "无法加速此交易：委托数据不可用。请稍后再试或使用其他 RPC。",
     "speed_up_failed": {
       "title": "加速失败",
       "description": "尝试加速交易可能会在网络拥堵、燃气限制增加或原始交易首先确认时失败"
