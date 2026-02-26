@@ -190,6 +190,7 @@
           "title": "지갑 상세",
           "view_recovery_phrase": "복구 구문 보기",
           "create_new_wallet": "새 지갑 생성",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "지갑 이름 변경",
           "unhide_wallet": "지갑 숨기기 해제",
           "delete_wallet": "지갑 삭제",
@@ -273,6 +274,9 @@
     "approvals": {
       "title": "승인"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "통화",
       "ETH": "이더리움",
@@ -298,7 +302,10 @@
       "hw_wallets_enabled": "하드웨어 지갑 지원 활성화",
       "command_k_internal_shortcuts_enabled": "⌘K 내부 단축키 활성화",
       "custom_rpc": "사용자 정의 RPC",
-      "degen_mode": "Degen모드"
+      "degen_mode": "Degen모드",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -394,6 +401,18 @@
       "confirmed": "철회 완료",
       "failed": "철회 실패"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "승인 완료",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "철회 중",
+      "confirmed": "철회 완료",
+      "failed": "철회 실패"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "판매 중",
       "confirmed": "판매 완료",
@@ -504,7 +523,8 @@
         "enable_flashbots": "플래시봇 활성화",
         "disable_flashbots": "플래시봇 비활성화",
         "copy_uuid": "UUID 복사",
-        "clear_transactions": "보류 중인 트랜잭션 지우기"
+        "clear_transactions": "보류 중인 트랜잭션 지우기",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "구매, 판매, 거래, 주문, 교환, 덱스, 경로",
@@ -532,7 +552,8 @@
         "wallets_and_keys": "지갑과 키, 설정, 환경 설정",
         "diagnostics": "진단",
         "refresh_data": "새로 고침, 다시 로드, 캐시 제거, 초기화, 업데이트",
-        "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들"
+        "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -557,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "잔액 및 활동이 새로 고쳐졌습니다"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "연락처 추가됨",
@@ -661,6 +685,85 @@
           "action_label": "확인"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "활성화",
+      "disabled": "비활성화됨",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
+      "backup_info_disabled": "Updates will take effect on your next swap",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "other_smart_accounts": "Other Smart Accounts",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "view_on_explorer": "탐색기에서 보기",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Disable Smart Wallet",
+          "subtitle": "Revoke all delegations to disable smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Revoke Delegation",
+          "subtitle": "Remove delegation from this network."
+        },
+        "disable_third_party": {
+          "title": "Revoke Third-Party Delegation",
+          "subtitle": "Remove delegation from this third-party contract."
+        },
+        "alert_vulnerability": {
+          "title": "Security Alert",
+          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_bug": {
+          "title": "Security Alert",
+          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unrecognized": {
+          "title": "Security Alert",
+          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unspecified": {
+          "title": "Security Alert",
+          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+        }
+      },
+      "security_notice": "Security Notice",
+      "chain_label": "블록체인",
+      "contract_label": "계약",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "다시 시도하기",
+      "cancel": "취소",
+      "done": "완료",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "비활성화",
+      "cancel": "취소"
     }
   },
   "send": {
@@ -831,7 +934,9 @@
       "asset_contract": "%{symbol} 계약",
       "more_details": "자세한 사항",
       "confirmation": "%{Action} %{sellSymbol} 에서 %{buySymbol}로",
-      "go_back": "뒤로 가기"
+      "go_back": "뒤로 가기",
+      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
+      "will_delegate_callout": "This swap will activate your smart wallet on this network."
     },
     "explainers": {
       "long_wait": {
@@ -878,6 +983,10 @@
         "title": "레인보우 수수료",
         "description": "Rainbow은 %{actions}에서 %{feePercentage} 수수료를 받습니다. 이것으로 우리는 최고의 이더리움 경험을 제공할 수 있습니다.",
         "action_label": "확인"
+      },
+      "smart_wallet_activation": {
+        "title": "Smart Wallet Activation Fee",
+        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
       }
     }
   },
@@ -1355,6 +1464,7 @@
     "token_contract": "토큰 계약",
     "token_standard": "토큰 표준",
     "revoke_approval": "승인 취소",
+    "smart_account": "Smart Account",
     "error_title": "활동을 불러올 수 없습니다.",
     "error_message": "이 거래를 가져올 수 없습니다.\n다시 시도하거나 활동으로 돌아가세요.",
     "error_retry": "다시 시도하기",
@@ -1471,6 +1581,9 @@
     "close_cta": "취소",
     "handle_copy_title": "Tx 해시 복사됨",
     "revoke_approval": "승인 취소",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
+    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "가속 실패",
       "description": "트랜잭션 가속 시도는 네트워크 혼잡, 가스 한도 증가, 또는 원래 트랜잭션이 먼저 확인되었을 때 실패할 수 있습니다"
