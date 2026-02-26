@@ -190,6 +190,7 @@
           "title": "تفاصيل المحفظة",
           "view_recovery_phrase": "عرض عبارة الاسترداد",
           "create_new_wallet": "إنشاء محفظة جديدة",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "إعادة تسمية المحفظة",
           "unhide_wallet": "إظهار المحفظة",
           "delete_wallet": "حذف المحفظة",
@@ -273,6 +274,9 @@
     "approvals": {
       "title": "الموافقات"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "العملة",
       "ETH": "إثيريوم",
@@ -298,7 +302,10 @@
       "hw_wallets_enabled": "تفعيل دعم المحفظة الأجهزة",
       "command_k_internal_shortcuts_enabled": "تفعيل الاختصارات الداخلية ⌘K",
       "custom_rpc": "Custom RPC",
-      "degen_mode": "وضع Degen"
+      "degen_mode": "وضع Degen",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -394,6 +401,18 @@
       "confirmed": "تم الإلغاء",
       "failed": "فشل الإلغاء"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "تمت الموافقة",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "إلغاء",
+      "confirmed": "تم الإلغاء",
+      "failed": "فشل الإلغاء"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "بيع",
       "confirmed": "تم البيع",
@@ -504,7 +523,8 @@
         "enable_flashbots": "تمكين Flashbots",
         "disable_flashbots": "تعطيل Flashbots",
         "copy_uuid": "نسخ UUID",
-        "clear_transactions": "مسح المعاملات المعلقة"
+        "clear_transactions": "مسح المعاملات المعلقة",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
@@ -532,7 +552,8 @@
         "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
         "diagnostics": "التشخيص",
         "refresh_data": "تحديث، إعادة تحميل، مسح الذاكرة المؤقتة، إعادة تعيين، تحديث",
-        "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات"
+        "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -557,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "تم تحديث الأرصدة والنشاط"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "تمت إضافة جهة اتصال",
@@ -661,6 +685,85 @@
           "action_label": "فهمت"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "نشط",
+      "disabled": "معطل",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
+      "backup_info_disabled": "Updates will take effect on your next swap",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "other_smart_accounts": "Other Smart Accounts",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "view_on_explorer": "عرض على الاستكشاف",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Disable Smart Wallet",
+          "subtitle": "Revoke all delegations to disable smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Revoke Delegation",
+          "subtitle": "Remove delegation from this network."
+        },
+        "disable_third_party": {
+          "title": "Revoke Third-Party Delegation",
+          "subtitle": "Remove delegation from this third-party contract."
+        },
+        "alert_vulnerability": {
+          "title": "Security Alert",
+          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_bug": {
+          "title": "Security Alert",
+          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unrecognized": {
+          "title": "Security Alert",
+          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unspecified": {
+          "title": "Security Alert",
+          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+        }
+      },
+      "security_notice": "Security Notice",
+      "chain_label": "السلسلة",
+      "contract_label": "عقد",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "حاول مرة أخرى",
+      "cancel": "إلغاء",
+      "done": "تم",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "تعطيل",
+      "cancel": "إلغاء"
     }
   },
   "send": {
@@ -831,7 +934,9 @@
       "asset_contract": "%{symbol} عقد",
       "more_details": "مزيد من التفاصيل",
       "confirmation": "%{Action} %{sellSymbol} إلى %{buySymbol}",
-      "go_back": "الرجوع إلى الوراء"
+      "go_back": "الرجوع إلى الوراء",
+      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
+      "will_delegate_callout": "This swap will activate your smart wallet on this network."
     },
     "explainers": {
       "long_wait": {
@@ -878,6 +983,10 @@
         "title": "رسوم Rainbow",
         "description": "تأخذ Rainbow رسوم %{feePercentage} من %{actions}. يعد جزءًا من الذي يتيح لنا أن نقدم لك أفضل تجربة إيثيريوم ممكنة",
         "action_label": "فهمت"
+      },
+      "smart_wallet_activation": {
+        "title": "Smart Wallet Activation Fee",
+        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
       }
     }
   },
@@ -1355,6 +1464,7 @@
     "token_contract": "عقد الرمز",
     "token_standard": "معايير الرمز",
     "revoke_approval": "إلغاء الموافقة",
+    "smart_account": "Smart Account",
     "error_title": "غير قادر على تحميل النشاط",
     "error_message": "لم نتمكن من جلب هذه المعاملة.\nحاول مرة أخرى أو عد إلى نشاطك.",
     "error_retry": "حاول مرة أخرى",
@@ -1471,6 +1581,9 @@
     "close_cta": "الغاء",
     "handle_copy_title": "تم نسخ الهاش الخاص بالمعاملة",
     "revoke_approval": "إلغاء الموافقة",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
+    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "فشل تسريع العملية",
       "description": "قد تفشل محاولات تسريع العملية أثناء ازدحام الشبكة، زيادة حد الغاز، أو عند تأكيد المعاملة الأصلية أولاً"
