@@ -275,7 +275,7 @@
       "title": "授权"
     },
     "delegations": {
-      "title": "委托"
+      "title": "智能钱包"
     },
     "currency": {
       "title": "货币",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "委托",
+    "title": "智能钱包",
     "no_delegations": "没有活跃的委托",
     "no_delegations_description": "你没有任何可管理的活跃 EIP-7702 委托。",
     "revoke_all": "撤销所有委托",
@@ -697,8 +697,8 @@
       "active": "激活",
       "disabled": "已禁用",
       "description": "智能钱包可带来更快、更便宜且更可靠的钱包体验。",
-      "backup_info_enabled": "你将无法享受更快的交易和更低的网络成本",
-      "backup_info_disabled": "更新将在你下一次兑换时生效",
+      "enabled_description": "你将错过更快的交易和更低的 Gas 费用",
+      "disabled_description": "更新将在你下次兑换时生效",
       "learn_more": "了解更多..."
     },
     "activated_networks": "已激活的网络",
@@ -935,8 +935,8 @@
       "more_details": "更多细节",
       "confirmation": "%{Action} %{sellSymbol} 至 %{buySymbol}",
       "go_back": "返回",
-      "smart_wallet_activation_fee": "智能钱包激活费用",
-      "will_delegate_callout": "此次兑换将在此网络上激活你的智能钱包。"
+      "smart_wallet_activation_fee": "预估智能钱包费用",
+      "will_delegate_callout": "包含智能钱包激活"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "知道了"
       },
       "smart_wallet_activation": {
-        "title": "智能钱包激活费用",
-        "description": "这笔一次性费用将在此网络上激活你的智能钱包。它会将授权和兑换打包为一笔交易，从而实现更快、更便宜的兑换。"
+        "title": "智能钱包激活",
+        "description_1": "此交易包含在该网络上一次性的智能钱包激活。这将升级你的钱包，以支持批量交易和其他智能账户功能。",
+        "description_2": "激活费用已包含在本次兑换的网络费用中。"
       }
     }
   },
