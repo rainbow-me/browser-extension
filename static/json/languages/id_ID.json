@@ -275,7 +275,7 @@
       "title": "Persetujuan"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "Delegasi"
     },
     "currency": {
       "title": "Mata Uang",
@@ -303,9 +303,9 @@
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
       "custom_rpc": "RPC Kustom",
       "degen_mode": "Degen Mode",
-      "atomic_swaps_enabled": "Atomic Swaps",
-      "rewards_scheduled_drop": "Rewards Scheduled Drop",
-      "delegation_enabled": "Delegation Enabled"
+      "atomic_swaps_enabled": "Swap Atomik",
+      "rewards_scheduled_drop": "Drop Terjadwal Hadiah",
+      "delegation_enabled": "Delegasi Diaktifkan"
     }
   },
   "transactions": {
@@ -402,17 +402,17 @@
       "failed": "Pencabutan Gagal"
     },
     "delegate": {
-      "pending": "Delegating",
+      "pending": "Sedang mendelegasikan",
       "confirmed": "Disetujui",
-      "failed": "Delegation Failed"
+      "failed": "Delegasi Gagal"
     },
     "revoke_delegation": {
       "pending": "Mencabut",
       "confirmed": "Dicabut",
       "failed": "Pencabutan Gagal"
     },
-    "delegate_description": "Wallet Delegation",
-    "revoke_delegation_description": "Wallet Delegation",
+    "delegate_description": "Delegasi Dompet",
+    "revoke_delegation_description": "Delegasi Dompet",
     "sale": {
       "pending": "Menjual",
       "confirmed": "Terjual",
@@ -524,7 +524,7 @@
         "disable_flashbots": "Nonaktifkan Flashbots",
         "copy_uuid": "Salin UUID",
         "clear_transactions": "Hapus Transaksi Tertunda",
-        "trigger_security_alert": "Trigger Security Alert"
+        "trigger_security_alert": "Picu Peringatan Keamanan"
       },
       "search_tags": {
         "swap": "beli, jual, perdagangan, pesanan, pertukaran, dex, rute",
@@ -580,7 +580,7 @@
       "title": "Saldo dan Aktivitas Diperbarui"
     },
     "trigger_security_alert_toast": {
-      "title": "Security Alert Triggered"
+      "title": "Peringatan Keamanan Terpicu"
     },
     "contact_toast": {
       "title_added": "Kontak Ditambahkan",
@@ -688,80 +688,80 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
-    "no_delegations": "No Active Delegations",
-    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
-    "revoke_all": "Revoke All Delegations",
+    "title": "Delegasi",
+    "no_delegations": "Tidak Ada Delegasi Aktif",
+    "no_delegations_description": "Anda tidak memiliki delegasi EIP-7702 aktif untuk dikelola.",
+    "revoke_all": "Cabut Semua Delegasi",
     "smart_wallet": {
-      "title": "Smart Wallet",
+      "title": "Dompet Pintar",
       "active": "Aktif",
       "disabled": "Nonaktif",
-      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
-      "learn_more": "Learn more..."
+      "description": "Dompet pintar menghadirkan pengalaman dompet yang lebih cepat, lebih murah, dan lebih andal.",
+      "backup_info_enabled": "Anda akan kehilangan transaksi yang lebih cepat dan biaya jaringan yang lebih rendah",
+      "backup_info_disabled": "Pembaruan akan berlaku pada swap berikutnya",
+      "learn_more": "Pelajari lebih lanjut..."
     },
-    "activated_networks": "Activated Networks",
-    "other_smart_accounts": "Other Smart Accounts",
-    "third_party_indicator_tooltip": "This is a third-party delegation",
-    "activate_smart_wallet": "Activate Smart Wallet",
-    "disable_smart_wallet": "Disable Smart Wallet",
+    "activated_networks": "Jaringan yang Diaktifkan",
+    "other_smart_accounts": "Akun Pintar Lainnya",
+    "third_party_indicator_tooltip": "Ini adalah delegasi pihak ketiga",
+    "activate_smart_wallet": "Aktifkan Dompet Pintar",
+    "disable_smart_wallet": "Nonaktifkan Dompet Pintar",
     "view_on_explorer": "Lihat di Explorer",
     "revoke": {
-      "title": "Revoke Delegation",
-      "subtitle": "Remove delegation from this contract",
-      "security_title": "Security Alert",
-      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "title": "Cabut Delegasi",
+      "subtitle": "Hapus delegasi dari kontrak ini",
+      "security_title": "Peringatan Keamanan",
+      "security_subtitle": "Delegasi yang tidak dikenal terdeteksi. Cabut untuk mengamankan dompet Anda.",
       "reason": {
         "disable_smart_wallet": {
-          "title": "Disable Smart Wallet",
-          "subtitle": "Revoke all delegations to disable smart wallets."
+          "title": "Nonaktifkan Dompet Pintar",
+          "subtitle": "Cabut semua delegasi untuk menonaktifkan dompet pintar."
         },
         "disable_single_network": {
-          "title": "Revoke Delegation",
-          "subtitle": "Remove delegation from this network."
+          "title": "Cabut Delegasi",
+          "subtitle": "Hapus delegasi dari jaringan ini."
         },
         "disable_third_party": {
-          "title": "Revoke Third-Party Delegation",
-          "subtitle": "Remove delegation from this third-party contract."
+          "title": "Cabut Delegasi Pihak Ketiga",
+          "subtitle": "Hapus delegasi dari kontrak pihak ketiga ini."
         },
         "alert_vulnerability": {
-          "title": "Security Alert",
-          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang rentan terdeteksi. Cabut untuk mengamankan dompet Anda."
         },
         "alert_bug": {
-          "title": "Security Alert",
-          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang bermasalah terdeteksi. Cabut untuk mengamankan dompet Anda."
         },
         "alert_unrecognized": {
-          "title": "Security Alert",
-          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang tidak dikenali terdeteksi. Cabut untuk mengamankan dompet Anda."
         },
         "alert_unspecified": {
-          "title": "Security Alert",
-          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang tidak dikenal terdeteksi. Cabut untuk mengamankan dompet Anda."
         }
       },
-      "security_notice": "Security Notice",
+      "security_notice": "Pemberitahuan Keamanan",
       "chain_label": "Rantai",
       "contract_label": "Kontrak",
-      "progress": "%{current} of %{total}",
-      "action": "Revoke Delegation",
-      "revoking": "Revoking...",
-      "success": "Successfully Revoked",
+      "progress": "%{current} dari %{total}",
+      "action": "Cabut Delegasi",
+      "revoking": "Mencabut...",
+      "success": "Berhasil Dicabut",
       "try_again": "Coba Lagi",
       "cancel": "Batal",
       "done": "Selesai",
-      "next": "Next",
-      "confirm_hw": "Confirm on Device"
+      "next": "Selanjutnya",
+      "confirm_hw": "Konfirmasi di Perangkat"
     },
     "proactive_revoke": {
-      "title": "Security Alert",
-      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+      "title": "Peringatan Keamanan",
+      "description": "Delegasi yang tidak dikenal terdeteksi. Cabut untuk mengamankan dompet Anda."
     },
     "confirm_disable": {
-      "title": "Disable Smart Wallet",
-      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "title": "Nonaktifkan Dompet Pintar",
+      "description": "Nonaktifkan dompet pintar untuk transaksi di masa mendatang. Anda dapat mengaktifkan kembali dompet pintar kapan saja.",
       "action": "Nonaktifkan",
       "cancel": "Batal"
     }
@@ -935,8 +935,8 @@
       "more_details": "Detail lebih",
       "confirmation": "%{Action} %{sellSymbol} ke %{buySymbol}",
       "go_back": "Kembali",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "Biaya Aktivasi Dompet Pintar",
+      "will_delegate_callout": "Swap ini akan mengaktifkan dompet pintar Anda di jaringan ini."
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,8 @@
         "action_label": "Mengerti"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "Biaya Aktivasi Dompet Pintar",
+        "description": "Biaya satu kali ini mengaktifkan dompet pintar Anda di jaringan ini. Ini memungkinkan swap yang lebih cepat dan lebih murah dengan menggabungkan persetujuan dan swap menjadi satu transaksi."
       }
     }
   },
@@ -1464,7 +1464,7 @@
     "token_contract": "Kontrak Token",
     "token_standard": "Standar Token",
     "revoke_approval": "Cabut Persetujuan",
-    "smart_account": "Smart Account",
+    "smart_account": "Akun Pintar",
     "error_title": "Tidak dapat memuat aktivitas",
     "error_message": "Kami tidak dapat mengambil transaksi ini.\\nCoba lagi atau kembali ke aktivitas Anda.",
     "error_retry": "Coba Lagi",
@@ -1581,9 +1581,9 @@
     "close_cta": "Batal",
     "handle_copy_title": "Tx Hash Tersalin",
     "revoke_approval": "Cabut Persetujuan",
-    "estimating_fee": "Estimating fee…",
-    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
+    "estimating_fee": "Mengestimasi biaya…",
+    "tx_confirmed_or_not_found": "Transaksi mungkin sudah dikonfirmasi atau tidak dapat ditemukan",
+    "eip7702_auth_list_unavailable": "Tidak dapat mempercepat transaksi ini: data delegasi tidak tersedia. Coba lagi nanti atau gunakan RPC yang berbeda.",
     "speed_up_failed": {
       "title": "Percepatan gagal",
       "description": "Usaha untuk mempercepat transaksi dapat gagal selama kemacetan jaringan, peningkatan batas gas, atau ketika transaksi asli dikonfirmasi lebih dahulu"
