@@ -275,7 +275,7 @@
       "title": "承認"
     },
     "delegations": {
-      "title": "委任"
+      "title": "スマートウォレット"
     },
     "currency": {
       "title": "通貨",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "委任",
+    "title": "スマートウォレット",
     "no_delegations": "アクティブな委任はありません",
     "no_delegations_description": "管理できる有効なEIP-7702委任がありません。",
     "revoke_all": "すべての委任を取り消す",
@@ -697,8 +697,8 @@
       "active": "有効",
       "disabled": "無効",
       "description": "スマートウォレットにより、より速く、より安く、より信頼性の高いウォレット体験が可能になります。",
-      "backup_info_enabled": "より高速なトランザクションと、より低いネットワークコストの恩恵を受けられなくなります",
-      "backup_info_disabled": "変更は次回のスワップで有効になります",
+      "enabled_description": "より速いトランザクションや低いガス代の恩恵を受けられなくなります",
+      "disabled_description": "更新は次回のスワップから反映されます",
       "learn_more": "詳しくはこちら..."
     },
     "activated_networks": "有効化済みネットワーク",
@@ -935,8 +935,8 @@
       "more_details": "詳細",
       "confirmation": "%{Action} %{sellSymbol} から %{buySymbol}へ",
       "go_back": "戻る",
-      "smart_wallet_activation_fee": "スマートウォレット有効化手数料",
-      "will_delegate_callout": "このスワップにより、このネットワークでスマートウォレットが有効化されます。"
+      "smart_wallet_activation_fee": "推定スマートウォレット手数料",
+      "will_delegate_callout": "スマートウォレットの有効化を含む"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "了解"
       },
       "smart_wallet_activation": {
-        "title": "スマートウォレット有効化手数料",
-        "description": "この一度きりの手数料で、このネットワークでスマートウォレットが有効化されます。承認とスワップを1つのトランザクションにまとめることで、より速く、より安いスワップが可能になります。"
+        "title": "スマートウォレットの有効化",
+        "description_1": "このトランザクションには、このネットワークでのスマートウォレットの1回限りの有効化が含まれます。これによりウォレットがアップグレードされ、バッチトランザクションやその他のスマートアカウント機能に対応します。",
+        "description_2": "有効化手数料は、このスワップのネットワーク手数料に含まれています。"
       }
     }
   },
