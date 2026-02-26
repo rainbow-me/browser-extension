@@ -275,7 +275,7 @@
       "title": "Persetujuan"
     },
     "delegations": {
-      "title": "Delegasi"
+      "title": "Dompet Pintar"
     },
     "currency": {
       "title": "Mata Uang",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "Delegasi",
+    "title": "Dompet Pintar",
     "no_delegations": "Tidak Ada Delegasi Aktif",
     "no_delegations_description": "Anda tidak memiliki delegasi EIP-7702 aktif untuk dikelola.",
     "revoke_all": "Cabut Semua Delegasi",
@@ -697,8 +697,8 @@
       "active": "Aktif",
       "disabled": "Nonaktif",
       "description": "Dompet pintar menghadirkan pengalaman dompet yang lebih cepat, lebih murah, dan lebih andal.",
-      "backup_info_enabled": "Anda akan kehilangan transaksi yang lebih cepat dan biaya jaringan yang lebih rendah",
-      "backup_info_disabled": "Pembaruan akan berlaku pada swap berikutnya",
+      "enabled_description": "Anda akan kehilangan transaksi yang lebih cepat dan biaya gas yang lebih rendah",
+      "disabled_description": "Pembaruan akan berlaku pada swap Anda berikutnya",
       "learn_more": "Pelajari lebih lanjut..."
     },
     "activated_networks": "Jaringan yang Diaktifkan",
@@ -935,8 +935,8 @@
       "more_details": "Detail lebih",
       "confirmation": "%{Action} %{sellSymbol} ke %{buySymbol}",
       "go_back": "Kembali",
-      "smart_wallet_activation_fee": "Biaya Aktivasi Dompet Pintar",
-      "will_delegate_callout": "Swap ini akan mengaktifkan dompet pintar Anda di jaringan ini."
+      "smart_wallet_activation_fee": "Perkiraan Biaya Smart Wallet",
+      "will_delegate_callout": "Termasuk aktivasi Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "Mengerti"
       },
       "smart_wallet_activation": {
-        "title": "Biaya Aktivasi Dompet Pintar",
-        "description": "Biaya satu kali ini mengaktifkan dompet pintar Anda di jaringan ini. Ini memungkinkan swap yang lebih cepat dan lebih murah dengan menggabungkan persetujuan dan swap menjadi satu transaksi."
+        "title": "Aktivasi Smart Wallet",
+        "description_1": "Transaksi ini mencakup aktivasi Smart Wallet satu kali di jaringan ini. Ini meningkatkan dompet Anda untuk mendukung transaksi batch dan fitur akun smart lainnya.",
+        "description_2": "Biaya aktivasi sudah termasuk dalam biaya jaringan untuk swap ini."
       }
     }
   },
