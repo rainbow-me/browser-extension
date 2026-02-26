@@ -190,6 +190,7 @@
           "title": "รายละเอียดกระเป๋าสตางค์",
           "view_recovery_phrase": "ดูวลีการกู้คืน",
           "create_new_wallet": "สร้างกระเป๋าสตางค์ใหม่",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "เปลี่ยนชื่อกระเป๋าสตางค์",
           "unhide_wallet": "เปิดซ่อนกระเป๋าสตางค์",
           "delete_wallet": "ลบกระเป๋าสตางค์",
@@ -273,6 +274,9 @@
     "approvals": {
       "title": "การอนุมัติ"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "สกุลเงิน",
       "ETH": "Ethereum",
@@ -298,7 +302,10 @@
       "hw_wallets_enabled": "เปิดการสนับสนุน Hardware Wallet",
       "command_k_internal_shortcuts_enabled": "เปิดใช้งาน ⌘K Shortcut ภายใน",
       "custom_rpc": "Custom RPC",
-      "degen_mode": "โหมด Degen"
+      "degen_mode": "โหมด Degen",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -394,6 +401,18 @@
       "confirmed": "ถอนความยินยอมเรียบร้อย",
       "failed": "การถอนความยินยอมล้มเหลว"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "อนุมัติแล้ว",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "กำลังถอนความยินยอม",
+      "confirmed": "ถอนความยินยอมเรียบร้อย",
+      "failed": "การถอนความยินยอมล้มเหลว"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "กำลังขาย",
       "confirmed": "ขายเรียบร้อย",
@@ -504,7 +523,8 @@
         "enable_flashbots": "เปิดใช้งาน Flashbots",
         "disable_flashbots": "ปิดการใช้งาน Flashbots",
         "copy_uuid": "คัดลอก UUID",
-        "clear_transactions": "ล้างธุรกรรมที่รอดำเนินการ"
+        "clear_transactions": "ล้างธุรกรรมที่รอดำเนินการ",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "ซื้อ, ขาย, แลกเปลี่ยน, สั่งซื้อ, เปลี่ยน, dex, เส้นทาง",
@@ -532,7 +552,8 @@
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์, การตั้งค่า, กำหนดค่าตั้งค่า",
         "diagnostics": "การวินิจฉัย",
         "refresh_data": "รีเฟรช, โหลดใหม่, ล้างแคช, รีเซ็ต, อัปเดต",
-        "clear_transactions": "ล้าง, รีเซ็ต, ที่อยู่ระหว่างดำเนินการ, ธุรกรรม, นอนซ์, นอนซ์"
+        "clear_transactions": "ล้าง, รีเซ็ต, ที่อยู่ระหว่างดำเนินการ, ธุรกรรม, นอนซ์, นอนซ์",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -557,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "ยอดคงเหลือและกิจกรรมได้รับการรีเฟรชแล้ว"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "เพิ่มผู้ติดต่อแล้ว",
@@ -661,6 +685,85 @@
           "action_label": "เข้าใจแล้ว"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "กำลังใช้งาน",
+      "disabled": "ปิดการใช้งาน",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
+      "backup_info_disabled": "Updates will take effect on your next swap",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "other_smart_accounts": "Other Smart Accounts",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "view_on_explorer": "ดูบน Explorer",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Disable Smart Wallet",
+          "subtitle": "Revoke all delegations to disable smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Revoke Delegation",
+          "subtitle": "Remove delegation from this network."
+        },
+        "disable_third_party": {
+          "title": "Revoke Third-Party Delegation",
+          "subtitle": "Remove delegation from this third-party contract."
+        },
+        "alert_vulnerability": {
+          "title": "Security Alert",
+          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_bug": {
+          "title": "Security Alert",
+          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unrecognized": {
+          "title": "Security Alert",
+          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unspecified": {
+          "title": "Security Alert",
+          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+        }
+      },
+      "security_notice": "Security Notice",
+      "chain_label": "เชื่อมโยง",
+      "contract_label": "สัญญา",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "ลองใหม่",
+      "cancel": "ยกเลิก",
+      "done": "เสร็จสิ้น",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "ปิดการใช้งาน",
+      "cancel": "ยกเลิก"
     }
   },
   "send": {
@@ -831,7 +934,9 @@
       "asset_contract": "%{symbol} สัญญา",
       "more_details": "รายละเอียดเพิ่มเติม",
       "confirmation": "%{Action} %{sellSymbol} ถึง %{buySymbol}",
-      "go_back": "ย้อนกลับ"
+      "go_back": "ย้อนกลับ",
+      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
+      "will_delegate_callout": "This swap will activate your smart wallet on this network."
     },
     "explainers": {
       "long_wait": {
@@ -878,6 +983,10 @@
         "title": "ค่าธรรมเนียม Rainbow",
         "description": "Rainbow ไม่เสียค่าธรรมเนียม %{feePercentage} จาก %{actions}นี่เป็นส่วนหนึ่งของที่ทำให้เราสามารถให้คุณประสบการณ์ Ethereum ที่ดีที่สุดได้",
         "action_label": "เข้าใจแล้ว"
+      },
+      "smart_wallet_activation": {
+        "title": "Smart Wallet Activation Fee",
+        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
       }
     }
   },
@@ -1355,6 +1464,7 @@
     "token_contract": "สัญญาโทเค็น",
     "token_standard": "มาตรฐานโทเค็น",
     "revoke_approval": "ยกเลิกการอนุมัติ",
+    "smart_account": "Smart Account",
     "error_title": "ไม่สามารถโหลดกิจกรรมได้",
     "error_message": "เราไม่สามารถดึงธุรกรรมนี้ได้ \nลองอีกครั้งหรือกลับไปที่กิจกรรมของคุณ",
     "error_retry": "ลองใหม่",
@@ -1471,6 +1581,9 @@
     "close_cta": "ยกเลิก",
     "handle_copy_title": "คัดลอก Tx Hash",
     "revoke_approval": "ยกเลิกการอนุมัติ",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
+    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "การเร่งล้มเหลว",
       "description": "ความพยายามในการเร่งธุรกรรมอาจล้มเหลวในช่วงที่เครือข่ายคับคั่ง เพิ่มขีดจำกัดก๊าซ หรือเมื่อธุรกรรมเดิมได้รับการยืนยันก่อน"
