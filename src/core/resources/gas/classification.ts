@@ -13,11 +13,13 @@ type MeteorologyData = MeteorologyLegacyResponse | MeteorologyResponse;
 export function isLegacyMeteorologyFeeData(
   meteorologyData: MeteorologyData,
 ): meteorologyData is MeteorologyLegacyResponse {
-  const feeType = meteorologyData.meta?.feeType;
+  const feeType = meteorologyData?.meta?.feeType;
   if (feeType === 'legacy') return true;
   if (feeType === 'eip1559') return false;
 
-  const hasLegacyPayload = 'legacy' in meteorologyData.data;
-  const hasEip1559Payload = 'baseFeeSuggestion' in meteorologyData.data;
+  const hasLegacyPayload =
+    !!meteorologyData?.data && 'legacy' in meteorologyData.data;
+  const hasEip1559Payload =
+    !!meteorologyData?.data && 'baseFeeSuggestion' in meteorologyData.data;
   return hasLegacyPayload && !hasEip1559Payload;
 }
