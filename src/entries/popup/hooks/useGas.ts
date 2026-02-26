@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
+import { isLegacyMeteorologyFeeData } from '~/core/resources/gas/classification';
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
 import {
@@ -246,8 +247,10 @@ const useGas = ({
     | null = useMemo(() => {
     const newGasFeeParamsBySpeed =
       !isLoading &&
-      ((gasData as MeteorologyResponse)?.data?.currentBaseFee ||
-        (gasData as MeteorologyLegacyResponse)?.data?.legacy)
+      gasData &&
+      (isLegacyMeteorologyFeeData(gasData)
+        ? gasData.data?.legacy
+        : (gasData as MeteorologyResponse).data?.currentBaseFee)
         ? nativeAsset
           ? parseGasFeeParamsBySpeed({
               chainId,
@@ -351,11 +354,17 @@ const useGas = ({
     setCustomMaxPriorityFee,
     setCustomGasPrice,
     clearCustomGasModified,
-    currentBaseFee: weiToGwei(
-      (gasData as MeteorologyResponse)?.data?.currentBaseFee,
-    ),
-    baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
-    feeType: (gasData as MeteorologyResponse)?.meta?.feeType,
+    currentBaseFee:
+      gasData && !isLegacyMeteorologyFeeData(gasData)
+        ? weiToGwei(
+            (gasData as MeteorologyResponse).data?.currentBaseFee ?? '0',
+          )
+        : '',
+    baseFeeTrend:
+      gasData && !isLegacyMeteorologyFeeData(gasData)
+        ? (gasData as MeteorologyResponse).data?.baseFeeTrend ?? 0
+        : 0,
+    feeType: gasData?.meta?.feeType ?? 'eip1559',
   };
 };
 
