@@ -1,9 +1,11 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useAtomicSwapsEnabled } from '~/core/resources/delegations/featureStatus';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
 import { useDegenMode } from '~/core/state/degenMode';
 import {
@@ -36,6 +38,7 @@ import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextStyles } from '~/design-system/styles/core.css';
 
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import {
   ExplainerSheet,
@@ -70,6 +73,7 @@ import {
   TranslationContext,
   useTranslationContext,
 } from '../../hooks/useTranslationContext';
+import { useWillExecuteDelegation } from '../../hooks/useWillExecuteDelegation';
 import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
@@ -378,6 +382,24 @@ function SwapButton({
   );
 }
 
+function DelegationCallout({
+  address,
+  chainId,
+}: {
+  address: string;
+  chainId: ChainId;
+}) {
+  const willDelegate = useWillExecuteDelegation(address as Address, chainId);
+  const atomicSwapsEnabled = useAtomicSwapsEnabled();
+  if (!willDelegate || !atomicSwapsEnabled) return null;
+
+  return (
+    <Text align="center" color="labelQuaternary" size="11pt" weight="heavy">
+      {i18n.t('swap.review.will_delegate_callout')}
+    </Text>
+  );
+}
+
 export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
@@ -607,6 +629,33 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     ),
   };
   const t = useTranslationContext(translationContext);
+
+  const willDelegate = useWillExecuteDelegation(
+    address as Address,
+    assetToSell?.chainId ?? ChainId.mainnet,
+  );
+  const atomicSwapsEnabled = useAtomicSwapsEnabled();
+  const showSmartWalletActivationFee = willDelegate && atomicSwapsEnabled;
+
+  const openSmartWalletActivationExplainer = useCallback(() => {
+    const chainId = assetToSell?.chainId ?? ChainId.mainnet;
+    showExplainerSheet({
+      show: true,
+      header: { icon: <ChainBadge chainId={chainId} size={36} /> },
+      title: t('swap.explainers.smart_wallet_activation.title'),
+      description: [
+        t('swap.explainers.smart_wallet_activation.description_1'),
+        t('swap.explainers.smart_wallet_activation.description_2'),
+      ],
+      actionButton: {
+        label: t('swap.explainers.fee.action_label'),
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplainerSheet,
+      },
+      testId: 'swap-smart-wallet-activation',
+    });
+  }, [assetToSell?.chainId, hideExplainerSheet, showExplainerSheet, t]);
 
   const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
   const [didPopulateSavedInputValues, setDidPopulateSavedInputValues] =
@@ -958,22 +1007,38 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                         quoteServiceTime={getQuoteServiceTime({
                           quote: quote as CrosschainQuote,
                         })}
+                        feeLabel={
+                          showSmartWalletActivationFee
+                            ? t('swap.review.smart_wallet_activation_fee')
+                            : undefined
+                        }
+                        feeInfoButton={
+                          showSmartWalletActivationFee
+                            ? { onClick: openSmartWalletActivationExplainer }
+                            : undefined
+                        }
                       />
                     </Row>
                     <Row>
-                      <SwapButton
-                        showSwapReviewSheet={showSwapReviewSheet}
-                        quote={quote}
-                        isLoadingQuote={
-                          isLoadingQuote || isRefetchingAfterInputChange
-                        }
-                        assetToSell={assetToSell}
-                        assetToSellValue={assetToSellValue}
-                        assetToBuy={assetToBuy}
-                        timeEstimate={timeEstimate}
-                        showExplainerSheet={showExplainerSheet}
-                        hideExplainerSheet={hideExplainerSheet}
-                      />
+                      <Stack space="8px">
+                        <SwapButton
+                          showSwapReviewSheet={showSwapReviewSheet}
+                          quote={quote}
+                          isLoadingQuote={
+                            isLoadingQuote || isRefetchingAfterInputChange
+                          }
+                          assetToSell={assetToSell}
+                          assetToSellValue={assetToSellValue}
+                          assetToBuy={assetToBuy}
+                          timeEstimate={timeEstimate}
+                          showExplainerSheet={showExplainerSheet}
+                          hideExplainerSheet={hideExplainerSheet}
+                        />
+                        <DelegationCallout
+                          address={address}
+                          chainId={assetToSell?.chainId ?? ChainId.mainnet}
+                        />
+                      </Stack>
                     </Row>
                   </Rows>
                 </Box>

@@ -275,7 +275,7 @@
       "title": "Approvals"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "Smart Wallet"
     },
     "currency": {
       "title": "Currency",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
+    "title": "Smart Wallet",
     "no_delegations": "No Active Delegations",
     "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
     "revoke_all": "Revoke All Delegations",
@@ -697,8 +697,8 @@
       "active": "Active",
       "disabled": "Disabled",
       "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
+      "enabled_description": "You'll miss out on faster transactions and lower gas costs",
+      "disabled_description": "Updates will take effect on your next swap",
       "learn_more": "Learn more..."
     },
     "activated_networks": "Activated Networks",
@@ -935,8 +935,8 @@
       "more_details": "More details",
       "confirmation": "%{Action} %{sellSymbol} to %{buySymbol}",
       "go_back": "Go back",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "Est. Smart Wallet Fee",
+      "will_delegate_callout": "Includes smart wallet activation"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "Got it"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "Smart Wallet activation",
+        "description_1": "This transaction includes a one-time Smart Wallet activation on this network. This upgrades your wallet to support batched transactions and other smart account features.",
+        "description_2": "The activation fee is included in the network fee for this swap."
       }
     }
   },

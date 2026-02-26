@@ -174,28 +174,31 @@ function Fee({
         <Column>
           <Rows space="8px">
             <Row>
-              <Inline space="4px" alignVertical="center" wrap={false}>
-                <Text weight="semibold" color="labelQuaternary" size="12pt">
-                  {feeLabel ?? i18n.t('transaction_fee.estimated_fee')}
-                </Text>
-                {feeInfoButton && (
-                  <Lens
-                    borderRadius="round"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    style={{ height: 20, width: 20 }}
-                    onClick={feeInfoButton.onClick}
-                  >
+              {feeInfoButton ? (
+                <Lens
+                  borderRadius="6px"
+                  width="full"
+                  onClick={feeInfoButton.onClick}
+                >
+                  <Inline space="4px" alignVertical="center" wrap={false}>
+                    <Text weight="semibold" color="labelQuaternary" size="12pt">
+                      {feeLabel ?? i18n.t('transaction_fee.estimated_fee')}
+                    </Text>
                     <Symbol
                       weight="medium"
                       symbol="info.circle.fill"
                       size={12}
                       color="labelQuaternary"
                     />
-                  </Lens>
-                )}
-              </Inline>
+                  </Inline>
+                </Lens>
+              ) : (
+                <Inline space="4px" alignVertical="center" wrap={false}>
+                  <Text weight="semibold" color="labelQuaternary" size="12pt">
+                    {feeLabel ?? i18n.t('transaction_fee.estimated_fee')}
+                  </Text>
+                </Inline>
+              )}
             </Row>
             <Row>
               <Columns alignVertical="center" space="4px">
