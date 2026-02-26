@@ -190,7 +190,7 @@
           "title": "Detalles de la Billetera",
           "view_recovery_phrase": "Ver frase de recuperación",
           "create_new_wallet": "Crear una nueva billetera",
-          "edit_smart_wallet": "Edit Smart Wallet",
+          "edit_smart_wallet": "Editar Smart Wallet",
           "rename_wallet": "Renombrar billetera",
           "unhide_wallet": "Mostrar billetera oculta",
           "delete_wallet": "Eliminar billetera",
@@ -275,7 +275,7 @@
       "title": "Aprobaciones"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "Delegaciones"
     },
     "currency": {
       "title": "Moneda",
@@ -303,9 +303,9 @@
       "command_k_internal_shortcuts_enabled": "Habilitar accesos directos internos ⌘K",
       "custom_rpc": "RPC Personalizado",
       "degen_mode": "Modo Degen",
-      "atomic_swaps_enabled": "Atomic Swaps",
-      "rewards_scheduled_drop": "Rewards Scheduled Drop",
-      "delegation_enabled": "Delegation Enabled"
+      "atomic_swaps_enabled": "Swaps atómicos",
+      "rewards_scheduled_drop": "Lanzamiento programado de recompensas",
+      "delegation_enabled": "Delegación habilitada"
     }
   },
   "transactions": {
@@ -402,17 +402,17 @@
       "failed": "Revocación Fallida"
     },
     "delegate": {
-      "pending": "Delegating",
+      "pending": "Delegando",
       "confirmed": "Aprobado",
-      "failed": "Delegation Failed"
+      "failed": "Falló la delegación"
     },
     "revoke_delegation": {
       "pending": "Revocando",
       "confirmed": "Revocado",
       "failed": "Revocación Fallida"
     },
-    "delegate_description": "Wallet Delegation",
-    "revoke_delegation_description": "Wallet Delegation",
+    "delegate_description": "Delegación de la billetera",
+    "revoke_delegation_description": "Delegación de la billetera",
     "sale": {
       "pending": "Vendiendo",
       "confirmed": "Vendido",
@@ -524,7 +524,7 @@
         "disable_flashbots": "Desactivar Flashbots",
         "copy_uuid": "Copiar UUID",
         "clear_transactions": "Borrar Transacciones Pendientes",
-        "trigger_security_alert": "Trigger Security Alert"
+        "trigger_security_alert": "Activar alerta de seguridad"
       },
       "search_tags": {
         "swap": "comprar, vender, intercambiar, ordenar, intercambiar, dex, rutas",
@@ -553,7 +553,7 @@
         "diagnostics": "diagnósticos",
         "refresh_data": "actualizar, recargar, limpiar caché, reiniciar, actualizar",
         "clear_transactions": "limpiar, reiniciar, pendientes, transacciones, nonce, nonces",
-        "trigger_security_alert": "delegation, revoke, mock, debug, test"
+        "trigger_security_alert": "delegación, revocar, simular, depurar, probar"
       }
     },
     "command_rows": {
@@ -580,7 +580,7 @@
       "title": "Saldos y Actividad Actualizados"
     },
     "trigger_security_alert_toast": {
-      "title": "Security Alert Triggered"
+      "title": "Alerta de seguridad activada"
     },
     "contact_toast": {
       "title_added": "Contacto Agregado",
@@ -688,80 +688,80 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
-    "no_delegations": "No Active Delegations",
-    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
-    "revoke_all": "Revoke All Delegations",
+    "title": "Delegaciones",
+    "no_delegations": "No hay delegaciones activas",
+    "no_delegations_description": "No tienes ninguna delegación EIP-7702 activa para administrar.",
+    "revoke_all": "Revocar todas las delegaciones",
     "smart_wallet": {
-      "title": "Smart Wallet",
+      "title": "Billetera inteligente",
       "active": "Activo",
       "disabled": "Deshabilitado",
-      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
-      "learn_more": "Learn more..."
+      "description": "Las billeteras inteligentes permiten una experiencia de billetera más rápida, más barata y más confiable.",
+      "backup_info_enabled": "Te perderás transacciones más rápidas y menores costos de red",
+      "backup_info_disabled": "Las actualizaciones tendrán efecto en tu próximo swap",
+      "learn_more": "Obtener más información..."
     },
-    "activated_networks": "Activated Networks",
-    "other_smart_accounts": "Other Smart Accounts",
-    "third_party_indicator_tooltip": "This is a third-party delegation",
-    "activate_smart_wallet": "Activate Smart Wallet",
-    "disable_smart_wallet": "Disable Smart Wallet",
+    "activated_networks": "Redes activadas",
+    "other_smart_accounts": "Otras cuentas inteligentes",
+    "third_party_indicator_tooltip": "Esta es una delegación de terceros",
+    "activate_smart_wallet": "Activar billetera inteligente",
+    "disable_smart_wallet": "Desactivar billetera inteligente",
     "view_on_explorer": "Ver en el Explorador",
     "revoke": {
-      "title": "Revoke Delegation",
-      "subtitle": "Remove delegation from this contract",
-      "security_title": "Security Alert",
-      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "title": "Revocar delegación",
+      "subtitle": "Eliminar la delegación de este contrato",
+      "security_title": "Alerta de seguridad",
+      "security_subtitle": "Se detectó una delegación desconocida. Revócala para proteger tu billetera.",
       "reason": {
         "disable_smart_wallet": {
-          "title": "Disable Smart Wallet",
-          "subtitle": "Revoke all delegations to disable smart wallets."
+          "title": "Desactivar billetera inteligente",
+          "subtitle": "Revoca todas las delegaciones para desactivar las billeteras inteligentes."
         },
         "disable_single_network": {
-          "title": "Revoke Delegation",
-          "subtitle": "Remove delegation from this network."
+          "title": "Revocar delegación",
+          "subtitle": "Eliminar la delegación de esta red."
         },
         "disable_third_party": {
-          "title": "Revoke Third-Party Delegation",
-          "subtitle": "Remove delegation from this third-party contract."
+          "title": "Revocar delegación de terceros",
+          "subtitle": "Eliminar la delegación de este contrato de terceros."
         },
         "alert_vulnerability": {
-          "title": "Security Alert",
-          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+          "title": "Alerta de seguridad",
+          "subtitle": "Se detectó una delegación vulnerable. Revócala para proteger tu billetera."
         },
         "alert_bug": {
-          "title": "Security Alert",
-          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+          "title": "Alerta de seguridad",
+          "subtitle": "Se detectó una delegación problemática. Revócala para proteger tu billetera."
         },
         "alert_unrecognized": {
-          "title": "Security Alert",
-          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+          "title": "Alerta de seguridad",
+          "subtitle": "Se detectó una delegación no reconocida. Revócala para proteger tu billetera."
         },
         "alert_unspecified": {
-          "title": "Security Alert",
-          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+          "title": "Alerta de seguridad",
+          "subtitle": "Se detectó una delegación desconocida. Revócala para proteger tu billetera."
         }
       },
-      "security_notice": "Security Notice",
+      "security_notice": "Aviso de seguridad",
       "chain_label": "Cadena",
       "contract_label": "Contrato",
-      "progress": "%{current} of %{total}",
-      "action": "Revoke Delegation",
-      "revoking": "Revoking...",
-      "success": "Successfully Revoked",
+      "progress": "%{current} de %{total}",
+      "action": "Revocar delegación",
+      "revoking": "Revocando...",
+      "success": "Revocación exitosa",
       "try_again": "Intenta de Nuevo",
       "cancel": "Cancelar",
       "done": "Hecho",
-      "next": "Next",
-      "confirm_hw": "Confirm on Device"
+      "next": "Siguiente",
+      "confirm_hw": "Confirmar en el dispositivo"
     },
     "proactive_revoke": {
-      "title": "Security Alert",
-      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+      "title": "Alerta de seguridad",
+      "description": "Se detectó una delegación desconocida. Revócala para proteger tu billetera."
     },
     "confirm_disable": {
-      "title": "Disable Smart Wallet",
-      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "title": "Desactivar billetera inteligente",
+      "description": "Desactiva las billeteras inteligentes para futuras transacciones. Puedes reactivar las billeteras inteligentes en cualquier momento.",
       "action": "Desactivar",
       "cancel": "Cancelar"
     }
@@ -935,8 +935,8 @@
       "more_details": "Más detalles",
       "confirmation": "%{Action} %{sellSymbol} a %{buySymbol}",
       "go_back": "Volver",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "Comisión de activación de la billetera inteligente",
+      "will_delegate_callout": "Este swap activará tu billetera inteligente en esta red."
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,8 @@
         "action_label": "Entendido"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "Comisión de activación de la billetera inteligente",
+        "description": "Esta comisión única activa tu billetera inteligente en esta red. Permite swaps más rápidos y más baratos al agrupar la aprobación y el swap en una sola transacción."
       }
     }
   },
@@ -1464,7 +1464,7 @@
     "token_contract": "Contrato del token",
     "token_standard": "Estándar del token",
     "revoke_approval": "Revocar Aprobación",
-    "smart_account": "Smart Account",
+    "smart_account": "Cuenta inteligente",
     "error_title": "No se pudo cargar la actividad",
     "error_message": "No pudimos obtener esta transacción.\nInténtalo de nuevo o regresa a tu actividad.",
     "error_retry": "Intenta de Nuevo",
@@ -1581,9 +1581,9 @@
     "close_cta": "Cancelar",
     "handle_copy_title": "Hash de Tx copiado",
     "revoke_approval": "Revocar Aprobación",
-    "estimating_fee": "Estimating fee…",
-    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
+    "estimating_fee": "Calculando comisión…",
+    "tx_confirmed_or_not_found": "Es posible que la transacción ya haya sido confirmada o que no se haya encontrado",
+    "eip7702_auth_list_unavailable": "No se puede acelerar esta transacción: los datos de delegación no están disponibles. Inténtalo de nuevo más tarde o usa un RPC diferente.",
     "speed_up_failed": {
       "title": "Aceleración fallida",
       "description": "Los intentos de acelerar una transacción pueden fallar durante la congestión de la red, aumentos del límite de gas, o cuando se confirma primero la transacción original"
