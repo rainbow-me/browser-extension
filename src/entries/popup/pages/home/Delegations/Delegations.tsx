@@ -141,9 +141,13 @@ const BackupInfo = ({ isActive }: { isActive: boolean }) => {
 const DelegationItem = ({
   delegation,
   onRevoke,
+  first,
+  last,
 }: {
   delegation: DelegationWithChainId;
   onRevoke: () => void;
+  first?: boolean;
+  last?: boolean;
 }) => {
   const chainInfo = getChain({ chainId: delegation.chainId as ChainId });
   const contractAddress =
@@ -153,31 +157,26 @@ const DelegationItem = ({
     delegation.delegationStatus === DelegationStatus.THIRD_PARTY_DELEGATED;
 
   return (
-    <Box
-      padding="16px"
-      borderRadius="12px"
-      background="surfaceSecondaryElevated"
-    >
-      <Inline space="12px" alignVertical="center" wrap={false}>
-        <Box style={{ flex: 1, minWidth: 0 }}>
-          <Stack space="4px">
-            <Inline space="8px" alignVertical="center" wrap={false}>
-              <ChainBadge chainId={delegation.chainId as ChainId} size={18} />
-              <Text size="14pt" weight="semibold" color="label">
-                {chainInfo.name}
-              </Text>
-            </Inline>
-            {isThirdParty &&
-              (delegation.revokeAddress ?? delegation.currentContract) && (
-                <Text size="12pt" weight="regular" color="labelTertiary">
-                  {i18n.t('delegations.revoke.contract_label')}:{' '}
-                  {truncateAddress(
-                    (delegation.revokeAddress ?? delegation.currentContract)!,
-                  )}
-                </Text>
-              )}
-          </Stack>
-        </Box>
+    <MenuItem
+      first={first}
+      last={last}
+      leftComponent={
+        <ChainBadge chainId={delegation.chainId as ChainId} size={18} />
+      }
+      titleComponent={<MenuItem.Title text={chainInfo.name} />}
+      labelComponent={
+        isThirdParty &&
+        (delegation.revokeAddress ?? delegation.currentContract) ? (
+          <MenuItem.Label
+            text={`${i18n.t(
+              'delegations.revoke.contract_label',
+            )}: ${truncateAddress(
+              (delegation.revokeAddress ?? delegation.currentContract)!,
+            )}`}
+          />
+        ) : undefined
+      }
+      rightComponent={
         <Inline space="8px" alignVertical="center" wrap={false}>
           {isThirdParty && (
             <CursorTooltip
@@ -231,8 +230,8 @@ const DelegationItem = ({
             </DropdownMenuContent>
           </DropdownMenu>
         </Inline>
-      </Inline>
-    </Box>
+      }
+    />
   );
 };
 
@@ -337,15 +336,17 @@ export const Delegations = () => {
               <Text size="14pt" weight="semibold" color="label">
                 {i18n.t('delegations.activated_networks')}
               </Text>
-              <Stack space="12px">
+              <Menu>
                 {rainbowDelegations.map((delegation, i) => (
                   <DelegationItem
                     key={`${delegation.chainId}-${i}`}
                     delegation={delegation}
                     onRevoke={() => handleRevokeOne(delegation)}
+                    first={i === 0}
+                    last={i === rainbowDelegations.length - 1}
                   />
                 ))}
-              </Stack>
+              </Menu>
             </Stack>
           )}
 
@@ -355,15 +356,17 @@ export const Delegations = () => {
               <Text size="14pt" weight="semibold" color="label">
                 {i18n.t('delegations.other_smart_accounts')}
               </Text>
-              <Stack space="12px">
+              <Menu>
                 {thirdPartyDelegations.map((delegation, i) => (
                   <DelegationItem
                     key={`${delegation.chainId}-${i}`}
                     delegation={delegation}
                     onRevoke={() => handleRevokeOne(delegation)}
+                    first={i === 0}
+                    last={i === thirdPartyDelegations.length - 1}
                   />
                 ))}
-              </Stack>
+              </Menu>
             </Stack>
           )}
         </Stack>
