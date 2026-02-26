@@ -190,6 +190,7 @@
           "title": "Cüzdan Detayları",
           "view_recovery_phrase": "Kurtarma İfadesini Görüntüle",
           "create_new_wallet": "Yeni Bir Cüzdan Oluştur",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "Cüzdanı Yeniden Adlandır",
           "unhide_wallet": "Gizlenmiş Cüzdanı Göster",
           "delete_wallet": "Cüzdanı Sil",
@@ -273,6 +274,9 @@
     "approvals": {
       "title": "Onaylar"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "Para Birimi",
       "ETH": "Ethereum",
@@ -298,7 +302,10 @@
       "hw_wallets_enabled": "Donanım Cüzdanı Desteğini Etkinleştir",
       "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir",
       "custom_rpc": "Özel RPC",
-      "degen_mode": "Degen Modu"
+      "degen_mode": "Degen Modu",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -394,6 +401,18 @@
       "confirmed": "İptal edildi",
       "failed": "İptal Başarısız"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "Onaylandı",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "İptal etme",
+      "confirmed": "İptal edildi",
+      "failed": "İptal Başarısız"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "Satış",
       "confirmed": "Satıldı",
@@ -504,7 +523,8 @@
         "enable_flashbots": "Flashbots'i etkinleştir",
         "disable_flashbots": "Flashbots'i devre dışı bırak",
         "copy_uuid": "UUID'yi kopyala",
-        "clear_transactions": "Bekleyen İşlemleri Temizle"
+        "clear_transactions": "Bekleyen İşlemleri Temizle",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "satın al, sat, takas, sipariş, değişim, dex, rotalar",
@@ -532,7 +552,8 @@
         "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
         "diagnostics": "teşhisler",
         "refresh_data": "yenile, tekrar yükle, önbelleği temizle, sıfırla, güncelle",
-        "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler"
+        "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -557,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Bakiyeler ve Etkinlikler Yenilendi"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "Kişi Eklendi",
@@ -661,6 +685,85 @@
           "action_label": "Anladım"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "Aktif",
+      "disabled": "Devre Dışı",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
+      "backup_info_disabled": "Updates will take effect on your next swap",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "other_smart_accounts": "Other Smart Accounts",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "view_on_explorer": "Arayüzde Görüntüle",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Disable Smart Wallet",
+          "subtitle": "Revoke all delegations to disable smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Revoke Delegation",
+          "subtitle": "Remove delegation from this network."
+        },
+        "disable_third_party": {
+          "title": "Revoke Third-Party Delegation",
+          "subtitle": "Remove delegation from this third-party contract."
+        },
+        "alert_vulnerability": {
+          "title": "Security Alert",
+          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_bug": {
+          "title": "Security Alert",
+          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unrecognized": {
+          "title": "Security Alert",
+          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unspecified": {
+          "title": "Security Alert",
+          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+        }
+      },
+      "security_notice": "Security Notice",
+      "chain_label": "Zincir",
+      "contract_label": "Sözleşme",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "Tekrar Deneyin",
+      "cancel": "İptal",
+      "done": "Tamam",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "Devre Dışı Bırak",
+      "cancel": "İptal"
     }
   },
   "send": {
@@ -831,7 +934,9 @@
       "asset_contract": "%{symbol} sözleşme",
       "more_details": "Daha fazla ayrıntı",
       "confirmation": "%{Action} %{sellSymbol} yerine %{buySymbol}",
-      "go_back": "Geri git"
+      "go_back": "Geri git",
+      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
+      "will_delegate_callout": "This swap will activate your smart wallet on this network."
     },
     "explainers": {
       "long_wait": {
@@ -878,6 +983,10 @@
         "title": "Rainbow Ücreti",
         "description": "Rainbow, %{actions}'den %{feePercentage} ücret alır. Bize en iyi Ethereum deneyimini yaşatabilme yeteneğimizin bir parçasıdır.",
         "action_label": "Anladım"
+      },
+      "smart_wallet_activation": {
+        "title": "Smart Wallet Activation Fee",
+        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
       }
     }
   },
@@ -1355,6 +1464,7 @@
     "token_contract": "Token Sözleşmesi",
     "token_standard": "Token Standartı",
     "revoke_approval": "Onayı İptal Et",
+    "smart_account": "Smart Account",
     "error_title": "Etkinlik yüklenemedi",
     "error_message": "Bu işlemi getiremedik.\nTekrar deneyin veya etkinliklerinize geri dönün.",
     "error_retry": "Tekrar Deneyin",
@@ -1471,6 +1581,9 @@
     "close_cta": "İptal Et",
     "handle_copy_title": "Tx Hash Kopyalandı",
     "revoke_approval": "Onayı İptal Et",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
+    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "Hızlanma başarısız",
       "description": "Bir işlemi hızlandırma girişimleri ağ tıkanıklığı, gaz limit artışları veya orijinal işlem ilk onaylandığında başarısız olabilir"
