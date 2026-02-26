@@ -697,8 +697,8 @@
       "active": "Active",
       "disabled": "Disabled",
       "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
+      "enabled_description": "You'll miss out on faster transactions and lower network costs",
+      "disabled_description": "Updates will take effect on your next swap",
       "learn_more": "Learn more..."
     },
     "activated_networks": "Activated Networks",

@@ -120,8 +120,8 @@ const BackupInfo = ({ isActive }: { isActive: boolean }) => {
       <Text size="12pt" weight="regular" color="labelSecondary" align="center">
         {i18n.t(
           isActive
-            ? 'delegations.smart_wallet.backup_info_enabled'
-            : 'delegations.smart_wallet.backup_info_disabled',
+            ? 'delegations.smart_wallet.enabled_description'
+            : 'delegations.smart_wallet.disabled_description',
         )}
       </Text>
       {SMART_WALLET_LEARN_URL ? (
