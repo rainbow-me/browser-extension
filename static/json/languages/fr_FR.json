@@ -117,7 +117,7 @@
         "block_explorer_url": "URL de l'explorateur de blocs",
         "add_network": "Ajouter un réseau",
         "add_rpc": "Ajouter un point de terminaison RPC",
-        "add_network_rpc": "Ajouter %{rpcName} RPC",
+        "add_network_rpc": "Ajouter le RPC %{networkName}",
         "add_asset": "Ajouter un jeton personnalisé",
         "network_added": "Réseau ajouté",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Supprimer RPC",
         "remove_network": "Retirer le réseau",
         "tokens": "Jetons",
+        "chain_id_mismatch": "Ce RPC est pour l’ID de chaîne %{chainId}, pas %{networkName}",
         "cant_connect": "Impossible de se connecter à ce point de terminaison RPC",
         "rpc_not_responding": "Le point de terminaison RPC fourni ne répond pas",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "Ce RPC appartient à %{networkName}, qui existe déjà dans vos réseaux.",
+        "add_rpc_instead": "Ajouter un RPC à un réseau existant"
       },
       "rpc_endpoints": "Points de terminaison RPC",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "Détails du portefeuille",
           "view_recovery_phrase": "Afficher la phrase de récupération",
           "create_new_wallet": "Créer un nouveau portefeuille",
+          "edit_smart_wallet": "Modifier le Smart Wallet",
           "rename_wallet": "Renommer le portefeuille",
           "unhide_wallet": "Révéler le portefeuille",
           "delete_wallet": "Supprimer le portefeuille",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "Autorisations"
     },
+    "delegations": {
+      "title": "Smart Wallet"
+    },
     "currency": {
       "title": "Devise",
       "ETH": "Ethereum",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "Activer la prise en charge des portefeuilles matériels",
       "command_k_internal_shortcuts_enabled": "Activer les raccourcis internes ⌘K",
       "custom_rpc": "RPC personnalisé",
-      "degen_mode": "Mode Degen"
+      "degen_mode": "Mode Degen",
+      "atomic_swaps_enabled": "Swaps atomiques",
+      "rewards_scheduled_drop": "Drop programmé des récompenses",
+      "delegation_enabled": "Délégation activée"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "Révoqué",
       "failed": "Échec de révocation"
     },
+    "delegate": {
+      "pending": "Délégation en cours",
+      "confirmed": "Approuvé",
+      "failed": "Échec de la délégation"
+    },
+    "revoke_delegation": {
+      "pending": "Révocation en cours",
+      "confirmed": "Révoqué",
+      "failed": "Échec de révocation"
+    },
+    "delegate_description": "Délégation du portefeuille",
+    "revoke_delegation_description": "Délégation du portefeuille",
     "sale": {
       "pending": "En cours de vente",
       "confirmed": "Vendu",
@@ -501,7 +523,8 @@
         "enable_flashbots": "Activer Flashbots",
         "disable_flashbots": "Désactiver Flashbots",
         "copy_uuid": "Copier UUID",
-        "clear_transactions": "Effacer les transactions en attente"
+        "clear_transactions": "Effacer les transactions en attente",
+        "trigger_security_alert": "Déclencher une alerte de sécurité"
       },
       "search_tags": {
         "swap": "acheter, vendre, échanger, commander, échange, dex, itinéraires",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "portefeuilles et clés, paramètres, préférences",
         "diagnostics": "diagnostics :)",
         "refresh_data": "actualiser, recharger, vider le cache, réinitialiser, mettre à jour",
-        "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces"
+        "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces",
+        "trigger_security_alert": "délégation, révoquer, simuler, déboguer, tester"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Soldes et activité actualisés"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Alerte de sécurité déclenchée"
     },
     "contact_toast": {
       "title_added": "Contact ajouté",
@@ -658,6 +685,85 @@
           "action_label": "Compris"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Smart Wallet",
+    "no_delegations": "Aucune délégation active",
+    "no_delegations_description": "Vous n’avez aucune délégation EIP-7702 active à gérer.",
+    "revoke_all": "Révoquer toutes les délégations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "Actif",
+      "disabled": "Désactivé",
+      "description": "Les smart wallets permettent une expérience de portefeuille plus rapide, moins chère et plus fiable.",
+      "enabled_description": "Vous passerez à côté de transactions plus rapides et de frais de gas réduits",
+      "disabled_description": "Les mises à jour prendront effet lors de votre prochain swap",
+      "learn_more": "En savoir plus..."
+    },
+    "activated_networks": "Réseaux activés",
+    "other_smart_accounts": "Autres smart accounts",
+    "third_party_indicator_tooltip": "Ceci est une délégation tierce",
+    "activate_smart_wallet": "Activer Smart Wallet",
+    "disable_smart_wallet": "Désactiver Smart Wallet",
+    "view_on_explorer": "Afficher sur l'explorateur",
+    "revoke": {
+      "title": "Révoquer la délégation",
+      "subtitle": "Retirer la délégation de ce contrat",
+      "security_title": "Alerte de sécurité",
+      "security_subtitle": "Une délégation inconnue a été détectée. Révoquez-la pour sécuriser votre portefeuille.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Désactiver Smart Wallet",
+          "subtitle": "Révoquez toutes les délégations pour désactiver les smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Révoquer la délégation",
+          "subtitle": "Retirer la délégation de ce réseau."
+        },
+        "disable_third_party": {
+          "title": "Révoquer la délégation tierce",
+          "subtitle": "Retirer la délégation de ce contrat tiers."
+        },
+        "alert_vulnerability": {
+          "title": "Alerte de sécurité",
+          "subtitle": "Une délégation vulnérable a été détectée. Révoquez-la pour sécuriser votre portefeuille."
+        },
+        "alert_bug": {
+          "title": "Alerte de sécurité",
+          "subtitle": "Une délégation problématique a été détectée. Révoquez-la pour sécuriser votre portefeuille."
+        },
+        "alert_unrecognized": {
+          "title": "Alerte de sécurité",
+          "subtitle": "Une délégation non reconnue a été détectée. Révoquez-la pour sécuriser votre portefeuille."
+        },
+        "alert_unspecified": {
+          "title": "Alerte de sécurité",
+          "subtitle": "Une délégation inconnue a été détectée. Révoquez-la pour sécuriser votre portefeuille."
+        }
+      },
+      "security_notice": "Avis de sécurité",
+      "chain_label": "Chaîne",
+      "contract_label": "Contrat",
+      "progress": "%{current} sur %{total}",
+      "action": "Révoquer la délégation",
+      "revoking": "Révocation en cours...",
+      "success": "Révoqué avec succès",
+      "try_again": "Réessayer",
+      "cancel": "Annuler",
+      "done": "Terminé",
+      "next": "Suivant",
+      "confirm_hw": "Confirmer sur l'appareil"
+    },
+    "proactive_revoke": {
+      "title": "Alerte de sécurité",
+      "description": "Une délégation inconnue a été détectée. Révoquez-la pour sécuriser votre portefeuille."
+    },
+    "confirm_disable": {
+      "title": "Désactiver Smart Wallet",
+      "description": "Désactivez les smart wallets pour les transactions futures. Vous pouvez réactiver les smart wallets à tout moment.",
+      "action": "Désactiver",
+      "cancel": "Annuler"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} contrat",
       "more_details": "Plus de détails",
       "confirmation": "%{Action} %{sellSymbol} à %{buySymbol}",
-      "go_back": "Retour en arrière"
+      "go_back": "Retour en arrière",
+      "smart_wallet_activation_fee": "Frais estimés du Smart Wallet",
+      "will_delegate_callout": "Inclut l’activation du Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "Frais Rainbow",
         "description": "Rainbow prélève une commission %{feePercentage} de %{actions}. C'est ce qui nous permet de vous offrir la meilleure expérience Ethereum possible",
         "action_label": "Compris"
+      },
+      "smart_wallet_activation": {
+        "title": "Activation du Smart Wallet",
+        "description_1": "Cette transaction inclut une activation unique du Smart Wallet sur ce réseau. Cela met à niveau votre portefeuille pour prendre en charge les transactions groupées et d’autres fonctionnalités de compte intelligent.",
+        "description_2": "Les frais d’activation sont inclus dans les frais de réseau pour ce swap."
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "Contrat du jeton",
     "token_standard": "Standard du jeton",
     "revoke_approval": "Révoquer l'autorisation",
+    "smart_account": "Smart account",
     "error_title": "Impossible de charger l'activité",
     "error_message": "Nous n'avons pas pu récupérer cette transaction.\nRéessayez ou retournez à votre activité.",
     "error_retry": "Réessayer",
@@ -1468,6 +1582,9 @@
     "close_cta": "Annuler",
     "handle_copy_title": "Hachage de la transaction copié",
     "revoke_approval": "Révoquer l'autorisation",
+    "estimating_fee": "Estimation des frais…",
+    "tx_confirmed_or_not_found": "La transaction a peut-être déjà été confirmée ou est introuvable",
+    "eip7702_auth_list_unavailable": "Impossible d’accélérer cette transaction : les données de délégation ne sont pas disponibles. Réessayez plus tard ou utilisez un autre RPC.",
     "speed_up_failed": {
       "title": "Échec de l'accélération",
       "description": "Les tentatives d'accélération d'une transaction peuvent échouer en cas de congestion du réseau, d'augmentation de la limite de gaz, ou si la transaction originale est confirmée en premier"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "Réseau non pris en charge",
     "no_active_session": "Aucune session active",
     "already_added": "RPC activé",
-    "set_as_active": "Nouveau RPC activé",
+    "rpc_added": "Nouveau RPC ajouté",
     "already_active": "Réseau déjà ajouté"
   },
   "alert": {

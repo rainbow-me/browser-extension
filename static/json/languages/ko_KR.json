@@ -117,7 +117,7 @@
         "block_explorer_url": "블록 탐색기 URL",
         "add_network": "네트워크 추가",
         "add_rpc": "RPC 엔드포인트 추가",
-        "add_network_rpc": "%{rpcName} RPC 추가",
+        "add_network_rpc": "%{networkName} RPC 추가",
         "add_asset": "커스텀 토큰 추가",
         "network_added": "네트워크 추가됨",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "RPC 제거",
         "remove_network": "네트워크 제거",
         "tokens": "토큰",
+        "chain_id_mismatch": "이 RPC는 %{networkName}이(가) 아니라 체인 ID %{chainId}용입니다",
         "cant_connect": "이 RPC 엔드포인트에 연결할 수 없습니다",
         "rpc_not_responding": "제공된 RPC 엔드포인트가 응답하지 않습니다",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "이 RPC는 %{networkName}에 속하며, 이 네트워크는 이미 네트워크 목록에 있습니다.",
+        "add_rpc_instead": "기존 네트워크에 RPC 추가"
       },
       "rpc_endpoints": "RPC 엔드포인트",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "지갑 상세",
           "view_recovery_phrase": "복구 구문 보기",
           "create_new_wallet": "새 지갑 생성",
+          "edit_smart_wallet": "스마트 지갑 편집",
           "rename_wallet": "지갑 이름 변경",
           "unhide_wallet": "지갑 숨기기 해제",
           "delete_wallet": "지갑 삭제",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "승인"
     },
+    "delegations": {
+      "title": "스마트 지갑"
+    },
     "currency": {
       "title": "통화",
       "ETH": "이더리움",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "하드웨어 지갑 지원 활성화",
       "command_k_internal_shortcuts_enabled": "⌘K 내부 단축키 활성화",
       "custom_rpc": "사용자 정의 RPC",
-      "degen_mode": "Degen모드"
+      "degen_mode": "Degen모드",
+      "atomic_swaps_enabled": "아토믹 스왑",
+      "rewards_scheduled_drop": "보상 예정 드롭",
+      "delegation_enabled": "위임 활성화됨"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "철회 완료",
       "failed": "철회 실패"
     },
+    "delegate": {
+      "pending": "위임 중",
+      "confirmed": "승인 완료",
+      "failed": "위임 실패"
+    },
+    "revoke_delegation": {
+      "pending": "철회 중",
+      "confirmed": "철회 완료",
+      "failed": "철회 실패"
+    },
+    "delegate_description": "지갑 위임",
+    "revoke_delegation_description": "지갑 위임",
     "sale": {
       "pending": "판매 중",
       "confirmed": "판매 완료",
@@ -501,7 +523,8 @@
         "enable_flashbots": "플래시봇 활성화",
         "disable_flashbots": "플래시봇 비활성화",
         "copy_uuid": "UUID 복사",
-        "clear_transactions": "보류 중인 트랜잭션 지우기"
+        "clear_transactions": "보류 중인 트랜잭션 지우기",
+        "trigger_security_alert": "보안 경고 트리거"
       },
       "search_tags": {
         "swap": "구매, 판매, 거래, 주문, 교환, 덱스, 경로",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "지갑과 키, 설정, 환경 설정",
         "diagnostics": "진단",
         "refresh_data": "새로 고침, 다시 로드, 캐시 제거, 초기화, 업데이트",
-        "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들"
+        "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들",
+        "trigger_security_alert": "위임, 철회, 모의, 디버그, 테스트"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "잔액 및 활동이 새로 고쳐졌습니다"
+    },
+    "trigger_security_alert_toast": {
+      "title": "보안 경고가 트리거됨"
     },
     "contact_toast": {
       "title_added": "연락처 추가됨",
@@ -658,6 +685,85 @@
           "action_label": "확인"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "스마트 지갑",
+    "no_delegations": "활성 위임 없음",
+    "no_delegations_description": "관리할 활성 EIP-7702 위임이 없습니다.",
+    "revoke_all": "모든 위임 철회",
+    "smart_wallet": {
+      "title": "스마트 지갑",
+      "active": "활성화",
+      "disabled": "비활성화됨",
+      "description": "스마트 지갑은 더 빠르고, 더 저렴하며, 더 안정적인 지갑 경험을 제공합니다.",
+      "enabled_description": "더 빠른 거래와 더 낮은 가스 비용 혜택을 놓치게 됩니다",
+      "disabled_description": "업데이트는 다음 스왑에서 적용됩니다",
+      "learn_more": "더 알아보기..."
+    },
+    "activated_networks": "활성화된 네트워크",
+    "other_smart_accounts": "기타 스마트 계정",
+    "third_party_indicator_tooltip": "이것은 타사 위임입니다",
+    "activate_smart_wallet": "스마트 지갑 활성화",
+    "disable_smart_wallet": "스마트 지갑 비활성화",
+    "view_on_explorer": "탐색기에서 보기",
+    "revoke": {
+      "title": "위임 철회",
+      "subtitle": "이 컨트랙트에서 위임 제거",
+      "security_title": "보안 경고",
+      "security_subtitle": "알 수 없는 위임이 감지되었습니다. 지갑을 보호하려면 철회하세요.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "스마트 지갑 비활성화",
+          "subtitle": "스마트 지갑을 비활성화하려면 모든 위임을 철회하세요."
+        },
+        "disable_single_network": {
+          "title": "위임 철회",
+          "subtitle": "이 네트워크에서 위임 제거"
+        },
+        "disable_third_party": {
+          "title": "타사 위임 철회",
+          "subtitle": "이 타사 컨트랙트에서 위임 제거"
+        },
+        "alert_vulnerability": {
+          "title": "보안 경고",
+          "subtitle": "취약한 위임이 감지되었습니다. 지갑을 보호하려면 철회하세요."
+        },
+        "alert_bug": {
+          "title": "보안 경고",
+          "subtitle": "문제가 있는 위임이 감지되었습니다. 지갑을 보호하려면 철회하세요."
+        },
+        "alert_unrecognized": {
+          "title": "보안 경고",
+          "subtitle": "인식되지 않는 위임이 감지되었습니다. 지갑을 보호하려면 철회하세요."
+        },
+        "alert_unspecified": {
+          "title": "보안 경고",
+          "subtitle": "알 수 없는 위임이 감지되었습니다. 지갑을 보호하려면 철회하세요."
+        }
+      },
+      "security_notice": "보안 안내",
+      "chain_label": "블록체인",
+      "contract_label": "계약",
+      "progress": "%{total} 중 %{current}",
+      "action": "위임 철회",
+      "revoking": "철회 중...",
+      "success": "성공적으로 철회됨",
+      "try_again": "다시 시도하기",
+      "cancel": "취소",
+      "done": "완료",
+      "next": "다음",
+      "confirm_hw": "장치에서 확인"
+    },
+    "proactive_revoke": {
+      "title": "보안 경고",
+      "description": "알 수 없는 위임이 감지되었습니다. 지갑을 보호하려면 철회하세요."
+    },
+    "confirm_disable": {
+      "title": "스마트 지갑 비활성화",
+      "description": "향후 트랜잭션을 위해 스마트 지갑을 비활성화합니다. 언제든지 스마트 지갑을 다시 활성화할 수 있습니다.",
+      "action": "비활성화",
+      "cancel": "취소"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} 계약",
       "more_details": "자세한 사항",
       "confirmation": "%{Action} %{sellSymbol} 에서 %{buySymbol}로",
-      "go_back": "뒤로 가기"
+      "go_back": "뒤로 가기",
+      "smart_wallet_activation_fee": "예상 스마트 월렛 수수료",
+      "will_delegate_callout": "스마트 월렛 활성화 포함"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "레인보우 수수료",
         "description": "Rainbow은 %{actions}에서 %{feePercentage} 수수료를 받습니다. 이것으로 우리는 최고의 이더리움 경험을 제공할 수 있습니다.",
         "action_label": "확인"
+      },
+      "smart_wallet_activation": {
+        "title": "스마트 월렛 활성화",
+        "description_1": "이 거래에는 이 네트워크에서 1회성 스마트 월렛 활성화가 포함됩니다. 이를 통해 지갑이 업그레이드되어 배치 거래 및 기타 스마트 계정 기능을 지원합니다.",
+        "description_2": "활성화 수수료는 이 스왑의 네트워크 수수료에 포함되어 있습니다."
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "토큰 계약",
     "token_standard": "토큰 표준",
     "revoke_approval": "승인 취소",
+    "smart_account": "스마트 계정",
     "error_title": "활동을 불러올 수 없습니다.",
     "error_message": "이 거래를 가져올 수 없습니다.\n다시 시도하거나 활동으로 돌아가세요.",
     "error_retry": "다시 시도하기",
@@ -1468,6 +1582,9 @@
     "close_cta": "취소",
     "handle_copy_title": "Tx 해시 복사됨",
     "revoke_approval": "승인 취소",
+    "estimating_fee": "수수료 추정 중…",
+    "tx_confirmed_or_not_found": "트랜잭션이 이미 확인되었거나 찾을 수 없습니다",
+    "eip7702_auth_list_unavailable": "이 트랜잭션을 가속할 수 없습니다: 위임 데이터를 사용할 수 없습니다. 나중에 다시 시도하거나 다른 RPC를 사용하세요.",
     "speed_up_failed": {
       "title": "가속 실패",
       "description": "트랜잭션 가속 시도는 네트워크 혼잡, 가스 한도 증가, 또는 원래 트랜잭션이 먼저 확인되었을 때 실패할 수 있습니다"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "지원되지 않는 네트워크",
     "no_active_session": "활성 세션이 없음",
     "already_added": "RPC 활성화됨",
-    "set_as_active": "새 RPC 활성화됨",
+    "rpc_added": "새 RPC 추가됨",
     "already_active": "네트워크 이미 추가됨"
   },
   "alert": {

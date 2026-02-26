@@ -117,7 +117,7 @@
         "block_explorer_url": "رابط مستكشف الكتل",
         "add_network": "إضافة شبكة",
         "add_rpc": "إضافة نقطة نهاية RPC",
-        "add_network_rpc": "إضافة RPC %{rpcName}",
+        "add_network_rpc": "إضافة RPC %{networkName}",
         "add_asset": "إضافة رمز مخصص",
         "network_added": "تمت إضافة الشبكة",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "إزالة RPC",
         "remove_network": "إزالة الشبكة",
         "tokens": "رموز",
+        "chain_id_mismatch": "هذا الـ RPC مخصص لمعرّف السلسلة %{chainId}، وليس لـ %{networkName}",
         "cant_connect": "لا يمكن الاتصال بهذه النقطة النهائية لـ RPC",
         "rpc_not_responding": "نقطة النهاية لـ RPC المُقدمة لا تستجيب",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "رينبو"
+        "rainbow_default": "رينبو",
+        "network_already_exists": "هذا الـ RPC تابع لـ %{networkName}، والذي يوجد بالفعل ضمن شبكاتك.",
+        "add_rpc_instead": "إضافة RPC إلى شبكة موجودة"
       },
       "rpc_endpoints": "نقاط نهاية RPC",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "تفاصيل المحفظة",
           "view_recovery_phrase": "عرض عبارة الاسترداد",
           "create_new_wallet": "إنشاء محفظة جديدة",
+          "edit_smart_wallet": "تعديل المحفظة الذكية",
           "rename_wallet": "إعادة تسمية المحفظة",
           "unhide_wallet": "إظهار المحفظة",
           "delete_wallet": "حذف المحفظة",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "الموافقات"
     },
+    "delegations": {
+      "title": "المحفظة الذكية"
+    },
     "currency": {
       "title": "العملة",
       "ETH": "إثيريوم",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "تفعيل دعم المحفظة الأجهزة",
       "command_k_internal_shortcuts_enabled": "تفعيل الاختصارات الداخلية ⌘K",
       "custom_rpc": "Custom RPC",
-      "degen_mode": "وضع Degen"
+      "degen_mode": "وضع Degen",
+      "atomic_swaps_enabled": "المبادلات الذرية",
+      "rewards_scheduled_drop": "إسقاط مجدول للمكافآت",
+      "delegation_enabled": "تمكين التفويض"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "تم الإلغاء",
       "failed": "فشل الإلغاء"
     },
+    "delegate": {
+      "pending": "جارٍ التفويض",
+      "confirmed": "تمت الموافقة",
+      "failed": "فشل التفويض"
+    },
+    "revoke_delegation": {
+      "pending": "إلغاء",
+      "confirmed": "تم الإلغاء",
+      "failed": "فشل الإلغاء"
+    },
+    "delegate_description": "تفويض المحفظة",
+    "revoke_delegation_description": "تفويض المحفظة",
     "sale": {
       "pending": "بيع",
       "confirmed": "تم البيع",
@@ -501,7 +523,8 @@
         "enable_flashbots": "تمكين Flashbots",
         "disable_flashbots": "تعطيل Flashbots",
         "copy_uuid": "نسخ UUID",
-        "clear_transactions": "مسح المعاملات المعلقة"
+        "clear_transactions": "مسح المعاملات المعلقة",
+        "trigger_security_alert": "تشغيل تنبيه الأمان"
       },
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
         "diagnostics": "التشخيص",
         "refresh_data": "تحديث، إعادة تحميل، مسح الذاكرة المؤقتة، إعادة تعيين، تحديث",
-        "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات"
+        "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات",
+        "trigger_security_alert": "تفويض، إلغاء، محاكاة، تصحيح، اختبار"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "تم تحديث الأرصدة والنشاط"
+    },
+    "trigger_security_alert_toast": {
+      "title": "تم تشغيل تنبيه الأمان"
     },
     "contact_toast": {
       "title_added": "تمت إضافة جهة اتصال",
@@ -658,6 +685,85 @@
           "action_label": "فهمت"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "المحفظة الذكية",
+    "no_delegations": "لا توجد تفويضات نشطة",
+    "no_delegations_description": "ليس لديك أي تفويضات EIP-7702 نشطة لإدارتها.",
+    "revoke_all": "إلغاء جميع التفويضات",
+    "smart_wallet": {
+      "title": "المحفظة الذكية",
+      "active": "نشط",
+      "disabled": "معطل",
+      "description": "تتيح المحافظ الذكية تجربة محفظة أسرع وأرخص وأكثر موثوقية.",
+      "enabled_description": "ستفوتك معاملات أسرع وتكاليف غاز أقل",
+      "disabled_description": "ستسري التحديثات عند عملية المبادلة التالية",
+      "learn_more": "أعرف أكثر..."
+    },
+    "activated_networks": "الشبكات المُفعّلة",
+    "other_smart_accounts": "حسابات ذكية أخرى",
+    "third_party_indicator_tooltip": "هذا تفويض من جهة خارجية",
+    "activate_smart_wallet": "تفعيل المحفظة الذكية",
+    "disable_smart_wallet": "تعطيل المحفظة الذكية",
+    "view_on_explorer": "عرض على الاستكشاف",
+    "revoke": {
+      "title": "إلغاء التفويض",
+      "subtitle": "إزالة التفويض من هذا العقد",
+      "security_title": "تنبيه الأمان",
+      "security_subtitle": "تم اكتشاف تفويض غير معروف. ألغِه لتأمين محفظتك.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "تعطيل المحفظة الذكية",
+          "subtitle": "ألغِ جميع التفويضات لتعطيل المحافظ الذكية."
+        },
+        "disable_single_network": {
+          "title": "إلغاء التفويض",
+          "subtitle": "إزالة التفويض من هذه الشبكة."
+        },
+        "disable_third_party": {
+          "title": "إلغاء تفويض جهة خارجية",
+          "subtitle": "إزالة التفويض من عقد هذه الجهة الخارجية."
+        },
+        "alert_vulnerability": {
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض مُعرّض للخطر. ألغِه لتأمين محفظتك."
+        },
+        "alert_bug": {
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض مُسبّب للمشكلات. ألغِه لتأمين محفظتك."
+        },
+        "alert_unrecognized": {
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض غير معترف به. ألغِه لتأمين محفظتك."
+        },
+        "alert_unspecified": {
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض غير معروف. ألغِه لتأمين محفظتك."
+        }
+      },
+      "security_notice": "إشعار أمني",
+      "chain_label": "السلسلة",
+      "contract_label": "عقد",
+      "progress": "%{current} من %{total}",
+      "action": "إلغاء التفويض",
+      "revoking": "جارٍ الإلغاء...",
+      "success": "تم الإلغاء بنجاح",
+      "try_again": "حاول مرة أخرى",
+      "cancel": "إلغاء",
+      "done": "تم",
+      "next": "التالي",
+      "confirm_hw": "التأكيد على الجهاز"
+    },
+    "proactive_revoke": {
+      "title": "تنبيه الأمان",
+      "description": "تم اكتشاف تفويض غير معروف. ألغِه لتأمين محفظتك."
+    },
+    "confirm_disable": {
+      "title": "تعطيل المحفظة الذكية",
+      "description": "عطّل المحافظ الذكية للمعاملات المستقبلية. يمكنك إعادة تفعيل المحافظ الذكية في أي وقت.",
+      "action": "تعطيل",
+      "cancel": "إلغاء"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} عقد",
       "more_details": "مزيد من التفاصيل",
       "confirmation": "%{Action} %{sellSymbol} إلى %{buySymbol}",
-      "go_back": "الرجوع إلى الوراء"
+      "go_back": "الرجوع إلى الوراء",
+      "smart_wallet_activation_fee": "رسوم المحفظة الذكية التقديرية",
+      "will_delegate_callout": "يتضمن تفعيل المحفظة الذكية"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "رسوم Rainbow",
         "description": "تأخذ Rainbow رسوم %{feePercentage} من %{actions}. يعد جزءًا من الذي يتيح لنا أن نقدم لك أفضل تجربة إيثيريوم ممكنة",
         "action_label": "فهمت"
+      },
+      "smart_wallet_activation": {
+        "title": "تفعيل المحفظة الذكية",
+        "description_1": "تتضمن هذه المعاملة تفعيلًا لمرة واحدة للمحفظة الذكية على هذه الشبكة. يؤدي ذلك إلى ترقية محفظتك لدعم المعاملات المجمّعة وميزات الحساب الذكي الأخرى.",
+        "description_2": "رسوم التفعيل مُضمَّنة ضمن رسوم الشبكة لهذه المبادلة."
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "عقد الرمز",
     "token_standard": "معايير الرمز",
     "revoke_approval": "إلغاء الموافقة",
+    "smart_account": "حساب ذكي",
     "error_title": "غير قادر على تحميل النشاط",
     "error_message": "لم نتمكن من جلب هذه المعاملة.\nحاول مرة أخرى أو عد إلى نشاطك.",
     "error_retry": "حاول مرة أخرى",
@@ -1468,6 +1582,9 @@
     "close_cta": "الغاء",
     "handle_copy_title": "تم نسخ الهاش الخاص بالمعاملة",
     "revoke_approval": "إلغاء الموافقة",
+    "estimating_fee": "جارٍ تقدير الرسوم…",
+    "tx_confirmed_or_not_found": "قد تكون المعاملة قد تم تأكيدها بالفعل أو تعذر العثور عليها",
+    "eip7702_auth_list_unavailable": "لا يمكن تسريع هذه المعاملة: بيانات التفويض غير متاحة. حاول مرة أخرى لاحقًا أو استخدم RPC مختلفًا.",
     "speed_up_failed": {
       "title": "فشل تسريع العملية",
       "description": "قد تفشل محاولات تسريع العملية أثناء ازدحام الشبكة، زيادة حد الغاز، أو عند تأكيد المعاملة الأصلية أولاً"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "شبكة غير مدعومة",
     "no_active_session": "لا يوجد جلسة نشطة",
     "already_added": "تم تفعيل RPC",
-    "set_as_active": "RPC الجديد مفعل",
+    "rpc_added": "تمت إضافة RPC جديد",
     "already_active": "الشبكة مُضافة مسبقًا"
   },
   "alert": {

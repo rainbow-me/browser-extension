@@ -117,7 +117,7 @@
         "block_explorer_url": "URL блок-эксплорера",
         "add_network": "Добавить сеть",
         "add_rpc": "Добавить RPC-точку доступа",
-        "add_network_rpc": "Добавить RPC %{rpcName}",
+        "add_network_rpc": "Добавить RPC %{networkName}",
         "add_asset": "Добавить пользовательский токен",
         "network_added": "Сеть добавлена",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Удалить RPC",
         "remove_network": "Удалить сеть",
         "tokens": "Токены",
+        "chain_id_mismatch": "Этот RPC предназначен для chain ID %{chainId}, а не для %{networkName}",
         "cant_connect": "Не удаётся подключиться к этому RPC-эндпоинту",
         "rpc_not_responding": "Предоставленный RPC-эндпоинт не отвечает",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "Этот RPC относится к %{networkName}, которая уже есть в ваших сетях.",
+        "add_rpc_instead": "Добавить RPC к существующей сети"
       },
       "rpc_endpoints": "RPC-конечные точки",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "Детали Кошелька",
           "view_recovery_phrase": "Просмотреть фразу восстановления",
           "create_new_wallet": "Создать новый кошелек",
+          "edit_smart_wallet": "Редактировать смарт-кошелек",
           "rename_wallet": "Переименовать кошелек",
           "unhide_wallet": "Разблокировать скрытый кошелек",
           "delete_wallet": "Удалить кошелек",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "Разрешения"
     },
+    "delegations": {
+      "title": "Смарт-кошелёк"
+    },
     "currency": {
       "title": "Валюта",
       "ETH": "Ethereum",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "Включить поддержку аппаратных кошельков",
       "command_k_internal_shortcuts_enabled": "Включить внутренние ярлыки ⌘K",
       "custom_rpc": "Пользовательский RPC",
-      "degen_mode": "Degenмод"
+      "degen_mode": "Degenмод",
+      "atomic_swaps_enabled": "Атомарные свопы",
+      "rewards_scheduled_drop": "Запланированный дроп наград",
+      "delegation_enabled": "Делегирование включено"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "Отозвано",
       "failed": "Отзыв не удался"
     },
+    "delegate": {
+      "pending": "Делегирование",
+      "confirmed": "Утверждено",
+      "failed": "Делегирование не удалось"
+    },
+    "revoke_delegation": {
+      "pending": "Отзыв",
+      "confirmed": "Отозвано",
+      "failed": "Отзыв не удался"
+    },
+    "delegate_description": "Делегирование кошелька",
+    "revoke_delegation_description": "Делегирование кошелька",
     "sale": {
       "pending": "Продажа",
       "confirmed": "Продано",
@@ -501,7 +523,8 @@
         "enable_flashbots": "Включить Flashbots",
         "disable_flashbots": "Отключить Flashbots",
         "copy_uuid": "Копировать UUID",
-        "clear_transactions": "Очистить Ожидающие Транзакции"
+        "clear_transactions": "Очистить Ожидающие Транзакции",
+        "trigger_security_alert": "Запустить оповещение безопасности"
       },
       "search_tags": {
         "swap": "купить, продать, обменять, заказать, обмен, dex, маршруты",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "кошельки и ключи, настройки, предпочтения",
         "diagnostics": "диагностика",
         "refresh_data": "обновить, перезагрузить, очистить кэш, сбросить, обновление",
-        "clear_transactions": "очистить, сбросить, ожидающие, транзакции, нонс, нонсы"
+        "clear_transactions": "очистить, сбросить, ожидающие, транзакции, нонс, нонсы",
+        "trigger_security_alert": "делегирование, отзыв, мок, отладка, тест"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Балансы и активность обновлены"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Оповещение безопасности сработало"
     },
     "contact_toast": {
       "title_added": "Контакт добавлен",
@@ -658,6 +685,85 @@
           "action_label": "Понятно"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Смарт-кошелёк",
+    "no_delegations": "Нет активных делегирований",
+    "no_delegations_description": "У вас нет активных делегирований EIP-7702 для управления.",
+    "revoke_all": "Отозвать все делегирования",
+    "smart_wallet": {
+      "title": "Смарт-кошелёк",
+      "active": "Активен",
+      "disabled": "Отключено",
+      "description": "Смарт-кошельки обеспечивают более быстрый, более дешёвый и более надёжный опыт использования кошелька.",
+      "enabled_description": "Вы упустите более быстрые транзакции и более низкие комиссии за газ",
+      "disabled_description": "Обновления вступят в силу при следующем обмене",
+      "learn_more": "Узнать больше..."
+    },
+    "activated_networks": "Активированные сети",
+    "other_smart_accounts": "Другие смарт-аккаунты",
+    "third_party_indicator_tooltip": "Это делегирование от стороннего сервиса",
+    "activate_smart_wallet": "Активировать смарт-кошелёк",
+    "disable_smart_wallet": "Отключить смарт-кошелёк",
+    "view_on_explorer": "Просмотр в обозревателе",
+    "revoke": {
+      "title": "Отозвать делегирование",
+      "subtitle": "Удалить делегирование из этого контракта",
+      "security_title": "Оповещение безопасности",
+      "security_subtitle": "Обнаружено неизвестное делегирование. Отзовите его, чтобы защитить кошелёк.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Отключить смарт-кошелёк",
+          "subtitle": "Отзовите все делегирования, чтобы отключить смарт-кошельки."
+        },
+        "disable_single_network": {
+          "title": "Отозвать делегирование",
+          "subtitle": "Удалить делегирование из этой сети."
+        },
+        "disable_third_party": {
+          "title": "Отозвать стороннее делегирование",
+          "subtitle": "Удалить делегирование из этого стороннего контракта."
+        },
+        "alert_vulnerability": {
+          "title": "Оповещение безопасности",
+          "subtitle": "Обнаружено уязвимое делегирование. Отзовите его, чтобы защитить кошелёк."
+        },
+        "alert_bug": {
+          "title": "Оповещение безопасности",
+          "subtitle": "Обнаружено проблемное делегирование. Отзовите его, чтобы защитить кошелёк."
+        },
+        "alert_unrecognized": {
+          "title": "Оповещение безопасности",
+          "subtitle": "Обнаружено нераспознанное делегирование. Отзовите его, чтобы защитить кошелёк."
+        },
+        "alert_unspecified": {
+          "title": "Оповещение безопасности",
+          "subtitle": "Обнаружено неизвестное делегирование. Отзовите его, чтобы защитить кошелёк."
+        }
+      },
+      "security_notice": "Уведомление о безопасности",
+      "chain_label": "Сеть",
+      "contract_label": "Контракт",
+      "progress": "%{current} из %{total}",
+      "action": "Отозвать делегирование",
+      "revoking": "Отзыв...",
+      "success": "Успешно отозвано",
+      "try_again": "Попробуйте снова",
+      "cancel": "Отмена",
+      "done": "Готово",
+      "next": "Далее",
+      "confirm_hw": "Подтвердите на устройстве"
+    },
+    "proactive_revoke": {
+      "title": "Оповещение безопасности",
+      "description": "Обнаружено неизвестное делегирование. Отзовите, чтобы защитить кошелёк."
+    },
+    "confirm_disable": {
+      "title": "Отключить смарт-кошелёк",
+      "description": "Отключите смарт-кошельки для будущих транзакций. Вы можете повторно активировать смарт-кошельки в любое время.",
+      "action": "Отключить",
+      "cancel": "Отмена"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} контракт",
       "more_details": "Подробнее",
       "confirmation": "%{Action} %{sellSymbol} к %{buySymbol}",
-      "go_back": "Вернуться"
+      "go_back": "Вернуться",
+      "smart_wallet_activation_fee": "Примерная комиссия Smart Wallet",
+      "will_delegate_callout": "Включает активацию Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "Комиссия Rainbow",
         "description": "Rainbow берет комиссию %{feePercentage} от %{actions}. Это помогает нам обеспечивать вам лучший опыт работы с Ethereum",
         "action_label": "Понятно"
+      },
+      "smart_wallet_activation": {
+        "title": "Активация Smart Wallet",
+        "description_1": "Эта транзакция включает разовую активацию Smart Wallet в этой сети. Это обновляет ваш кошелёк, чтобы он поддерживал пакетные транзакции и другие функции смарт-аккаунта.",
+        "description_2": "Комиссия за активацию включена в сетевую комиссию за этот обмен."
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "Контракт токена",
     "token_standard": "Стандарт токена",
     "revoke_approval": "Отозвать разрешение",
+    "smart_account": "Смарт-аккаунт",
     "error_title": "Не удалось загрузить действия",
     "error_message": "Мы не смогли загрузить эту транзакцию.\nПопробуйте еще раз или вернитесь к своей активности.",
     "error_retry": "Попробуйте снова",
@@ -1468,6 +1582,9 @@
     "close_cta": "Отменить",
     "handle_copy_title": "Хеш транзакции скопирован",
     "revoke_approval": "Отозвать разрешение",
+    "estimating_fee": "Оценка комиссии…",
+    "tx_confirmed_or_not_found": "Транзакция, возможно, уже подтверждена или не найдена",
+    "eip7702_auth_list_unavailable": "Невозможно ускорить эту транзакцию: данные делегирования недоступны. Попробуйте позже или используйте другой RPC.",
     "speed_up_failed": {
       "title": "Ускорение не удалось",
       "description": "Попытки ускорить транзакцию могут не удаться из-за перегрузки сети, увеличения лимита газа или если исходная транзакция подтвердится первой"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "Неподдерживаемая сеть",
     "no_active_session": "Нет активной сессии",
     "already_added": "RPC активирован",
-    "set_as_active": "Новый RPC активирован",
+    "rpc_added": "Новый RPC добавлен",
     "already_active": "Сеть уже добавлена"
   },
   "alert": {

@@ -117,7 +117,7 @@
         "block_explorer_url": "URL do Explorador de Blocos",
         "add_network": "Adicionar Rede",
         "add_rpc": "Adicionar Ponto de Acesso RPC",
-        "add_network_rpc": "Adicionar RPC %{rpcName}",
+        "add_network_rpc": "Adicionar RPC %{networkName}",
         "add_asset": "Adicionar Token Personalizado",
         "network_added": "Rede Adicionada",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Remover RPC",
         "remove_network": "Remover Rede",
         "tokens": "Tokens",
+        "chain_id_mismatch": "Este RPC é para o ID da chain %{chainId}, não para %{networkName}",
         "cant_connect": "Não é possível conectar a este ponto final RPC",
         "rpc_not_responding": "O ponto final RPC fornecido não está respondendo",
         "rainbow_default_rpc": "Arco-íris",
-        "rainbow_default": "Arco-íris"
+        "rainbow_default": "Arco-íris",
+        "network_already_exists": "Este RPC pertence a %{networkName}, que já existe nas suas redes.",
+        "add_rpc_instead": "Adicionar RPC à rede existente"
       },
       "rpc_endpoints": "Pontos finais RPC",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "Detalhes da Carteira",
           "view_recovery_phrase": "Visualizar frase de recuperação",
           "create_new_wallet": "Criar uma nova carteira",
+          "edit_smart_wallet": "Editar Smart Wallet",
           "rename_wallet": "Renomear carteira",
           "unhide_wallet": "Mostrar carteira oculta",
           "delete_wallet": "Excluir carteira",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "Aprovações"
     },
+    "delegations": {
+      "title": "Carteira inteligente"
+    },
     "currency": {
       "title": "Moeda",
       "ETH": "Ethereum",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "Habilitar Suporte para Carteiras de Hardware",
       "command_k_internal_shortcuts_enabled": "Habilitar Atalhos Internos ⌘K",
       "custom_rpc": "RPC personalizado",
-      "degen_mode": "Modo Degen"
+      "degen_mode": "Modo Degen",
+      "atomic_swaps_enabled": "Swaps Atômicos",
+      "rewards_scheduled_drop": "Distribuição Agendada de Recompensas",
+      "delegation_enabled": "Delegação Ativada"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "Revogado",
       "failed": "Revogação Falhou"
     },
+    "delegate": {
+      "pending": "Delegando",
+      "confirmed": "Aprovado",
+      "failed": "Falha na Delegação"
+    },
+    "revoke_delegation": {
+      "pending": "Revogando",
+      "confirmed": "Revogado",
+      "failed": "Revogação Falhou"
+    },
+    "delegate_description": "Delegação da Carteira",
+    "revoke_delegation_description": "Delegação da Carteira",
     "sale": {
       "pending": "Vendendo",
       "confirmed": "Vendido",
@@ -501,7 +523,8 @@
         "enable_flashbots": "Ativar Flashbots",
         "disable_flashbots": "Desativar Flashbots",
         "copy_uuid": "Copiar UUID",
-        "clear_transactions": "Limpar Transações Pendentes"
+        "clear_transactions": "Limpar Transações Pendentes",
+        "trigger_security_alert": "Acionar alerta de segurança"
       },
       "search_tags": {
         "swap": "comprar, vender, negociar, encomendar, trocar, dex, rotas",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "carteiras e chaves, configurações, preferências",
         "diagnostics": "diagnóstico",
         "refresh_data": "atualizar, recarregar, limpar cache, redefinir, atualizar",
-        "clear_transactions": "limpar, redefinir, pendente, transações, nonce, nonces"
+        "clear_transactions": "limpar, redefinir, pendente, transações, nonce, nonces",
+        "trigger_security_alert": "delegação, revogar, simular, depurar, teste"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Saldos e Atividade Atualizados"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Alerta de segurança acionado"
     },
     "contact_toast": {
       "title_added": "Contato Adicionado",
@@ -658,6 +685,85 @@
           "action_label": "Entendi"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Carteira inteligente",
+    "no_delegations": "Nenhuma delegação ativa",
+    "no_delegations_description": "Você não tem nenhuma delegação EIP-7702 ativa para gerenciar.",
+    "revoke_all": "Revogar todas as delegações",
+    "smart_wallet": {
+      "title": "Carteira inteligente",
+      "active": "Ativo",
+      "disabled": "Desativado",
+      "description": "Carteiras inteligentes oferecem uma experiência de carteira mais rápida, mais barata e mais confiável.",
+      "enabled_description": "Você vai perder transações mais rápidas e custos de gas mais baixos",
+      "disabled_description": "As atualizações entrarão em vigor na sua próxima troca",
+      "learn_more": "Saiba mais..."
+    },
+    "activated_networks": "Redes ativadas",
+    "other_smart_accounts": "Outras contas inteligentes",
+    "third_party_indicator_tooltip": "Esta é uma delegação de terceiros",
+    "activate_smart_wallet": "Ativar carteira inteligente",
+    "disable_smart_wallet": "Desativar carteira inteligente",
+    "view_on_explorer": "Ver no Explorer",
+    "revoke": {
+      "title": "Revogar delegação",
+      "subtitle": "Remover delegação deste contrato",
+      "security_title": "Alerta de segurança",
+      "security_subtitle": "Foi detectada uma delegação desconhecida. Revogue-a para proteger sua carteira.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Desativar carteira inteligente",
+          "subtitle": "Revogue todas as delegações para desativar carteiras inteligentes."
+        },
+        "disable_single_network": {
+          "title": "Revogar delegação",
+          "subtitle": "Remover delegação desta rede."
+        },
+        "disable_third_party": {
+          "title": "Revogar delegação de terceiros",
+          "subtitle": "Remover delegação deste contrato de terceiros."
+        },
+        "alert_vulnerability": {
+          "title": "Alerta de segurança",
+          "subtitle": "Foi detectada uma delegação vulnerável. Revogue-a para proteger sua carteira."
+        },
+        "alert_bug": {
+          "title": "Alerta de segurança",
+          "subtitle": "Foi detectada uma delegação problemática. Revogue-a para proteger sua carteira."
+        },
+        "alert_unrecognized": {
+          "title": "Alerta de segurança",
+          "subtitle": "Foi detectada uma delegação não reconhecida. Revogue-a para proteger sua carteira."
+        },
+        "alert_unspecified": {
+          "title": "Alerta de segurança",
+          "subtitle": "Foi detectada uma delegação desconhecida. Revogue-a para proteger sua carteira."
+        }
+      },
+      "security_notice": "Aviso de segurança",
+      "chain_label": "Rede",
+      "contract_label": "Contrato",
+      "progress": "%{current} de %{total}",
+      "action": "Revogar delegação",
+      "revoking": "Revogando...",
+      "success": "Revogado com sucesso",
+      "try_again": "Tente Novamente",
+      "cancel": "Cancelar",
+      "done": "Concluído",
+      "next": "Avançar",
+      "confirm_hw": "Confirmar no dispositivo"
+    },
+    "proactive_revoke": {
+      "title": "Alerta de segurança",
+      "description": "Foi detectada uma delegação desconhecida. Revogue para proteger sua carteira."
+    },
+    "confirm_disable": {
+      "title": "Desativar carteira inteligente",
+      "description": "Desative as carteiras inteligentes para transações futuras. Você pode reativar as carteiras inteligentes a qualquer momento.",
+      "action": "Desativar",
+      "cancel": "Cancelar"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} contrato",
       "more_details": "Mais detalhes",
       "confirmation": "%{Action} %{sellSymbol} para %{buySymbol}",
-      "go_back": "Voltar"
+      "go_back": "Voltar",
+      "smart_wallet_activation_fee": "Taxa estimada da Smart Wallet",
+      "will_delegate_callout": "Inclui ativação da Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "Taxa Rainbow",
         "description": "Rainbow cobra uma taxa de %{feePercentage} de %{actions}. Isso é parte do que nos permite oferecer a melhor experiência Ethereum possível",
         "action_label": "Entendi"
+      },
+      "smart_wallet_activation": {
+        "title": "Ativação da Smart Wallet",
+        "description_1": "Esta transação inclui uma ativação única da Smart Wallet nesta rede. Isso atualiza sua carteira para oferecer suporte a transações em lote e outros recursos de conta inteligente.",
+        "description_2": "A taxa de ativação está incluída na taxa de rede desta troca."
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "Contrato do Token",
     "token_standard": "Padrão do Token",
     "revoke_approval": "Revogar Aprovação",
+    "smart_account": "Conta inteligente",
     "error_title": "Não foi possível carregar a atividade",
     "error_message": "Não conseguimos buscar esta transação.\nTente novamente ou volte para a sua atividade.",
     "error_retry": "Tente Novamente",
@@ -1468,6 +1582,9 @@
     "close_cta": "Cancelar",
     "handle_copy_title": "Hash da Tx Copiado",
     "revoke_approval": "Revogar Aprovação",
+    "estimating_fee": "Estimando taxa…",
+    "tx_confirmed_or_not_found": "A transação pode já ter sido confirmada ou não foi encontrada",
+    "eip7702_auth_list_unavailable": "Não é possível acelerar esta transação: os dados de delegação não estão disponíveis. Tente novamente mais tarde ou use um RPC diferente.",
     "speed_up_failed": {
       "title": "Falha ao Acelerar",
       "description": "Tentativas de acelerar uma transação podem falhar durante congestionamento da rede, aumento do limite de gás, ou quando a transação original é confirmada primeiro"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "Rede não suportada",
     "no_active_session": "Nenhuma sessão ativa",
     "already_added": "RPC ativado",
-    "set_as_active": "Novo RPC ativado",
+    "rpc_added": "Novo RPC adicionado",
     "already_active": "Rede já adicionada"
   },
   "alert": {

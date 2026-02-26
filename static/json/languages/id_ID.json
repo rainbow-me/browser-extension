@@ -117,7 +117,7 @@
         "block_explorer_url": "URL Eksplorer Blok",
         "add_network": "Tambah Jaringan",
         "add_rpc": "Tambahkan Endpoint RPC",
-        "add_network_rpc": "Tambahkan RPC %{rpcName}",
+        "add_network_rpc": "Tambahkan RPC %{networkName}",
         "add_asset": "Tambah Token Khusus",
         "network_added": "Jaringan Ditambahkan",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Hapus RPC",
         "remove_network": "Hapus Jaringan",
         "tokens": "Tokens",
+        "chain_id_mismatch": "RPC ini untuk ID chain %{chainId}, bukan %{networkName}",
         "cant_connect": "Tidak bisa terhubung ke RPC endpoint ini",
         "rpc_not_responding": "RPC endpoint yang diberikan tidak merespon",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "RPC ini milik %{networkName}, yang sudah ada di jaringan Anda.",
+        "add_rpc_instead": "Tambahkan RPC ke jaringan yang sudah ada"
       },
       "rpc_endpoints": "Endpoint RPC",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "Detail Dompet",
           "view_recovery_phrase": "Lihat Frasa Pemulihan",
           "create_new_wallet": "Buat Dompet Baru",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "Ganti Nama Dompet",
           "unhide_wallet": "Tampilkan Dompet",
           "delete_wallet": "Hapus Dompet",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "Persetujuan"
     },
+    "delegations": {
+      "title": "Dompet Pintar"
+    },
     "currency": {
       "title": "Mata Uang",
       "ETH": "Ethereum",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "Aktifkan Dukungan Dompet Perangkat Keras",
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
       "custom_rpc": "RPC Kustom",
-      "degen_mode": "Degen Mode"
+      "degen_mode": "Degen Mode",
+      "atomic_swaps_enabled": "Swap Atomik",
+      "rewards_scheduled_drop": "Drop Terjadwal Hadiah",
+      "delegation_enabled": "Delegasi Diaktifkan"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "Dicabut",
       "failed": "Pencabutan Gagal"
     },
+    "delegate": {
+      "pending": "Sedang mendelegasikan",
+      "confirmed": "Disetujui",
+      "failed": "Delegasi Gagal"
+    },
+    "revoke_delegation": {
+      "pending": "Mencabut",
+      "confirmed": "Dicabut",
+      "failed": "Pencabutan Gagal"
+    },
+    "delegate_description": "Delegasi Dompet",
+    "revoke_delegation_description": "Delegasi Dompet",
     "sale": {
       "pending": "Menjual",
       "confirmed": "Terjual",
@@ -501,7 +523,8 @@
         "enable_flashbots": "Aktifkan Flashbots",
         "disable_flashbots": "Nonaktifkan Flashbots",
         "copy_uuid": "Salin UUID",
-        "clear_transactions": "Hapus Transaksi Tertunda"
+        "clear_transactions": "Hapus Transaksi Tertunda",
+        "trigger_security_alert": "Picu Peringatan Keamanan"
       },
       "search_tags": {
         "swap": "beli, jual, perdagangan, pesanan, pertukaran, dex, rute",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
         "diagnostics": "diagnostik",
         "refresh_data": "segarkan kembali, muat ulang, bersihkan cache, atur ulang, perbarui",
-        "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces"
+        "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Saldo dan Aktivitas Diperbarui"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Peringatan Keamanan Terpicu"
     },
     "contact_toast": {
       "title_added": "Kontak Ditambahkan",
@@ -658,6 +685,85 @@
           "action_label": "Mengerti"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Dompet Pintar",
+    "no_delegations": "Tidak Ada Delegasi Aktif",
+    "no_delegations_description": "Anda tidak memiliki delegasi EIP-7702 aktif untuk dikelola.",
+    "revoke_all": "Cabut Semua Delegasi",
+    "smart_wallet": {
+      "title": "Dompet Pintar",
+      "active": "Aktif",
+      "disabled": "Nonaktif",
+      "description": "Dompet pintar menghadirkan pengalaman dompet yang lebih cepat, lebih murah, dan lebih andal.",
+      "enabled_description": "Anda akan kehilangan transaksi yang lebih cepat dan biaya gas yang lebih rendah",
+      "disabled_description": "Pembaruan akan berlaku pada swap Anda berikutnya",
+      "learn_more": "Pelajari lebih lanjut..."
+    },
+    "activated_networks": "Jaringan yang Diaktifkan",
+    "other_smart_accounts": "Akun Pintar Lainnya",
+    "third_party_indicator_tooltip": "Ini adalah delegasi pihak ketiga",
+    "activate_smart_wallet": "Aktifkan Dompet Pintar",
+    "disable_smart_wallet": "Nonaktifkan Dompet Pintar",
+    "view_on_explorer": "Lihat di Explorer",
+    "revoke": {
+      "title": "Cabut Delegasi",
+      "subtitle": "Hapus delegasi dari kontrak ini",
+      "security_title": "Peringatan Keamanan",
+      "security_subtitle": "Delegasi yang tidak dikenal terdeteksi. Cabut untuk mengamankan dompet Anda.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Nonaktifkan Dompet Pintar",
+          "subtitle": "Cabut semua delegasi untuk menonaktifkan dompet pintar."
+        },
+        "disable_single_network": {
+          "title": "Cabut Delegasi",
+          "subtitle": "Hapus delegasi dari jaringan ini."
+        },
+        "disable_third_party": {
+          "title": "Cabut Delegasi Pihak Ketiga",
+          "subtitle": "Hapus delegasi dari kontrak pihak ketiga ini."
+        },
+        "alert_vulnerability": {
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang rentan terdeteksi. Cabut untuk mengamankan dompet Anda."
+        },
+        "alert_bug": {
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang bermasalah terdeteksi. Cabut untuk mengamankan dompet Anda."
+        },
+        "alert_unrecognized": {
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang tidak dikenali terdeteksi. Cabut untuk mengamankan dompet Anda."
+        },
+        "alert_unspecified": {
+          "title": "Peringatan Keamanan",
+          "subtitle": "Delegasi yang tidak dikenal terdeteksi. Cabut untuk mengamankan dompet Anda."
+        }
+      },
+      "security_notice": "Pemberitahuan Keamanan",
+      "chain_label": "Rantai",
+      "contract_label": "Kontrak",
+      "progress": "%{current} dari %{total}",
+      "action": "Cabut Delegasi",
+      "revoking": "Mencabut...",
+      "success": "Berhasil Dicabut",
+      "try_again": "Coba Lagi",
+      "cancel": "Batal",
+      "done": "Selesai",
+      "next": "Selanjutnya",
+      "confirm_hw": "Konfirmasi di Perangkat"
+    },
+    "proactive_revoke": {
+      "title": "Peringatan Keamanan",
+      "description": "Delegasi yang tidak dikenal terdeteksi. Cabut untuk mengamankan dompet Anda."
+    },
+    "confirm_disable": {
+      "title": "Nonaktifkan Dompet Pintar",
+      "description": "Nonaktifkan dompet pintar untuk transaksi di masa mendatang. Anda dapat mengaktifkan kembali dompet pintar kapan saja.",
+      "action": "Nonaktifkan",
+      "cancel": "Batal"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} kontrak",
       "more_details": "Detail lebih",
       "confirmation": "%{Action} %{sellSymbol} ke %{buySymbol}",
-      "go_back": "Kembali"
+      "go_back": "Kembali",
+      "smart_wallet_activation_fee": "Perkiraan Biaya Smart Wallet",
+      "will_delegate_callout": "Termasuk aktivasi Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "Biaya Rainbow",
         "description": "Rainbow mengambil biaya %{feePercentage} dari %{actions}. Hal ini merupakan bagian dari kesempatan kami untuk memberikan Anda pengalaman Ethereum terbaik",
         "action_label": "Mengerti"
+      },
+      "smart_wallet_activation": {
+        "title": "Aktivasi Smart Wallet",
+        "description_1": "Transaksi ini mencakup aktivasi Smart Wallet satu kali di jaringan ini. Ini meningkatkan dompet Anda untuk mendukung transaksi batch dan fitur akun smart lainnya.",
+        "description_2": "Biaya aktivasi sudah termasuk dalam biaya jaringan untuk swap ini."
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "Kontrak Token",
     "token_standard": "Standar Token",
     "revoke_approval": "Cabut Persetujuan",
+    "smart_account": "Akun Pintar",
     "error_title": "Tidak dapat memuat aktivitas",
     "error_message": "Kami tidak dapat mengambil transaksi ini.\\nCoba lagi atau kembali ke aktivitas Anda.",
     "error_retry": "Coba Lagi",
@@ -1468,6 +1582,9 @@
     "close_cta": "Batal",
     "handle_copy_title": "Tx Hash Tersalin",
     "revoke_approval": "Cabut Persetujuan",
+    "estimating_fee": "Mengestimasi biaya…",
+    "tx_confirmed_or_not_found": "Transaksi mungkin sudah dikonfirmasi atau tidak dapat ditemukan",
+    "eip7702_auth_list_unavailable": "Tidak dapat mempercepat transaksi ini: data delegasi tidak tersedia. Coba lagi nanti atau gunakan RPC yang berbeda.",
     "speed_up_failed": {
       "title": "Percepatan gagal",
       "description": "Usaha untuk mempercepat transaksi dapat gagal selama kemacetan jaringan, peningkatan batas gas, atau ketika transaksi asli dikonfirmasi lebih dahulu"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "Jaringan tidak didukung",
     "no_active_session": "Tidak ada sesi aktif",
     "already_added": "RPC diaktifkan",
-    "set_as_active": "RPC baru diaktifkan",
+    "rpc_added": "RPC baru ditambahkan",
     "already_active": "Jaringan sudah ditambahkan"
   },
   "alert": {

@@ -117,7 +117,7 @@
         "block_explorer_url": "Blok Gezgini URL",
         "add_network": "Ağ Ekle",
         "add_rpc": "RPC Uç Noktası Ekle",
-        "add_network_rpc": "%{rpcName} RPC Ekle",
+        "add_network_rpc": "%{networkName} RPC Ekle",
         "add_asset": "Özel Token Ekle",
         "network_added": "Ağ Eklendi",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "RPC'yi Kaldır",
         "remove_network": "Ağı Kaldır",
         "tokens": "Tokenler",
+        "chain_id_mismatch": "Bu RPC, %{networkName} değil, %{chainId} zincir kimliği içindir",
         "cant_connect": "Bu RPC uç noktasına bağlanılamıyor",
         "rpc_not_responding": "Belirtilen RPC uç noktası yanıt vermiyor",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "Bu RPC, ağlarınızda zaten bulunan %{networkName} ağına ait.",
+        "add_rpc_instead": "Mevcut ağa RPC ekle"
       },
       "rpc_endpoints": "RPC Uç Noktaları",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "Cüzdan Detayları",
           "view_recovery_phrase": "Kurtarma İfadesini Görüntüle",
           "create_new_wallet": "Yeni Bir Cüzdan Oluştur",
+          "edit_smart_wallet": "Akıllı Cüzdanı Düzenle",
           "rename_wallet": "Cüzdanı Yeniden Adlandır",
           "unhide_wallet": "Gizlenmiş Cüzdanı Göster",
           "delete_wallet": "Cüzdanı Sil",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "Onaylar"
     },
+    "delegations": {
+      "title": "Akıllı Cüzdan"
+    },
     "currency": {
       "title": "Para Birimi",
       "ETH": "Ethereum",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "Donanım Cüzdanı Desteğini Etkinleştir",
       "command_k_internal_shortcuts_enabled": "⌘K İç Hızlı Kısayollarını Etkinleştir",
       "custom_rpc": "Özel RPC",
-      "degen_mode": "Degen Modu"
+      "degen_mode": "Degen Modu",
+      "atomic_swaps_enabled": "Atomik Takaslar",
+      "rewards_scheduled_drop": "Planlı Ödül Dağıtımı",
+      "delegation_enabled": "Yetkilendirme Etkin"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "İptal edildi",
       "failed": "İptal Başarısız"
     },
+    "delegate": {
+      "pending": "Yetkilendiriliyor",
+      "confirmed": "Onaylandı",
+      "failed": "Yetkilendirme Başarısız"
+    },
+    "revoke_delegation": {
+      "pending": "İptal etme",
+      "confirmed": "İptal edildi",
+      "failed": "İptal Başarısız"
+    },
+    "delegate_description": "Cüzdan Yetkilendirmesi",
+    "revoke_delegation_description": "Cüzdan Yetkilendirmesi",
     "sale": {
       "pending": "Satış",
       "confirmed": "Satıldı",
@@ -501,7 +523,8 @@
         "enable_flashbots": "Flashbots'i etkinleştir",
         "disable_flashbots": "Flashbots'i devre dışı bırak",
         "copy_uuid": "UUID'yi kopyala",
-        "clear_transactions": "Bekleyen İşlemleri Temizle"
+        "clear_transactions": "Bekleyen İşlemleri Temizle",
+        "trigger_security_alert": "Güvenlik Uyarısını Tetikle"
       },
       "search_tags": {
         "swap": "satın al, sat, takas, sipariş, değişim, dex, rotalar",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
         "diagnostics": "teşhisler",
         "refresh_data": "yenile, tekrar yükle, önbelleği temizle, sıfırla, güncelle",
-        "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler"
+        "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler",
+        "trigger_security_alert": "delegasyon, iptal et, sahte, hata ayıklama, test"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Bakiyeler ve Etkinlikler Yenilendi"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Güvenlik Uyarısı Tetiklendi"
     },
     "contact_toast": {
       "title_added": "Kişi Eklendi",
@@ -658,6 +685,85 @@
           "action_label": "Anladım"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Akıllı Cüzdan",
+    "no_delegations": "Aktif Delegasyon Yok",
+    "no_delegations_description": "Yönetilecek herhangi bir aktif EIP-7702 delegasyonunuz yok.",
+    "revoke_all": "Tüm Delegasyonları İptal Et",
+    "smart_wallet": {
+      "title": "Akıllı Cüzdan",
+      "active": "Aktif",
+      "disabled": "Devre Dışı",
+      "description": "Akıllı cüzdanlar daha hızlı, daha ucuz ve daha güvenilir bir cüzdan deneyimi sağlar.",
+      "enabled_description": "Daha hızlı işlemleri ve daha düşük gas maliyetlerini kaçırırsınız",
+      "disabled_description": "Güncellemeler bir sonraki takasınızda geçerli olacak",
+      "learn_more": "Daha fazla bilgi edinin..."
+    },
+    "activated_networks": "Etkinleştirilen Ağlar",
+    "other_smart_accounts": "Diğer Akıllı Hesaplar",
+    "third_party_indicator_tooltip": "Bu, üçüncü taraf bir delegasyondur",
+    "activate_smart_wallet": "Akıllı Cüzdanı Etkinleştir",
+    "disable_smart_wallet": "Akıllı Cüzdanı Devre Dışı Bırak",
+    "view_on_explorer": "Arayüzde Görüntüle",
+    "revoke": {
+      "title": "Delegasyonu İptal Et",
+      "subtitle": "Bu sözleşmedeki delegasyonu kaldır",
+      "security_title": "Güvenlik Uyarısı",
+      "security_subtitle": "Bilinmeyen bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Akıllı Cüzdanı Devre Dışı Bırak",
+          "subtitle": "Akıllı cüzdanları devre dışı bırakmak için tüm delegasyonları iptal edin."
+        },
+        "disable_single_network": {
+          "title": "Delegasyonu İptal Et",
+          "subtitle": "Bu ağdaki delegasyonu kaldır."
+        },
+        "disable_third_party": {
+          "title": "Üçüncü Taraf Delegasyonunu İptal Et",
+          "subtitle": "Bu üçüncü taraf sözleşmesindeki delegasyonu kaldır."
+        },
+        "alert_vulnerability": {
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Güvenlik açığı olan bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
+        },
+        "alert_bug": {
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Sorunlu bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
+        },
+        "alert_unrecognized": {
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Tanınmayan bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
+        },
+        "alert_unspecified": {
+          "title": "Güvenlik Uyarısı",
+          "subtitle": "Bilinmeyen bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
+        }
+      },
+      "security_notice": "Güvenlik Bildirimi",
+      "chain_label": "Zincir",
+      "contract_label": "Sözleşme",
+      "progress": "%{total} içinden %{current}",
+      "action": "Delegasyonu İptal Et",
+      "revoking": "İptal ediliyor...",
+      "success": "Başarıyla İptal Edildi",
+      "try_again": "Tekrar Deneyin",
+      "cancel": "İptal",
+      "done": "Tamam",
+      "next": "Sonraki",
+      "confirm_hw": "Cihazda Onayla"
+    },
+    "proactive_revoke": {
+      "title": "Güvenlik Uyarısı",
+      "description": "Bilinmeyen bir delegasyon tespit edildi. Cüzdanınızı güvenceye almak için iptal edin."
+    },
+    "confirm_disable": {
+      "title": "Akıllı Cüzdanı Devre Dışı Bırak",
+      "description": "Gelecekteki işlemler için akıllı cüzdanları devre dışı bırakın. Akıllı cüzdanları istediğiniz zaman yeniden etkinleştirebilirsiniz.",
+      "action": "Devre Dışı Bırak",
+      "cancel": "İptal"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} sözleşme",
       "more_details": "Daha fazla ayrıntı",
       "confirmation": "%{Action} %{sellSymbol} yerine %{buySymbol}",
-      "go_back": "Geri git"
+      "go_back": "Geri git",
+      "smart_wallet_activation_fee": "Tahmini Akıllı Cüzdan Ücreti",
+      "will_delegate_callout": "Akıllı cüzdan aktivasyonunu içerir"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "Rainbow Ücreti",
         "description": "Rainbow, %{actions}'den %{feePercentage} ücret alır. Bize en iyi Ethereum deneyimini yaşatabilme yeteneğimizin bir parçasıdır.",
         "action_label": "Anladım"
+      },
+      "smart_wallet_activation": {
+        "title": "Akıllı Cüzdan aktivasyonu",
+        "description_1": "Bu işlem, bu ağda tek seferlik bir Akıllı Cüzdan aktivasyonu içerir. Bu, cüzdanınızı toplu işlemleri ve diğer akıllı hesap özelliklerini destekleyecek şekilde yükseltir.",
+        "description_2": "Aktivasyon ücreti, bu takasın ağ ücretine dahildir."
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "Token Sözleşmesi",
     "token_standard": "Token Standartı",
     "revoke_approval": "Onayı İptal Et",
+    "smart_account": "Akıllı Hesap",
     "error_title": "Etkinlik yüklenemedi",
     "error_message": "Bu işlemi getiremedik.\nTekrar deneyin veya etkinliklerinize geri dönün.",
     "error_retry": "Tekrar Deneyin",
@@ -1468,6 +1582,9 @@
     "close_cta": "İptal Et",
     "handle_copy_title": "Tx Hash Kopyalandı",
     "revoke_approval": "Onayı İptal Et",
+    "estimating_fee": "Ücret hesaplanıyor…",
+    "tx_confirmed_or_not_found": "İşlem zaten onaylanmış olabilir veya bulunamadı",
+    "eip7702_auth_list_unavailable": "Bu işlem hızlandırılamıyor: delegasyon verileri mevcut değil. Daha sonra tekrar deneyin veya farklı bir RPC kullanın.",
     "speed_up_failed": {
       "title": "Hızlanma başarısız",
       "description": "Bir işlemi hızlandırma girişimleri ağ tıkanıklığı, gaz limit artışları veya orijinal işlem ilk onaylandığında başarısız olabilir"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "Desteklenmeyen ağ",
     "no_active_session": "Aktif oturum yok",
     "already_added": "RPC aktif edildi",
-    "set_as_active": "Yeni RPC aktif edildi",
+    "rpc_added": "Yeni RPC eklendi",
     "already_active": "Ağ zaten eklendi"
   },
   "alert": {

@@ -117,7 +117,7 @@
         "block_explorer_url": "ब्लॉक एक्सप्लोरर URL",
         "add_network": "नेटवर्क जोड़ें",
         "add_rpc": "RPC एंडपॉइंट जोड़ें",
-        "add_network_rpc": "%{rpcName} RPC जोड़ें",
+        "add_network_rpc": "%{networkName} RPC जोड़ें",
         "add_asset": "कस्टम टोकन जोड़ें",
         "network_added": "नेटवर्क जोड़ा गया",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "RPC हटाएं",
         "remove_network": "नेटवर्क हटाएं",
         "tokens": "टोकन्स",
+        "chain_id_mismatch": "यह RPC चेन ID %{chainId} के लिए है, %{networkName} के लिए नहीं",
         "cant_connect": "इस RPC एंडपॉइंट से कनेक्ट नहीं हो सकता",
         "rpc_not_responding": "प्रदान की गई RPC एंडपॉइंट प्रतिसाद नहीं दे रहा है",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "रेनबो"
+        "rainbow_default": "रेनबो",
+        "network_already_exists": "यह RPC %{networkName} से संबंधित है, जो आपके नेटवर्क में पहले से मौजूद है।",
+        "add_rpc_instead": "मौजूदा नेटवर्क में RPC जोड़ें"
       },
       "rpc_endpoints": "RPC एंडपॉइंट्स",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "वॉलेट विवरण",
           "view_recovery_phrase": "विभाजन संकेत देखें",
           "create_new_wallet": "नया वॉलेट बनाएं",
+          "edit_smart_wallet": "स्मार्ट वॉलेट संपादित करें",
           "rename_wallet": "वॉलेट का नाम बदलें",
           "unhide_wallet": "छिपा हुआ वॉलेट",
           "delete_wallet": "वॉलेट हटाएं",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "अनुमतियाँ"
     },
+    "delegations": {
+      "title": "स्मार्ट वॉलेट"
+    },
     "currency": {
       "title": "मुद्रा",
       "ETH": "ईथेरियम",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "हार्डवेयर वॉलेट समर्थन सक्षम करें",
       "command_k_internal_shortcuts_enabled": "⌘K आंतरिक शॉर्टकट्स सक्षम करें",
       "custom_rpc": "कस्टम RPC",
-      "degen_mode": "Degen मोड"
+      "degen_mode": "Degen मोड",
+      "atomic_swaps_enabled": "एटॉमिक स्वैप्स",
+      "rewards_scheduled_drop": "रिवॉर्ड्स निर्धारित ड्रॉप",
+      "delegation_enabled": "डेलिगेशन सक्षम"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "रद्द कर दिया",
       "failed": "रोकथाम विफल"
     },
+    "delegate": {
+      "pending": "डेलिगेट किया जा रहा है",
+      "confirmed": "मंजूरी दी गई",
+      "failed": "डेलिगेशन विफल"
+    },
+    "revoke_delegation": {
+      "pending": "रोकथाम कर रहे हैं",
+      "confirmed": "रद्द कर दिया",
+      "failed": "रोकथाम विफल"
+    },
+    "delegate_description": "वॉलेट डेलिगेशन",
+    "revoke_delegation_description": "वॉलेट डेलिगेशन",
     "sale": {
       "pending": "बेच रहे हैं",
       "confirmed": "बिक चुका",
@@ -501,7 +523,8 @@
         "enable_flashbots": "Flashbots सक्षम करें",
         "disable_flashbots": "Flashbots अक्षम करें",
         "copy_uuid": "UUID कॉपी करें",
-        "clear_transactions": "लंबित लेन-देन साफ करें"
+        "clear_transactions": "लंबित लेन-देन साफ करें",
+        "trigger_security_alert": "सुरक्षा अलर्ट ट्रिगर करें"
       },
       "search_tags": {
         "swap": "खरीद, बेच, व्यापार, ऑर्डर, एक्सचेंज, डेक्स, रूट्स",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
         "diagnostics": "डायग्नोस्टिक्स",
         "refresh_data": "ताज़ा करें, पुनः लोड करें, कैश साफ करें, रीसेट करें, अपडेट करें",
-        "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस"
+        "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस",
+        "trigger_security_alert": "डेलीगेशन, रद्द करें, मॉक, डिबग, टेस्ट"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "बैलेंस और गतिविधि ताज़ा हुई"
+    },
+    "trigger_security_alert_toast": {
+      "title": "सुरक्षा अलर्ट ट्रिगर हो गया"
     },
     "contact_toast": {
       "title_added": "संपर्क जोड़ा गया",
@@ -658,6 +685,85 @@
           "action_label": "समझ गया"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "स्मार्ट वॉलेट",
+    "no_delegations": "कोई सक्रिय डेलीगेशन नहीं",
+    "no_delegations_description": "आपके पास प्रबंधित करने के लिए कोई सक्रिय EIP-7702 डेलीगेशन नहीं है।",
+    "revoke_all": "सभी डेलीगेशन रद्द करें",
+    "smart_wallet": {
+      "title": "स्मार्ट वॉलेट",
+      "active": "सक्रिय",
+      "disabled": "निष्क्रिय",
+      "description": "स्मार्ट वॉलेट तेज़, सस्ते और अधिक विश्वसनीय वॉलेट अनुभव को सक्षम बनाते हैं।",
+      "enabled_description": "आप तेज़ लेन-देन और कम गैस लागत का लाभ नहीं उठा पाएंगे",
+      "disabled_description": "अपडेट्स आपके अगले स्वैप पर लागू होंगे",
+      "learn_more": "और जानें..."
+    },
+    "activated_networks": "सक्रिय नेटवर्क",
+    "other_smart_accounts": "अन्य स्मार्ट अकाउंट",
+    "third_party_indicator_tooltip": "यह एक थर्ड-पार्टी डेलीगेशन है",
+    "activate_smart_wallet": "स्मार्ट वॉलेट सक्रिय करें",
+    "disable_smart_wallet": "स्मार्ट वॉलेट अक्षम करें",
+    "view_on_explorer": "एक्सप्लोरर पर देखें",
+    "revoke": {
+      "title": "डेलीगेशन रद्द करें",
+      "subtitle": "इस कॉन्ट्रैक्ट से डेलीगेशन हटाएं",
+      "security_title": "सुरक्षा अलर्ट",
+      "security_subtitle": "एक अज्ञात डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "स्मार्ट वॉलेट अक्षम करें",
+          "subtitle": "स्मार्ट वॉलेट को अक्षम करने के लिए सभी डेलीगेशन रद्द करें।"
+        },
+        "disable_single_network": {
+          "title": "डेलीगेशन रद्द करें",
+          "subtitle": "इस नेटवर्क से डेलीगेशन हटाएं।"
+        },
+        "disable_third_party": {
+          "title": "थर्ड-पार्टी डेलीगेशन रद्द करें",
+          "subtitle": "इस थर्ड-पार्टी कॉन्ट्रैक्ट से डेलीगेशन हटाएं।"
+        },
+        "alert_vulnerability": {
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक कमजोर डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
+        },
+        "alert_bug": {
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक समस्या वाला डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
+        },
+        "alert_unrecognized": {
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक अपरिचित डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
+        },
+        "alert_unspecified": {
+          "title": "सुरक्षा अलर्ट",
+          "subtitle": "एक अज्ञात डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए इसे रद्द करें।"
+        }
+      },
+      "security_notice": "सुरक्षा सूचना",
+      "chain_label": "श्रृंखला",
+      "contract_label": "संविदा",
+      "progress": "%{total} में से %{current}",
+      "action": "डेलीगेशन रद्द करें",
+      "revoking": "रद्द किया जा रहा है...",
+      "success": "सफलतापूर्वक रद्द किया गया",
+      "try_again": "फिर से प्रयास करें",
+      "cancel": "रद्द करें",
+      "done": "हो गया",
+      "next": "अगला",
+      "confirm_hw": "उपकरण पर पुष्टि करें"
+    },
+    "proactive_revoke": {
+      "title": "सुरक्षा अलर्ट",
+      "description": "एक अज्ञात डेलीगेशन का पता चला। अपने वॉलेट को सुरक्षित करने के लिए रद्द करें।"
+    },
+    "confirm_disable": {
+      "title": "स्मार्ट वॉलेट अक्षम करें",
+      "description": "भविष्य के लेन-देन के लिए स्मार्ट वॉलेट अक्षम करें। आप किसी भी समय स्मार्ट वॉलेट फिर से सक्रिय कर सकते हैं।",
+      "action": "निष्क्रिय करें",
+      "cancel": "रद्द करें"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} कॉन्ट्रैक्ट",
       "more_details": "अधिक जानकारी",
       "confirmation": "%{Action} %{sellSymbol} से %{buySymbol}",
-      "go_back": "पीछे जाएं"
+      "go_back": "पीछे जाएं",
+      "smart_wallet_activation_fee": "अनुमानित स्मार्ट वॉलेट फ़ीस",
+      "will_delegate_callout": "स्मार्ट वॉलेट सक्रियकरण शामिल है"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "रेनबो शुल्क",
         "description": "रेनबो %{actions}से %{feePercentage} शुल्क लेता है। यह हमें आपको सर्वश्रेष्ठ इथेरियम अनुभव प्रदान करने में सक्षम बनाता है।",
         "action_label": "समझ गया"
+      },
+      "smart_wallet_activation": {
+        "title": "स्मार्ट वॉलेट सक्रियकरण",
+        "description_1": "इस लेन-देन में इस नेटवर्क पर एक बार का स्मार्ट वॉलेट सक्रियकरण शामिल है। इससे आपके वॉलेट को बैच्ड लेन-देन और अन्य स्मार्ट अकाउंट सुविधाओं का समर्थन करने के लिए अपग्रेड किया जाता है।",
+        "description_2": "इस स्वैप के लिए नेटवर्क फ़ीस में सक्रियकरण शुल्क शामिल है।"
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "टोकन अनुबंध",
     "token_standard": "टोकन मानक",
     "revoke_approval": "अनुमति रद्द करें",
+    "smart_account": "स्मार्ट अकाउंट",
     "error_title": "गतिविधि लोड करने में असमर्थ",
     "error_message": "हम इस लेन-देन को प्राप्त नहीं कर सके।\nपुनः प्रयास करें या अपनी गतिविधि पर वापस जाएँ।",
     "error_retry": "फिर से प्रयास करें",
@@ -1468,6 +1582,9 @@
     "close_cta": "रद्द करें",
     "handle_copy_title": "ट्रांजैक्शन हैश कॉपी हो गया",
     "revoke_approval": "अनुमति रद्द करें",
+    "estimating_fee": "शुल्क का अनुमान लगाया जा रहा है…",
+    "tx_confirmed_or_not_found": "लेन-देन की पुष्टि पहले ही हो चुकी हो सकती है या वह मिल नहीं सका",
+    "eip7702_auth_list_unavailable": "इस लेन-देन को तेज़ नहीं किया जा सकता: डेलीगेशन डेटा उपलब्ध नहीं है। बाद में फिर से कोशिश करें या किसी अन्य RPC का उपयोग करें।",
     "speed_up_failed": {
       "title": "स्पीड अप विफल",
       "description": "नेटवर्क भीड़भाड़, गैस लिमिट बढ़ने, या मूल लेन-देन के पहले पुष्टि होने पर लेन-देन की गति बढ़ाने के प्रयास विफल हो सकते हैं"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "असमर्थित नेटवर्क",
     "no_active_session": "कोई सक्रिय सत्र नहीं है",
     "already_added": "RPC सक्रिय",
-    "set_as_active": "नया RPC सक्रिय",
+    "rpc_added": "नया RPC जोड़ा गया",
     "already_active": "नेटवर्क पहले से जोड़ा गया"
   },
   "alert": {

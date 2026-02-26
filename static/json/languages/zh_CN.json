@@ -117,7 +117,7 @@
         "block_explorer_url": "区块浏览器网址",
         "add_network": "添加网络",
         "add_rpc": "添加RPC端点",
-        "add_network_rpc": "添加 %{rpcName} RPC",
+        "add_network_rpc": "添加 %{networkName} RPC",
         "add_asset": "添加自定义代币",
         "network_added": "网络已添加",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "移除RPC",
         "remove_network": "移除网络",
         "tokens": "代币",
+        "chain_id_mismatch": "此 RPC 用于链 ID %{chainId}，而非 %{networkName}",
         "cant_connect": "无法连接到此RPC端点",
         "rpc_not_responding": "提供的RPC端点无响应",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "此 RPC 属于 %{networkName}，该网络已存在于你的网络列表中。",
+        "add_rpc_instead": "将 RPC 添加到现有网络"
       },
       "rpc_endpoints": "RPC端点",
       "watch_asset": {
@@ -187,6 +190,7 @@
           "title": "钱包详情",
           "view_recovery_phrase": "查看恢复短语",
           "create_new_wallet": "创建新钱包",
+          "edit_smart_wallet": "编辑智能钱包",
           "rename_wallet": "重命名钱包",
           "unhide_wallet": "取消隐藏钱包",
           "delete_wallet": "删除钱包",
@@ -270,6 +274,9 @@
     "approvals": {
       "title": "授权"
     },
+    "delegations": {
+      "title": "智能钱包"
+    },
     "currency": {
       "title": "货币",
       "ETH": "以太坊",
@@ -295,7 +302,10 @@
       "hw_wallets_enabled": "启用硬件钱包支持",
       "command_k_internal_shortcuts_enabled": "启用 ⌘K 内部快捷键",
       "custom_rpc": "自定义RPC",
-      "degen_mode": "Degen模式"
+      "degen_mode": "Degen模式",
+      "atomic_swaps_enabled": "原子交换",
+      "rewards_scheduled_drop": "奖励定时空投",
+      "delegation_enabled": "已启用委托"
     }
   },
   "transactions": {
@@ -391,6 +401,18 @@
       "confirmed": "已撤销",
       "failed": "撤销失败"
     },
+    "delegate": {
+      "pending": "正在委托",
+      "confirmed": "已授权",
+      "failed": "委托失败"
+    },
+    "revoke_delegation": {
+      "pending": "撤销中",
+      "confirmed": "已撤销",
+      "failed": "撤销失败"
+    },
+    "delegate_description": "钱包委托",
+    "revoke_delegation_description": "钱包委托",
     "sale": {
       "pending": "销售中",
       "confirmed": "已售出",
@@ -501,7 +523,8 @@
         "enable_flashbots": "启用Flashbots",
         "disable_flashbots": "禁用Flashbots",
         "copy_uuid": "复制UUID",
-        "clear_transactions": "清除待处理交易"
+        "clear_transactions": "清除待处理交易",
+        "trigger_security_alert": "触发安全警报"
       },
       "search_tags": {
         "swap": "买, 卖, 交易, 订单, 兑换, dex, 路线",
@@ -529,7 +552,8 @@
         "wallets_and_keys": "钱包和密钥, 设置, 偏好设置",
         "diagnostics": "诊断",
         "refresh_data": "刷新、重新加载、清除缓存、重置、更新",
-        "clear_transactions": "清除、重置、待处理、事务、nonce、nonces"
+        "clear_transactions": "清除、重置、待处理、事务、nonce、nonces",
+        "trigger_security_alert": "委托，撤销，模拟，调试，测试"
       }
     },
     "command_rows": {
@@ -554,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "余额和活动已刷新"
+    },
+    "trigger_security_alert_toast": {
+      "title": "安全警报已触发"
     },
     "contact_toast": {
       "title_added": "联系人已添加",
@@ -658,6 +685,85 @@
           "action_label": "知道了"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "智能钱包",
+    "no_delegations": "没有活跃的委托",
+    "no_delegations_description": "你没有任何可管理的活跃 EIP-7702 委托。",
+    "revoke_all": "撤销所有委托",
+    "smart_wallet": {
+      "title": "智能钱包",
+      "active": "激活",
+      "disabled": "已禁用",
+      "description": "智能钱包可带来更快、更便宜且更可靠的钱包体验。",
+      "enabled_description": "你将错过更快的交易和更低的 Gas 费用",
+      "disabled_description": "更新将在你下次兑换时生效",
+      "learn_more": "了解更多..."
+    },
+    "activated_networks": "已激活的网络",
+    "other_smart_accounts": "其他智能账户",
+    "third_party_indicator_tooltip": "这是第三方委托",
+    "activate_smart_wallet": "激活智能钱包",
+    "disable_smart_wallet": "停用智能钱包",
+    "view_on_explorer": "在浏览器中查看",
+    "revoke": {
+      "title": "撤销委托",
+      "subtitle": "从此合约中移除委托",
+      "security_title": "安全警报",
+      "security_subtitle": "检测到未知委托。撤销它以保护你的钱包安全。",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "停用智能钱包",
+          "subtitle": "撤销所有委托以停用智能钱包。"
+        },
+        "disable_single_network": {
+          "title": "撤销委托",
+          "subtitle": "从此网络中移除委托。"
+        },
+        "disable_third_party": {
+          "title": "撤销第三方委托",
+          "subtitle": "从此第三方合约中移除委托。"
+        },
+        "alert_vulnerability": {
+          "title": "安全警报",
+          "subtitle": "检测到存在漏洞的委托。撤销它以保护你的钱包安全。"
+        },
+        "alert_bug": {
+          "title": "安全警报",
+          "subtitle": "检测到存在问题的委托。撤销它以保护你的钱包安全。"
+        },
+        "alert_unrecognized": {
+          "title": "安全警报",
+          "subtitle": "检测到无法识别的委托。撤销它以保护你的钱包安全。"
+        },
+        "alert_unspecified": {
+          "title": "安全警报",
+          "subtitle": "检测到未知委托。撤销它以保护你的钱包安全。"
+        }
+      },
+      "security_notice": "安全提示",
+      "chain_label": "链",
+      "contract_label": "合约",
+      "progress": "%{current} / %{total}",
+      "action": "撤销委托",
+      "revoking": "撤销中...",
+      "success": "撤销成功",
+      "try_again": "再试一次",
+      "cancel": "取消",
+      "done": "完成",
+      "next": "下一步",
+      "confirm_hw": "在设备上确认"
+    },
+    "proactive_revoke": {
+      "title": "安全警报",
+      "description": "检测到未知委托。撤销以保护你的钱包安全。"
+    },
+    "confirm_disable": {
+      "title": "停用智能钱包",
+      "description": "停用未来交易的智能钱包。你可以随时重新激活智能钱包。",
+      "action": "禁用",
+      "cancel": "取消"
     }
   },
   "send": {
@@ -828,7 +934,9 @@
       "asset_contract": "%{symbol} 合约",
       "more_details": "更多细节",
       "confirmation": "%{Action} %{sellSymbol} 至 %{buySymbol}",
-      "go_back": "返回"
+      "go_back": "返回",
+      "smart_wallet_activation_fee": "预估智能钱包费用",
+      "will_delegate_callout": "包含智能钱包激活"
     },
     "explainers": {
       "long_wait": {
@@ -875,6 +983,11 @@
         "title": "彩虹费用",
         "description": "彩虹从 %{actions}上收取 %{feePercentage} 的费用。这是我们可以为您提供最佳以太坊体验的一部分",
         "action_label": "知道了"
+      },
+      "smart_wallet_activation": {
+        "title": "智能钱包激活",
+        "description_1": "此交易包含在该网络上一次性的智能钱包激活。这将升级你的钱包，以支持批量交易和其他智能账户功能。",
+        "description_2": "激活费用已包含在本次兑换的网络费用中。"
       }
     }
   },
@@ -1352,6 +1465,7 @@
     "token_contract": "代币合约",
     "token_standard": "代币标准",
     "revoke_approval": "撤销授权",
+    "smart_account": "智能账户",
     "error_title": "无法加载活动",
     "error_message": "我们无法获取此交易。\n请再试一次或返回您的活动。",
     "error_retry": "再试一次",
@@ -1468,6 +1582,9 @@
     "close_cta": "取消",
     "handle_copy_title": "交易哈希已复制",
     "revoke_approval": "撤销授权",
+    "estimating_fee": "正在估算费用…",
+    "tx_confirmed_or_not_found": "交易可能已确认或无法找到",
+    "eip7702_auth_list_unavailable": "无法加速此交易：委托数据不可用。请稍后再试或使用其他 RPC。",
     "speed_up_failed": {
       "title": "加速失败",
       "description": "尝试加速交易可能会在网络拥堵、燃气限制增加或原始交易首先确认时失败"
@@ -1664,7 +1781,7 @@
     "unsupported_network": "不支持的网络",
     "no_active_session": "没有活跃的会话",
     "already_added": "RPC已激活",
-    "set_as_active": "新RPC已激活",
+    "rpc_added": "已添加新 RPC",
     "already_active": "网络已添加"
   },
   "alert": {
