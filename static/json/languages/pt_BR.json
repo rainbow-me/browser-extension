@@ -275,7 +275,7 @@
       "title": "Aprovações"
     },
     "delegations": {
-      "title": "Delegações"
+      "title": "Carteira inteligente"
     },
     "currency": {
       "title": "Moeda",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "Delegações",
+    "title": "Carteira inteligente",
     "no_delegations": "Nenhuma delegação ativa",
     "no_delegations_description": "Você não tem nenhuma delegação EIP-7702 ativa para gerenciar.",
     "revoke_all": "Revogar todas as delegações",
@@ -697,8 +697,8 @@
       "active": "Ativo",
       "disabled": "Desativado",
       "description": "Carteiras inteligentes oferecem uma experiência de carteira mais rápida, mais barata e mais confiável.",
-      "backup_info_enabled": "Você vai perder transações mais rápidas e custos de rede mais baixos",
-      "backup_info_disabled": "As atualizações entrarão em vigor na sua próxima troca",
+      "enabled_description": "Você vai perder transações mais rápidas e custos de gas mais baixos",
+      "disabled_description": "As atualizações entrarão em vigor na sua próxima troca",
       "learn_more": "Saiba mais..."
     },
     "activated_networks": "Redes ativadas",
@@ -935,8 +935,8 @@
       "more_details": "Mais detalhes",
       "confirmation": "%{Action} %{sellSymbol} para %{buySymbol}",
       "go_back": "Voltar",
-      "smart_wallet_activation_fee": "Taxa de ativação da carteira inteligente",
-      "will_delegate_callout": "Esta troca vai ativar sua carteira inteligente nesta rede."
+      "smart_wallet_activation_fee": "Taxa estimada da Smart Wallet",
+      "will_delegate_callout": "Inclui ativação da Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "Entendi"
       },
       "smart_wallet_activation": {
-        "title": "Taxa de ativação da carteira inteligente",
-        "description": "Esta taxa única ativa sua carteira inteligente nesta rede. Ela permite trocas mais rápidas e mais baratas ao agrupar a aprovação e a troca em uma única transação."
+        "title": "Ativação da Smart Wallet",
+        "description_1": "Esta transação inclui uma ativação única da Smart Wallet nesta rede. Isso atualiza sua carteira para oferecer suporte a transações em lote e outros recursos de conta inteligente.",
+        "description_2": "A taxa de ativação está incluída na taxa de rede desta troca."
       }
     }
   },
