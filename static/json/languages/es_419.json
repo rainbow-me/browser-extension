@@ -275,7 +275,7 @@
       "title": "Aprobaciones"
     },
     "delegations": {
-      "title": "Delegaciones"
+      "title": "Billetera inteligente"
     },
     "currency": {
       "title": "Moneda",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "Delegaciones",
+    "title": "Billetera inteligente",
     "no_delegations": "No hay delegaciones activas",
     "no_delegations_description": "No tienes ninguna delegación EIP-7702 activa para administrar.",
     "revoke_all": "Revocar todas las delegaciones",
@@ -697,8 +697,8 @@
       "active": "Activo",
       "disabled": "Deshabilitado",
       "description": "Las billeteras inteligentes permiten una experiencia de billetera más rápida, más barata y más confiable.",
-      "backup_info_enabled": "Te perderás transacciones más rápidas y menores costos de red",
-      "backup_info_disabled": "Las actualizaciones tendrán efecto en tu próximo swap",
+      "enabled_description": "Te perderás transacciones más rápidas y costos de gas más bajos",
+      "disabled_description": "Las actualizaciones se aplicarán en tu próximo swap",
       "learn_more": "Obtener más información..."
     },
     "activated_networks": "Redes activadas",
@@ -935,8 +935,8 @@
       "more_details": "Más detalles",
       "confirmation": "%{Action} %{sellSymbol} a %{buySymbol}",
       "go_back": "Volver",
-      "smart_wallet_activation_fee": "Comisión de activación de la billetera inteligente",
-      "will_delegate_callout": "Este swap activará tu billetera inteligente en esta red."
+      "smart_wallet_activation_fee": "Tarifa estimada de Smart Wallet",
+      "will_delegate_callout": "Incluye la activación de Smart Wallet"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "Entendido"
       },
       "smart_wallet_activation": {
-        "title": "Comisión de activación de la billetera inteligente",
-        "description": "Esta comisión única activa tu billetera inteligente en esta red. Permite swaps más rápidos y más baratos al agrupar la aprobación y el swap en una sola transacción."
+        "title": "Activación de Smart Wallet",
+        "description_1": "Esta transacción incluye una activación única de Smart Wallet en esta red. Esto actualiza tu billetera para admitir transacciones en lote y otras funciones de cuenta inteligente.",
+        "description_2": "La tarifa de activación está incluida en la tarifa de red de este swap."
       }
     }
   },
