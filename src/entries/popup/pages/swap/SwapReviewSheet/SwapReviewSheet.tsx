@@ -40,6 +40,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
 import {
   ExplainerSheet,
@@ -321,11 +322,15 @@ const SwapReviewSheetWithQuote = ({
   }, [hideExplainerSheet, includedFee, showExplainerSheet, t]);
 
   const openSmartWalletActivationExplainer = useCallback(() => {
+    const chainId = assetToSell?.chainId ?? ChainId.mainnet;
     showExplainerSheet({
       show: true,
-      header: { emoji: '🌈' },
+      header: { icon: <ChainBadge chainId={chainId} size={36} /> },
       title: t('swap.explainers.smart_wallet_activation.title'),
-      description: [t('swap.explainers.smart_wallet_activation.description')],
+      description: [
+        t('swap.explainers.smart_wallet_activation.description_1'),
+        t('swap.explainers.smart_wallet_activation.description_2'),
+      ],
       actionButton: {
         label: t('swap.explainers.fee.action_label'),
         variant: 'tinted',
@@ -334,7 +339,7 @@ const SwapReviewSheetWithQuote = ({
       },
       testId: 'swap-review-smart-wallet-activation',
     });
-  }, [hideExplainerSheet, showExplainerSheet, t]);
+  }, [assetToSell?.chainId, hideExplainerSheet, showExplainerSheet, t]);
 
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetBalanceForGas) {

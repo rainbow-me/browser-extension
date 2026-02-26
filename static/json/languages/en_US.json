@@ -935,8 +935,8 @@
       "more_details": "More details",
       "confirmation": "%{Action} %{sellSymbol} to %{buySymbol}",
       "go_back": "Go back",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
       "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "Est. Smart Wallet Fee",
     },
     "explainers": {
       "long_wait": {
@@ -986,7 +986,8 @@
       },
       "smart_wallet_activation": {
         "title": "Smart Wallet activation",
-        "description": "This transaction includes a one-time Smart Wallet activation on this network. This upgrades your wallet to support batched transactions and other smart account features.\n\nThe activation fee is included in the network fee for this swap."
+        "description_1": "This transaction includes a one-time Smart Wallet activation on this network. This upgrades your wallet to support batched transactions and other smart account features.",
+        "description_2": "The activation fee is included in the network fee for this swap."
       }
     }
   },
