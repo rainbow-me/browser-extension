@@ -275,7 +275,7 @@
       "title": "승인"
     },
     "delegations": {
-      "title": "위임"
+      "title": "스마트 지갑"
     },
     "currency": {
       "title": "통화",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "위임",
+    "title": "스마트 지갑",
     "no_delegations": "활성 위임 없음",
     "no_delegations_description": "관리할 활성 EIP-7702 위임이 없습니다.",
     "revoke_all": "모든 위임 철회",
@@ -697,8 +697,8 @@
       "active": "활성화",
       "disabled": "비활성화됨",
       "description": "스마트 지갑은 더 빠르고, 더 저렴하며, 더 안정적인 지갑 경험을 제공합니다.",
-      "backup_info_enabled": "더 빠른 트랜잭션과 더 낮은 네트워크 비용을 놓치게 됩니다",
-      "backup_info_disabled": "업데이트는 다음 스왑에서 적용됩니다",
+      "enabled_description": "더 빠른 거래와 더 낮은 가스 비용 혜택을 놓치게 됩니다",
+      "disabled_description": "업데이트는 다음 스왑에서 적용됩니다",
       "learn_more": "더 알아보기..."
     },
     "activated_networks": "활성화된 네트워크",
@@ -935,8 +935,8 @@
       "more_details": "자세한 사항",
       "confirmation": "%{Action} %{sellSymbol} 에서 %{buySymbol}로",
       "go_back": "뒤로 가기",
-      "smart_wallet_activation_fee": "스마트 지갑 활성화 수수료",
-      "will_delegate_callout": "이 스왑을 하면 이 네트워크에서 스마트 지갑이 활성화됩니다."
+      "smart_wallet_activation_fee": "예상 스마트 월렛 수수료",
+      "will_delegate_callout": "스마트 월렛 활성화 포함"
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,9 @@
         "action_label": "확인"
       },
       "smart_wallet_activation": {
-        "title": "스마트 지갑 활성화 수수료",
-        "description": "이 일회성 수수료로 이 네트워크에서 스마트 지갑이 활성화됩니다. 승인과 스왑을 단일 트랜잭션으로 묶어 더 빠르고 더 저렴한 스왑을 가능하게 합니다."
+        "title": "스마트 월렛 활성화",
+        "description_1": "이 거래에는 이 네트워크에서 1회성 스마트 월렛 활성화가 포함됩니다. 이를 통해 지갑이 업그레이드되어 배치 거래 및 기타 스마트 계정 기능을 지원합니다.",
+        "description_2": "활성화 수수료는 이 스왑의 네트워크 수수료에 포함되어 있습니다."
       }
     }
   },
