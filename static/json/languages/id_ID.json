@@ -190,6 +190,7 @@
           "title": "Detail Dompet",
           "view_recovery_phrase": "Lihat Frasa Pemulihan",
           "create_new_wallet": "Buat Dompet Baru",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "Ganti Nama Dompet",
           "unhide_wallet": "Tampilkan Dompet",
           "delete_wallet": "Hapus Dompet",
@@ -273,6 +274,9 @@
     "approvals": {
       "title": "Persetujuan"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "Mata Uang",
       "ETH": "Ethereum",
@@ -298,7 +302,10 @@
       "hw_wallets_enabled": "Aktifkan Dukungan Dompet Perangkat Keras",
       "command_k_internal_shortcuts_enabled": "Aktifkan Pintasan Internal ⌘K",
       "custom_rpc": "RPC Kustom",
-      "degen_mode": "Degen Mode"
+      "degen_mode": "Degen Mode",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -394,6 +401,18 @@
       "confirmed": "Dicabut",
       "failed": "Pencabutan Gagal"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "Disetujui",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "Mencabut",
+      "confirmed": "Dicabut",
+      "failed": "Pencabutan Gagal"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "Menjual",
       "confirmed": "Terjual",
@@ -504,7 +523,8 @@
         "enable_flashbots": "Aktifkan Flashbots",
         "disable_flashbots": "Nonaktifkan Flashbots",
         "copy_uuid": "Salin UUID",
-        "clear_transactions": "Hapus Transaksi Tertunda"
+        "clear_transactions": "Hapus Transaksi Tertunda",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "beli, jual, perdagangan, pesanan, pertukaran, dex, rute",
@@ -532,7 +552,8 @@
         "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
         "diagnostics": "diagnostik",
         "refresh_data": "segarkan kembali, muat ulang, bersihkan cache, atur ulang, perbarui",
-        "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces"
+        "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -557,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Saldo dan Aktivitas Diperbarui"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "Kontak Ditambahkan",
@@ -661,6 +685,85 @@
           "action_label": "Mengerti"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "Aktif",
+      "disabled": "Nonaktif",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
+      "backup_info_disabled": "Updates will take effect on your next swap",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "other_smart_accounts": "Other Smart Accounts",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "view_on_explorer": "Lihat di Explorer",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Disable Smart Wallet",
+          "subtitle": "Revoke all delegations to disable smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Revoke Delegation",
+          "subtitle": "Remove delegation from this network."
+        },
+        "disable_third_party": {
+          "title": "Revoke Third-Party Delegation",
+          "subtitle": "Remove delegation from this third-party contract."
+        },
+        "alert_vulnerability": {
+          "title": "Security Alert",
+          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_bug": {
+          "title": "Security Alert",
+          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unrecognized": {
+          "title": "Security Alert",
+          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unspecified": {
+          "title": "Security Alert",
+          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+        }
+      },
+      "security_notice": "Security Notice",
+      "chain_label": "Rantai",
+      "contract_label": "Kontrak",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "Coba Lagi",
+      "cancel": "Batal",
+      "done": "Selesai",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "Nonaktifkan",
+      "cancel": "Batal"
     }
   },
   "send": {
@@ -831,7 +934,9 @@
       "asset_contract": "%{symbol} kontrak",
       "more_details": "Detail lebih",
       "confirmation": "%{Action} %{sellSymbol} ke %{buySymbol}",
-      "go_back": "Kembali"
+      "go_back": "Kembali",
+      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
+      "will_delegate_callout": "This swap will activate your smart wallet on this network."
     },
     "explainers": {
       "long_wait": {
@@ -878,6 +983,10 @@
         "title": "Biaya Rainbow",
         "description": "Rainbow mengambil biaya %{feePercentage} dari %{actions}. Hal ini merupakan bagian dari kesempatan kami untuk memberikan Anda pengalaman Ethereum terbaik",
         "action_label": "Mengerti"
+      },
+      "smart_wallet_activation": {
+        "title": "Smart Wallet Activation Fee",
+        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
       }
     }
   },
@@ -1355,6 +1464,7 @@
     "token_contract": "Kontrak Token",
     "token_standard": "Standar Token",
     "revoke_approval": "Cabut Persetujuan",
+    "smart_account": "Smart Account",
     "error_title": "Tidak dapat memuat aktivitas",
     "error_message": "Kami tidak dapat mengambil transaksi ini.\\nCoba lagi atau kembali ke aktivitas Anda.",
     "error_retry": "Coba Lagi",
@@ -1471,6 +1581,9 @@
     "close_cta": "Batal",
     "handle_copy_title": "Tx Hash Tersalin",
     "revoke_approval": "Cabut Persetujuan",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
+    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "Percepatan gagal",
       "description": "Usaha untuk mempercepat transaksi dapat gagal selama kemacetan jaringan, peningkatan batas gas, atau ketika transaksi asli dikonfirmasi lebih dahulu"
