@@ -190,6 +190,7 @@
           "title": "ウォレットの詳細",
           "view_recovery_phrase": "復旧フレーズを表示",
           "create_new_wallet": "新しいウォレットを作成",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "ウォレットの名前を変更",
           "unhide_wallet": "ウォレットを表示",
           "delete_wallet": "ウォレットを削除",
@@ -273,6 +274,9 @@
     "approvals": {
       "title": "承認"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "通貨",
       "ETH": "イーサリアム",
@@ -298,7 +302,10 @@
       "hw_wallets_enabled": "ハードウェアウォレットサポートを有効にする",
       "command_k_internal_shortcuts_enabled": "⌘K の内部ショートカットを有効にする",
       "custom_rpc": "カスタムRPC",
-      "degen_mode": "Degenモード"
+      "degen_mode": "Degenモード",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -394,6 +401,18 @@
       "confirmed": "取り消し済み",
       "failed": "取り消し失敗"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "承認完了",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "取り消し中",
+      "confirmed": "取り消し済み",
+      "failed": "取り消し失敗"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "販売中",
       "confirmed": "販売済み",
@@ -504,7 +523,8 @@
         "enable_flashbots": "Flashbotsを有効にする",
         "disable_flashbots": "Flashbotsを無効にする",
         "copy_uuid": "UUIDをコピー",
-        "clear_transactions": "保留中のトランザクションをクリア"
+        "clear_transactions": "保留中のトランザクションをクリア",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "購入, 販売, 取引, 注文, 交換, dex, ルート",
@@ -532,7 +552,8 @@
         "wallets_and_keys": "ウォレットとキー, 設定, 設定",
         "diagnostics": "診断",
         "refresh_data": "更新、リロード、キャッシュクリア、リセット、アップデート",
-        "clear_transactions": "クリア、リセット、保留中、取引、ナンス、ナンセス"
+        "clear_transactions": "クリア、リセット、保留中、取引、ナンス、ナンセス",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -557,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "残高とアクティビティが更新されました"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "連絡先を追加しました",
@@ -661,6 +685,85 @@
           "action_label": "了解"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "有効",
+      "disabled": "無効",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
+      "backup_info_disabled": "Updates will take effect on your next swap",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "other_smart_accounts": "Other Smart Accounts",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "view_on_explorer": "エクスプローラーで表示",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Disable Smart Wallet",
+          "subtitle": "Revoke all delegations to disable smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Revoke Delegation",
+          "subtitle": "Remove delegation from this network."
+        },
+        "disable_third_party": {
+          "title": "Revoke Third-Party Delegation",
+          "subtitle": "Remove delegation from this third-party contract."
+        },
+        "alert_vulnerability": {
+          "title": "Security Alert",
+          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_bug": {
+          "title": "Security Alert",
+          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unrecognized": {
+          "title": "Security Alert",
+          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unspecified": {
+          "title": "Security Alert",
+          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+        }
+      },
+      "security_notice": "Security Notice",
+      "chain_label": "チェーン",
+      "contract_label": "契約",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "再試行",
+      "cancel": "キャンセル",
+      "done": "完了",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "無効化",
+      "cancel": "キャンセル"
     }
   },
   "send": {
@@ -831,7 +934,9 @@
       "asset_contract": "%{symbol} のコントラクト",
       "more_details": "詳細",
       "confirmation": "%{Action} %{sellSymbol} から %{buySymbol}へ",
-      "go_back": "戻る"
+      "go_back": "戻る",
+      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
+      "will_delegate_callout": "This swap will activate your smart wallet on this network."
     },
     "explainers": {
       "long_wait": {
@@ -878,6 +983,10 @@
         "title": "Rainbow手数料",
         "description": "Rainbowは %{actions}から %{feePercentage} の手数料を取ります。これは私たちが最良のEthereum体験を提供できる一因です",
         "action_label": "了解"
+      },
+      "smart_wallet_activation": {
+        "title": "Smart Wallet Activation Fee",
+        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
       }
     }
   },
@@ -1355,6 +1464,7 @@
     "token_contract": "トークン契約",
     "token_standard": "トークン標準",
     "revoke_approval": "承認を取り消す",
+    "smart_account": "Smart Account",
     "error_title": "アクティビティを読み込めません",
     "error_message": "このトランザクションを取得できませんでした。\nもう一度お試しになるか、アクティビティに戻ってください。",
     "error_retry": "再試行",
@@ -1471,6 +1581,9 @@
     "close_cta": "キャンセル",
     "handle_copy_title": "Txハッシュがコピーされました",
     "revoke_approval": "承認を取り消す",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
+    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "スピードアップ失敗",
       "description": "トランザクションをスピードアップする試みは、ネットワークの混雑、ガス制限の増加、または元のトランザクションが先に確認されたときに失敗する可能性があります"
