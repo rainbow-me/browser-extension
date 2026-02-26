@@ -190,6 +190,7 @@
           "title": "Détails du portefeuille",
           "view_recovery_phrase": "Afficher la phrase de récupération",
           "create_new_wallet": "Créer un nouveau portefeuille",
+          "edit_smart_wallet": "Edit Smart Wallet",
           "rename_wallet": "Renommer le portefeuille",
           "unhide_wallet": "Révéler le portefeuille",
           "delete_wallet": "Supprimer le portefeuille",
@@ -273,6 +274,9 @@
     "approvals": {
       "title": "Autorisations"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "Devise",
       "ETH": "Ethereum",
@@ -298,7 +302,10 @@
       "hw_wallets_enabled": "Activer la prise en charge des portefeuilles matériels",
       "command_k_internal_shortcuts_enabled": "Activer les raccourcis internes ⌘K",
       "custom_rpc": "RPC personnalisé",
-      "degen_mode": "Mode Degen"
+      "degen_mode": "Mode Degen",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -394,6 +401,18 @@
       "confirmed": "Révoqué",
       "failed": "Échec de révocation"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "Approuvé",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "Révocation en cours",
+      "confirmed": "Révoqué",
+      "failed": "Échec de révocation"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "En cours de vente",
       "confirmed": "Vendu",
@@ -504,7 +523,8 @@
         "enable_flashbots": "Activer Flashbots",
         "disable_flashbots": "Désactiver Flashbots",
         "copy_uuid": "Copier UUID",
-        "clear_transactions": "Effacer les transactions en attente"
+        "clear_transactions": "Effacer les transactions en attente",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "acheter, vendre, échanger, commander, échange, dex, itinéraires",
@@ -532,7 +552,8 @@
         "wallets_and_keys": "portefeuilles et clés, paramètres, préférences",
         "diagnostics": "diagnostics :)",
         "refresh_data": "actualiser, recharger, vider le cache, réinitialiser, mettre à jour",
-        "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces"
+        "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -557,6 +578,9 @@
     },
     "refresh_data_toast": {
       "title": "Soldes et activité actualisés"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "Contact ajouté",
@@ -661,6 +685,85 @@
           "action_label": "Compris"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "Actif",
+      "disabled": "Désactivé",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
+      "backup_info_disabled": "Updates will take effect on your next swap",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "other_smart_accounts": "Other Smart Accounts",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "view_on_explorer": "Afficher sur l'explorateur",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "reason": {
+        "disable_smart_wallet": {
+          "title": "Disable Smart Wallet",
+          "subtitle": "Revoke all delegations to disable smart wallets."
+        },
+        "disable_single_network": {
+          "title": "Revoke Delegation",
+          "subtitle": "Remove delegation from this network."
+        },
+        "disable_third_party": {
+          "title": "Revoke Third-Party Delegation",
+          "subtitle": "Remove delegation from this third-party contract."
+        },
+        "alert_vulnerability": {
+          "title": "Security Alert",
+          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_bug": {
+          "title": "Security Alert",
+          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unrecognized": {
+          "title": "Security Alert",
+          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+        },
+        "alert_unspecified": {
+          "title": "Security Alert",
+          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+        }
+      },
+      "security_notice": "Security Notice",
+      "chain_label": "Chaîne",
+      "contract_label": "Contrat",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "Réessayer",
+      "cancel": "Annuler",
+      "done": "Terminé",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "Désactiver",
+      "cancel": "Annuler"
     }
   },
   "send": {
@@ -831,7 +934,9 @@
       "asset_contract": "%{symbol} contrat",
       "more_details": "Plus de détails",
       "confirmation": "%{Action} %{sellSymbol} à %{buySymbol}",
-      "go_back": "Retour en arrière"
+      "go_back": "Retour en arrière",
+      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
+      "will_delegate_callout": "This swap will activate your smart wallet on this network."
     },
     "explainers": {
       "long_wait": {
@@ -878,6 +983,10 @@
         "title": "Frais Rainbow",
         "description": "Rainbow prélève une commission %{feePercentage} de %{actions}. C'est ce qui nous permet de vous offrir la meilleure expérience Ethereum possible",
         "action_label": "Compris"
+      },
+      "smart_wallet_activation": {
+        "title": "Smart Wallet Activation Fee",
+        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
       }
     }
   },
@@ -1355,6 +1464,7 @@
     "token_contract": "Contrat du jeton",
     "token_standard": "Standard du jeton",
     "revoke_approval": "Révoquer l'autorisation",
+    "smart_account": "Smart Account",
     "error_title": "Impossible de charger l'activité",
     "error_message": "Nous n'avons pas pu récupérer cette transaction.\nRéessayez ou retournez à votre activité.",
     "error_retry": "Réessayer",
@@ -1471,6 +1581,9 @@
     "close_cta": "Annuler",
     "handle_copy_title": "Hachage de la transaction copié",
     "revoke_approval": "Révoquer l'autorisation",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
+    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "Échec de l'accélération",
       "description": "Les tentatives d'accélération d'une transaction peuvent échouer en cas de congestion du réseau, d'augmentation de la limite de gaz, ou si la transaction originale est confirmée en premier"
