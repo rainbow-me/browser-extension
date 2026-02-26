@@ -985,8 +985,8 @@
         "action_label": "Got it"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "Smart Wallet activation",
+        "description": "This transaction includes a one-time Smart Wallet activation on this network. This upgrades your wallet to support batched transactions and other smart account features.\n\nThe activation fee is included in the network fee for this swap."
       }
     }
   },
