@@ -190,7 +190,7 @@
           "title": "تفاصيل المحفظة",
           "view_recovery_phrase": "عرض عبارة الاسترداد",
           "create_new_wallet": "إنشاء محفظة جديدة",
-          "edit_smart_wallet": "Edit Smart Wallet",
+          "edit_smart_wallet": "تعديل المحفظة الذكية",
           "rename_wallet": "إعادة تسمية المحفظة",
           "unhide_wallet": "إظهار المحفظة",
           "delete_wallet": "حذف المحفظة",
@@ -275,7 +275,7 @@
       "title": "الموافقات"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "التفويضات"
     },
     "currency": {
       "title": "العملة",
@@ -303,9 +303,9 @@
       "command_k_internal_shortcuts_enabled": "تفعيل الاختصارات الداخلية ⌘K",
       "custom_rpc": "Custom RPC",
       "degen_mode": "وضع Degen",
-      "atomic_swaps_enabled": "Atomic Swaps",
-      "rewards_scheduled_drop": "Rewards Scheduled Drop",
-      "delegation_enabled": "Delegation Enabled"
+      "atomic_swaps_enabled": "المبادلات الذرية",
+      "rewards_scheduled_drop": "إسقاط مجدول للمكافآت",
+      "delegation_enabled": "تمكين التفويض"
     }
   },
   "transactions": {
@@ -402,17 +402,17 @@
       "failed": "فشل الإلغاء"
     },
     "delegate": {
-      "pending": "Delegating",
+      "pending": "جارٍ التفويض",
       "confirmed": "تمت الموافقة",
-      "failed": "Delegation Failed"
+      "failed": "فشل التفويض"
     },
     "revoke_delegation": {
       "pending": "إلغاء",
       "confirmed": "تم الإلغاء",
       "failed": "فشل الإلغاء"
     },
-    "delegate_description": "Wallet Delegation",
-    "revoke_delegation_description": "Wallet Delegation",
+    "delegate_description": "تفويض المحفظة",
+    "revoke_delegation_description": "تفويض المحفظة",
     "sale": {
       "pending": "بيع",
       "confirmed": "تم البيع",
@@ -524,7 +524,7 @@
         "disable_flashbots": "تعطيل Flashbots",
         "copy_uuid": "نسخ UUID",
         "clear_transactions": "مسح المعاملات المعلقة",
-        "trigger_security_alert": "Trigger Security Alert"
+        "trigger_security_alert": "تشغيل تنبيه الأمان"
       },
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
@@ -553,7 +553,7 @@
         "diagnostics": "التشخيص",
         "refresh_data": "تحديث، إعادة تحميل، مسح الذاكرة المؤقتة، إعادة تعيين، تحديث",
         "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات",
-        "trigger_security_alert": "delegation, revoke, mock, debug, test"
+        "trigger_security_alert": "تفويض، إلغاء، محاكاة، تصحيح، اختبار"
       }
     },
     "command_rows": {
@@ -580,7 +580,7 @@
       "title": "تم تحديث الأرصدة والنشاط"
     },
     "trigger_security_alert_toast": {
-      "title": "Security Alert Triggered"
+      "title": "تم تشغيل تنبيه الأمان"
     },
     "contact_toast": {
       "title_added": "تمت إضافة جهة اتصال",
@@ -688,80 +688,80 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
-    "no_delegations": "No Active Delegations",
-    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
-    "revoke_all": "Revoke All Delegations",
+    "title": "التفويضات",
+    "no_delegations": "لا توجد تفويضات نشطة",
+    "no_delegations_description": "ليس لديك أي تفويضات EIP-7702 نشطة لإدارتها.",
+    "revoke_all": "إلغاء جميع التفويضات",
     "smart_wallet": {
-      "title": "Smart Wallet",
+      "title": "المحفظة الذكية",
       "active": "نشط",
       "disabled": "معطل",
-      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
-      "backup_info_enabled": "You'll miss out on faster transactions and lower network costs",
-      "backup_info_disabled": "Updates will take effect on your next swap",
-      "learn_more": "Learn more..."
+      "description": "تتيح المحافظ الذكية تجربة محفظة أسرع وأرخص وأكثر موثوقية.",
+      "backup_info_enabled": "ستفوتك المعاملات الأسرع وتكاليف الشبكة الأقل",
+      "backup_info_disabled": "ستدخل التحديثات حيّز التنفيذ في عملية المبادلة التالية",
+      "learn_more": "أعرف أكثر..."
     },
-    "activated_networks": "Activated Networks",
-    "other_smart_accounts": "Other Smart Accounts",
-    "third_party_indicator_tooltip": "This is a third-party delegation",
-    "activate_smart_wallet": "Activate Smart Wallet",
-    "disable_smart_wallet": "Disable Smart Wallet",
+    "activated_networks": "الشبكات المُفعّلة",
+    "other_smart_accounts": "حسابات ذكية أخرى",
+    "third_party_indicator_tooltip": "هذا تفويض من جهة خارجية",
+    "activate_smart_wallet": "تفعيل المحفظة الذكية",
+    "disable_smart_wallet": "تعطيل المحفظة الذكية",
     "view_on_explorer": "عرض على الاستكشاف",
     "revoke": {
-      "title": "Revoke Delegation",
-      "subtitle": "Remove delegation from this contract",
-      "security_title": "Security Alert",
-      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
+      "title": "إلغاء التفويض",
+      "subtitle": "إزالة التفويض من هذا العقد",
+      "security_title": "تنبيه الأمان",
+      "security_subtitle": "تم اكتشاف تفويض غير معروف. ألغِه لتأمين محفظتك.",
       "reason": {
         "disable_smart_wallet": {
-          "title": "Disable Smart Wallet",
-          "subtitle": "Revoke all delegations to disable smart wallets."
+          "title": "تعطيل المحفظة الذكية",
+          "subtitle": "ألغِ جميع التفويضات لتعطيل المحافظ الذكية."
         },
         "disable_single_network": {
-          "title": "Revoke Delegation",
-          "subtitle": "Remove delegation from this network."
+          "title": "إلغاء التفويض",
+          "subtitle": "إزالة التفويض من هذه الشبكة."
         },
         "disable_third_party": {
-          "title": "Revoke Third-Party Delegation",
-          "subtitle": "Remove delegation from this third-party contract."
+          "title": "إلغاء تفويض جهة خارجية",
+          "subtitle": "إزالة التفويض من عقد هذه الجهة الخارجية."
         },
         "alert_vulnerability": {
-          "title": "Security Alert",
-          "subtitle": "A vulnerable delegation was detected. Revoke it to secure your wallet."
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض مُعرّض للخطر. ألغِه لتأمين محفظتك."
         },
         "alert_bug": {
-          "title": "Security Alert",
-          "subtitle": "A problematic delegation was detected. Revoke it to secure your wallet."
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض مُسبّب للمشكلات. ألغِه لتأمين محفظتك."
         },
         "alert_unrecognized": {
-          "title": "Security Alert",
-          "subtitle": "An unrecognized delegation was detected. Revoke it to secure your wallet."
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض غير معترف به. ألغِه لتأمين محفظتك."
         },
         "alert_unspecified": {
-          "title": "Security Alert",
-          "subtitle": "An unknown delegation was detected. Revoke it to secure your wallet."
+          "title": "تنبيه الأمان",
+          "subtitle": "تم اكتشاف تفويض غير معروف. ألغِه لتأمين محفظتك."
         }
       },
-      "security_notice": "Security Notice",
+      "security_notice": "إشعار أمني",
       "chain_label": "السلسلة",
       "contract_label": "عقد",
-      "progress": "%{current} of %{total}",
-      "action": "Revoke Delegation",
-      "revoking": "Revoking...",
-      "success": "Successfully Revoked",
+      "progress": "%{current} من %{total}",
+      "action": "إلغاء التفويض",
+      "revoking": "جارٍ الإلغاء...",
+      "success": "تم الإلغاء بنجاح",
       "try_again": "حاول مرة أخرى",
       "cancel": "إلغاء",
       "done": "تم",
-      "next": "Next",
-      "confirm_hw": "Confirm on Device"
+      "next": "التالي",
+      "confirm_hw": "التأكيد على الجهاز"
     },
     "proactive_revoke": {
-      "title": "Security Alert",
-      "description": "An unknown delegation was detected. Revoke to secure your wallet."
+      "title": "تنبيه الأمان",
+      "description": "تم اكتشاف تفويض غير معروف. ألغِه لتأمين محفظتك."
     },
     "confirm_disable": {
-      "title": "Disable Smart Wallet",
-      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "title": "تعطيل المحفظة الذكية",
+      "description": "عطّل المحافظ الذكية للمعاملات المستقبلية. يمكنك إعادة تفعيل المحافظ الذكية في أي وقت.",
       "action": "تعطيل",
       "cancel": "إلغاء"
     }
@@ -935,8 +935,8 @@
       "more_details": "مزيد من التفاصيل",
       "confirmation": "%{Action} %{sellSymbol} إلى %{buySymbol}",
       "go_back": "الرجوع إلى الوراء",
-      "smart_wallet_activation_fee": "Smart Wallet Activation Fee",
-      "will_delegate_callout": "This swap will activate your smart wallet on this network."
+      "smart_wallet_activation_fee": "رسوم تفعيل المحفظة الذكية",
+      "will_delegate_callout": "ستؤدي هذه المبادلة إلى تفعيل محفظتك الذكية على هذه الشبكة."
     },
     "explainers": {
       "long_wait": {
@@ -985,8 +985,8 @@
         "action_label": "فهمت"
       },
       "smart_wallet_activation": {
-        "title": "Smart Wallet Activation Fee",
-        "description": "This one-time fee activates your smart wallet on this network. It enables faster, cheaper swaps by bundling approval and swap into a single transaction."
+        "title": "رسوم تفعيل المحفظة الذكية",
+        "description": "تُفعِّل هذه الرسوم لمرة واحدة محفظتك الذكية على هذه الشبكة. وهي تتيح عمليات مبادلة أسرع وأرخص عبر تجميع الموافقة والمبادلة في معاملة واحدة."
       }
     }
   },
@@ -1464,7 +1464,7 @@
     "token_contract": "عقد الرمز",
     "token_standard": "معايير الرمز",
     "revoke_approval": "إلغاء الموافقة",
-    "smart_account": "Smart Account",
+    "smart_account": "حساب ذكي",
     "error_title": "غير قادر على تحميل النشاط",
     "error_message": "لم نتمكن من جلب هذه المعاملة.\nحاول مرة أخرى أو عد إلى نشاطك.",
     "error_retry": "حاول مرة أخرى",
@@ -1581,9 +1581,9 @@
     "close_cta": "الغاء",
     "handle_copy_title": "تم نسخ الهاش الخاص بالمعاملة",
     "revoke_approval": "إلغاء الموافقة",
-    "estimating_fee": "Estimating fee…",
-    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
+    "estimating_fee": "جارٍ تقدير الرسوم…",
+    "tx_confirmed_or_not_found": "قد تكون المعاملة قد تم تأكيدها بالفعل أو تعذر العثور عليها",
+    "eip7702_auth_list_unavailable": "لا يمكن تسريع هذه المعاملة: بيانات التفويض غير متاحة. حاول مرة أخرى لاحقًا أو استخدم RPC مختلفًا.",
     "speed_up_failed": {
       "title": "فشل تسريع العملية",
       "description": "قد تفشل محاولات تسريع العملية أثناء ازدحام الشبكة، زيادة حد الغاز، أو عند تأكيد المعاملة الأصلية أولاً"
