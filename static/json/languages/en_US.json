@@ -275,7 +275,7 @@
       "title": "Approvals"
     },
     "delegations": {
-      "title": "Delegations"
+      "title": "Smart Wallet"
     },
     "currency": {
       "title": "Currency",
@@ -688,7 +688,7 @@
     }
   },
   "delegations": {
-    "title": "Delegations",
+    "title": "Smart Wallet",
     "no_delegations": "No Active Delegations",
     "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
     "revoke_all": "Revoke All Delegations",
