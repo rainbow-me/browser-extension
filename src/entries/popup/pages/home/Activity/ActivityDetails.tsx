@@ -33,6 +33,7 @@ import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
   getAdditionalDetails,
   getTransactionBlockExplorer,
+  isType4Transaction,
 } from '~/core/utils/transactions';
 import {
   Box,
@@ -387,16 +388,18 @@ const SpeedUpOrCancel = ({
   return (
     <>
       <Box display="flex" flexDirection="column" gap="8px">
-        <Button
-          onClick={() => setSheet('speedUp')}
-          symbol="bolt.fill"
-          height="32px"
-          width="full"
-          variant="plain"
-          color="blue"
-        >
-          {i18n.t('speed_up_and_cancel.speed_up')}
-        </Button>
+        {!isType4Transaction(transaction) && (
+          <Button
+            onClick={() => setSheet('speedUp')}
+            symbol="bolt.fill"
+            height="32px"
+            width="full"
+            variant="plain"
+            color="blue"
+          >
+            {i18n.t('speed_up_and_cancel.speed_up')}
+          </Button>
+        )}
         <Button
           onClick={() => setSheet('cancel')}
           symbol="trash.fill"
