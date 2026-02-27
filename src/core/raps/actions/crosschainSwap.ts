@@ -34,9 +34,7 @@ import {
   extractReplayableExecution,
 } from '../replay';
 import {
-  CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
-  estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
@@ -61,21 +59,10 @@ export const estimateCrosschainSwapGasLimit = async ({
   }
   try {
     if (requiresApprove) {
-      if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
-        try {
-          const gasLimitWithFakeApproval =
-            await estimateSwapGasLimitWithFakeApproval(
-              chainId,
-              provider,
-              quote,
-            );
-          return gasLimitWithFakeApproval;
-        } catch (e) {
-          const routeGasLimit = getCrosschainSwapDefaultGasLimit(quote);
-          if (routeGasLimit) return routeGasLimit;
-        }
-      }
-
+      // When requiresApprove is true, batch estimation (estimateUnlockAndSwapFromMetadata)
+      // should have already been attempted. If we reach here, batch estimation failed.
+      // We can't try separate simulation because swap requires approve to happen first.
+      // Fall back to default gas limits.
       return (
         getCrosschainSwapDefaultGasLimit(quote) ||
         getDefaultGasLimitForTrade(quote, chainId)

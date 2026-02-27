@@ -41,18 +41,13 @@ import {
   extractReplayableExecution,
 } from '../replay';
 import {
-  CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
-  estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
+  getTargetAddressForQuote,
   overrideWithFastSpeedIfNeeded,
   populateSwap,
 } from '../utils';
-import {
-  getQuoteAllowanceTargetAddress,
-  requireAddress,
-  requireHex,
-} from '../validation';
+import { requireAddress, requireHex } from '../validation';
 
 import { populateApprove } from './unlock';
 
@@ -121,20 +116,10 @@ export const estimateSwapGasLimit = async ({
       );
 
       if (requiresApprove) {
-        if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
-          try {
-            const gasLimitWithFakeApproval =
-              await estimateSwapGasLimitWithFakeApproval(
-                chainId,
-                provider,
-                quote,
-              );
-            return gasLimitWithFakeApproval;
-          } catch (e) {
-            //
-          }
-        }
-
+        // When requiresApprove is true, batch estimation (estimateUnlockAndSwapFromMetadata)
+        // should have already been attempted. If we reach here, batch estimation failed.
+        // We can't try separate simulation because swap requires approve to happen first.
+        // Fall back to default gas limits.
         return getDefaultGasLimitForTrade(quote, chainId);
       }
 
@@ -153,28 +138,28 @@ export const estimateSwapGasLimit = async ({
   }
 };
 
-export const estimateUnlockAndSwap = async ({
-  requiresApprove,
+/**
+ * Estimates gas for chained transactions (approve+swap) using Blockaid metadata service.
+ * This function ONLY handles chained/dependent transactions.
+ * For single transactions, use provider estimation via estimateSwapGasLimit instead.
+ */
+export const estimateUnlockAndSwapFromMetadata = async ({
   chainId,
   accountAddress,
   sellTokenAddress,
   quote,
 }: {
-  requiresApprove: boolean;
   chainId: ChainId;
   accountAddress: Address;
   sellTokenAddress: Address;
   quote: Quote | CrosschainQuote;
-}) => {
-  const approveTransaction = requiresApprove
-    ? await populateApprove({
-        owner: accountAddress,
-        tokenAddress: sellTokenAddress,
-        spender: getQuoteAllowanceTargetAddress(quote),
-        chainId,
-      })
-    : null;
-
+}): Promise<string | undefined> => {
+  const approveTransaction = await populateApprove({
+    owner: accountAddress,
+    tokenAddress: sellTokenAddress,
+    spender: getTargetAddressForQuote(quote),
+    chainId,
+  });
   const swapTransaction = await populateSwap({
     provider: getProvider({ chainId }),
     quote,
@@ -183,26 +168,22 @@ export const estimateUnlockAndSwap = async ({
   const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
 
   const steps = [
-    ...(requiresApprove
-      ? [
-          {
-            transaction:
-              approveTransaction?.to &&
-              approveTransaction?.data &&
-              approveTransaction?.from
-                ? {
-                    to: approveTransaction.to,
-                    data: approveTransaction.data || '0x0',
-                    from: approveTransaction.from,
-                    value: approveTransaction.value?.toString() || '0x0',
-                  }
-                : null,
-            label: 'approve',
-            fallbackEstimate: async () =>
-              String(chainGasUnits.basic.approval) || undefined,
-          },
-        ]
-      : []),
+    {
+      transaction:
+        approveTransaction?.to &&
+        approveTransaction?.data &&
+        approveTransaction?.from
+          ? {
+              to: approveTransaction.to,
+              data: approveTransaction.data || '0x0',
+              from: approveTransaction.from,
+              value: approveTransaction.value?.toString() || '0x0',
+            }
+          : null,
+      label: 'approve',
+      fallbackEstimate: async () =>
+        String(chainGasUnits.basic.approval) || undefined,
+    },
     {
       transaction:
         swapTransaction?.to && swapTransaction?.data && swapTransaction?.from

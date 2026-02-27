@@ -1,81 +1,70 @@
 import { isAllowedTargetContract } from '@rainbow-me/swaps';
+import { type Address } from 'viem';
 
 import { add } from '../utils/numbers';
 
-import {
-  estimateApprove,
-  estimateSwapGasLimit,
-  needsTokenApproval,
-} from './actions';
-import { estimateUnlockAndSwap as estimateUnlockAndSwapSteps } from './actions/swap';
+import { estimateApprove, estimateSwapGasLimit } from './actions';
+import { estimateUnlockAndSwapFromMetadata } from './actions/swap';
+import { checkSwapNeedsUnlocking } from './checkSwapNeedsUnlocking';
 import { createNewAction, createNewRap } from './common';
 import {
   type RapAction,
   type RapSwapActionParameters,
   type RapUnlockActionParameters,
 } from './references';
-import { getQuoteAllowanceTargetAddress } from './validation';
+import { getDefaultGasLimitForTrade } from './utils';
 
 export const estimateUnlockAndSwap = async (
   swapParameters: RapSwapActionParameters<'swap'>,
 ) => {
   const { sellAmount, quote, chainId, assetToSell } = swapParameters;
+  const { from: accountAddress } = quote as { from: Address };
 
-  const allowanceTargetAddress = quote.allowanceNeeded
-    ? getQuoteAllowanceTargetAddress(quote)
-    : null;
+  const unlockInfo = await checkSwapNeedsUnlocking({
+    quote,
+    sellAmount,
+    assetToSell,
+    chainId,
+    accountAddress,
+  });
 
-  let gasLimits: (string | number)[] = [];
-  let requiresApprove = false;
-
-  if (allowanceTargetAddress) {
-    if (!isAllowedTargetContract(allowanceTargetAddress, chainId)) {
+  if (unlockInfo) {
+    if (!isAllowedTargetContract(unlockInfo.spender, chainId)) {
       throw new Error('Target contract is not allowed');
     }
-
-    requiresApprove = await needsTokenApproval({
-      owner: quote.from,
-      tokenAddress: quote.sellTokenAddress,
-      spender: allowanceTargetAddress,
-      amount: sellAmount,
+    // Use batch estimation to simulate approve+swap together
+    // This is required because swap depends on approve happening first
+    const gasLimitFromMetadata = await estimateUnlockAndSwapFromMetadata({
       chainId,
-      decimals: assetToSell.decimals,
-    });
-  }
-
-  if (requiresApprove && allowanceTargetAddress) {
-    const gasLimitFromMetadata = await estimateUnlockAndSwapSteps({
-      requiresApprove,
-      chainId,
-      accountAddress: quote.from,
-      sellTokenAddress: quote.sellTokenAddress,
+      accountAddress,
+      sellTokenAddress: unlockInfo.sellTokenAddress,
       quote,
     });
 
     if (gasLimitFromMetadata) {
       return gasLimitFromMetadata;
     }
-
-    const unlockGasLimit = await estimateApprove({
-      owner: quote.from,
-      tokenAddress: quote.sellTokenAddress,
-      spender: allowanceTargetAddress,
+    // If batch estimation fails, do NOT fall through to single tx simulation
+    // because swap requires approve to have happened first.
+    // Return combined default gas limits for approve + swap
+    const approveGasLimit = await estimateApprove({
+      owner: accountAddress,
+      tokenAddress: unlockInfo.sellTokenAddress,
+      spender: unlockInfo.spender,
       chainId,
     });
-    gasLimits = gasLimits.concat(unlockGasLimit);
+    const swapDefaultGasLimit = getDefaultGasLimitForTrade(quote, chainId);
+    return add(approveGasLimit || '0', swapDefaultGasLimit);
   }
 
+  // No approval needed, estimate swap only
   const swapGasLimit = await estimateSwapGasLimit({
     chainId,
-    requiresApprove,
+    requiresApprove: false,
     quote,
   });
 
-  const gasLimit = gasLimits
-    .concat(swapGasLimit)
-    .reduce((acc, limit) => add(acc, limit), '0');
-
-  return gasLimit.toString();
+  return swapGasLimit;
 };
 
 export const createUnlockAndSwapRap = async (
@@ -85,35 +74,26 @@ export const createUnlockAndSwapRap = async (
 
   const { sellAmount, quote, chainId, assetToSell, assetToBuy } =
     swapParameters;
+  const { from: accountAddress } = quote as { from: Address };
 
-  const allowanceTargetAddress = quote.allowanceNeeded
-    ? getQuoteAllowanceTargetAddress(quote)
-    : null;
+  const unlockInfo = await checkSwapNeedsUnlocking({
+    quote,
+    sellAmount: sellAmount as string,
+    assetToSell,
+    chainId,
+    accountAddress,
+  });
 
-  let requiresApprove = false;
-
-  if (allowanceTargetAddress) {
-    if (!isAllowedTargetContract(allowanceTargetAddress, chainId)) {
+  if (unlockInfo) {
+    if (!isAllowedTargetContract(unlockInfo.spender, chainId)) {
       throw new Error('Target contract is not allowed');
     }
-
-    requiresApprove = await needsTokenApproval({
-      owner: quote.from,
-      tokenAddress: quote.sellTokenAddress,
-      spender: allowanceTargetAddress,
-      amount: sellAmount,
-      chainId,
-      decimals: assetToSell.decimals,
-    });
-  }
-
-  if (requiresApprove && allowanceTargetAddress) {
     const unlock = createNewAction('unlock', {
       fromAddress: quote.from,
       amount: sellAmount,
       assetToUnlock: assetToSell,
       chainId,
-      contractAddress: allowanceTargetAddress,
+      contractAddress: unlockInfo.spender,
     } satisfies RapUnlockActionParameters);
 
     actions = actions.concat(unlock);
@@ -122,7 +102,7 @@ export const createUnlockAndSwapRap = async (
   const swap = createNewAction('swap', {
     chainId,
     sellAmount,
-    requiresApprove,
+    requiresApprove: !!unlockInfo,
     quote,
     gasParams: swapParameters.gasParams,
     meta: swapParameters.meta,
