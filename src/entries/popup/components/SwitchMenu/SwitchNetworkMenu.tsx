@@ -183,22 +183,19 @@ export const SwitchNetworkMenuSelector = ({
         );
       })}
       {showDisconnect && disconnect && (
-        <SwitchNetworkMenuDisconnect
-          onDisconnect={disconnect}
-          shortcutLabel={shortcuts.home.DISCONNECT_APP.display}
-        />
+        <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
       )}
     </Box>
   );
 };
 
 export const SwitchNetworkMenuDisconnect = ({
-  shortcutLabel,
   onDisconnect,
 }: {
-  shortcutLabel: string;
   onDisconnect: () => void;
 }) => {
+  const disconnectShortcut = shortcuts.home.DISCONNECT_APP.display;
+
   return (
     <Box
       testId="switch-network-menu-disconnect"
@@ -225,7 +222,7 @@ export const SwitchNetworkMenuDisconnect = ({
             </Inline>
           </Column>
           <Column width="content">
-            <ShortcutHint hint={shortcutLabel} />
+            <ShortcutHint hint={disconnectShortcut} />
           </Column>
         </Columns>
       </Inset>
