@@ -116,6 +116,7 @@ export const createUnlockAndCrosschainSwapRap = async (
     chainId,
     requiresApprove: swapAssetNeedsUnlocking,
     quote,
+    gasParams: swapParameters.gasParams,
     meta: swapParameters.meta,
     assetToSell,
     sellAmount,

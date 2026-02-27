@@ -388,7 +388,7 @@ export const unlock = async ({
     selectedGas,
   });
 
-  const nonce = baseNonce ? baseNonce + index : undefined;
+  const nonce = typeof baseNonce === 'number' ? baseNonce + index : undefined;
 
   const { approvalAmount, isUnlimited } = await getApprovalAmount({
     address: parameters.fromAddress,
@@ -420,13 +420,14 @@ export const unlock = async ({
   const transaction: NewTransaction = {
     asset: assetToUnlock,
     data: approval.data,
-    value: approval.value?.toString(),
+    value: approval.value?.toString() || '0',
     changes: [],
     from: parameters.fromAddress,
     to: assetAddress,
     hash: approval.hash as Hash,
     chainId: approval.chainId as ChainId,
     nonce: approval.nonce,
+    gasLimit: gasLimit?.toString(),
     status: 'pending',
     type: 'approve',
     approvalAmount: (isUnlimited ? 'UNLIMITED' : approvalAmount) as

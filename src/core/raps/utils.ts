@@ -8,7 +8,7 @@ import {
   getQuoteExecutionDetails,
   getTargetAddress,
 } from '@rainbow-me/swaps';
-import { Address, erc20Abi } from 'viem';
+import { erc20Abi } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -24,6 +24,8 @@ import {
 } from '../types/gas';
 import { toHexNoLeadingZeros } from '../utils/hex';
 import { greaterThan, multiply } from '../utils/numbers';
+
+import { getQuoteAllowanceTargetAddress, requireAddress } from './validation';
 
 export const CHAIN_IDS_WITH_TRACE_SUPPORT = [mainnet.id];
 export const SWAP_GAS_PADDING = 1.1;
@@ -96,10 +98,7 @@ const getStateDiff = async (
 ): Promise<unknown> => {
   const tokenAddress = quote.sellTokenAddress;
   const fromAddr = quote.from;
-  const toAddr =
-    quote.swapType === 'normal'
-      ? getTargetAddressForQuote(quote)
-      : (quote as CrosschainQuote).allowanceTarget;
+  const toAddr = getQuoteAllowanceTargetAddress(quote);
   const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
 
   const { number: blockNumber } = await (
@@ -212,7 +211,7 @@ const getClosestGasEstimate = async (
 };
 
 export const getDefaultGasLimitForTrade = (
-  quote: Quote,
+  quote: Quote | CrosschainQuote,
   chainId: ChainId,
 ): string => {
   const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
@@ -249,10 +248,7 @@ export const estimateSwapGasLimitWithFakeApproval = async (
           from: quote.from,
           gas: toHexNoLeadingZeros(String(gas)),
           gasPrice: toHexNoLeadingZeros(`100000000000`),
-          to:
-            quote.swapType === 'normal'
-              ? getTargetAddressForQuote(quote)
-              : (quote as CrosschainQuote).allowanceTarget,
+          to: getQuoteAllowanceTargetAddress(quote),
           value: '0x0', // 100 gwei
         },
         'latest',
@@ -306,7 +302,7 @@ export const getTargetAddressForQuote = (quote: Quote | CrosschainQuote) => {
   if (!targetAddress) {
     throw new Error('Target address not found for quote');
   }
-  return targetAddress as Address;
+  return requireAddress(targetAddress, 'quote target address');
 };
 
 export { getQuoteAllowanceTargetAddress } from './validation';

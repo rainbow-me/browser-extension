@@ -5,6 +5,10 @@ import { Address } from 'viem';
 
 import { ParsedAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
+import {
+  type TransactionGasParams,
+  type TransactionLegacyGasParams,
+} from '../types/gas';
 import { NewTransaction } from '../types/transactions';
 
 export enum SwapModalField {
@@ -53,6 +57,7 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   assetToSell: ParsedAsset;
   assetToBuy: ParsedAsset;
   nonce?: number;
+  gasParams?: TransactionGasParams | TransactionLegacyGasParams;
   quote: QuoteTypeMap[T];
   address?: Address;
   atomic?: boolean;

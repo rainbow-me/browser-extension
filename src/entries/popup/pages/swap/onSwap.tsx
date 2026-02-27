@@ -1,10 +1,10 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
+import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
@@ -41,8 +41,9 @@ export const onSwap = async ({
     useConnectedToHardhatStore.getState().connectedToHardhat;
   const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
   const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
+  const gasParams = useGasStore.getState().selectedGas.transactionGasParams;
 
-  const wallet = getWallet(q.from as Address);
+  const wallet = getWallet(q.from);
 
   // Delegation SDK is configured in initPopup at startup
   logger.debug('[Delegation] Popup: swap initiated, SDK configured', {
@@ -57,6 +58,7 @@ export const onSwap = async ({
       chainId,
       assetToSell: assetToSell,
       assetToBuy: assetToBuy,
+      gasParams,
       quote: q,
     },
     type,
