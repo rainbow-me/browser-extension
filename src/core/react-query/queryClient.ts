@@ -21,7 +21,7 @@ export const queryClient = new QueryClient({
   },
 });
 
-export const asyncStoragePersister = createAsyncStoragePersister({
+const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.react-query',
   storage: {
     getItem: LocalStorage.get,
@@ -60,7 +60,8 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
 export const persistQueryCache = async () => {
   await persistQueryClientSave({
     queryClient,
-    persister: asyncStoragePersister,
+    persister: persistOptions.persister,
+    buster: persistOptions.buster,
     dehydrateOptions: persistOptions.dehydrateOptions,
   });
 };
