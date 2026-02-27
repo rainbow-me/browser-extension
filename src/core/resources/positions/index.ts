@@ -7,6 +7,7 @@ import {
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
+  persistQueryCache,
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
@@ -182,6 +183,16 @@ async function positionsQueryFunctionRetryByChain({
       positionsQueryKey({ address, currency, testnetMode }),
       cachedPositions,
     );
+    try {
+      await persistQueryCache();
+    } catch (persistError) {
+      // Silently fail persistence - don't disrupt the main flow
+      logger.error(
+        new RainbowError('Failed to persist positions cache', {
+          cause: persistError,
+        }),
+      );
+    }
   } catch (e) {
     logger.error(new RainbowError('positionsQueryFunctionRetryByChain: '), {
       message: (e as Error)?.message,

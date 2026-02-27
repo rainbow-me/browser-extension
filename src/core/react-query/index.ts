@@ -1,6 +1,6 @@
 export { createQueryKey } from './createQueryKey';
 
-export { persistOptions, queryClient } from './queryClient';
+export { persistOptions, persistQueryCache, queryClient } from './queryClient';
 
 export type {
   MutationConfig,

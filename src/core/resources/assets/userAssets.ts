@@ -42,13 +42,6 @@ type UserAssetsArgs = {
   testnetMode?: boolean;
 };
 
-type SetUserAssetsArgs = {
-  address?: Address;
-  currency: SupportedCurrencyKey;
-  userAssets?: UserAssetsResult;
-  testnetMode?: boolean;
-};
-
 type SetUserDefaultsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
@@ -108,19 +101,6 @@ const userAssetsSetQueryDefaults = ({
     {
       staleTime,
     },
-  );
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const userAssetsSetQueryData = ({
-  address,
-  currency,
-  userAssets,
-  testnetMode,
-}: SetUserAssetsArgs) => {
-  queryClient.setQueryData(
-    userAssetsQueryKey({ address, currency, testnetMode }),
-    userAssets,
   );
 };
 
