@@ -123,6 +123,10 @@ export const estimateSwapGasLimit = async ({
         return getDefaultGasLimitForTrade(quote, chainId);
       }
 
+      if (quote.defaultGasLimit) {
+        return quote.defaultGasLimit;
+      }
+
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: params,
         contractCallEstimateGas: method,
