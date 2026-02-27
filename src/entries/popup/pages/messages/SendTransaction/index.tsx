@@ -10,7 +10,7 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagStore } from '~/core/state/currentSettings/featureFlags';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { AddressOrEth } from '~/core/types/assets';
@@ -67,7 +67,7 @@ export function SendTransaction({
     useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { allWallets, watchedWallets } = useWallets();
-  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags } = useFeatureFlagStore();
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;

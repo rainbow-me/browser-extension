@@ -9,7 +9,7 @@ import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -54,7 +54,7 @@ export function useHomeShortcuts() {
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
   const { disconnectSession } = useAppSession({ host: dappMetadata?.appHost });
-  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags } = useFeatureFlagStore();
   const { isWatchingWallet } = useWallets();
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();

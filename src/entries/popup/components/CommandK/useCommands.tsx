@@ -17,7 +17,7 @@ import {
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
@@ -771,7 +771,7 @@ export const useCommands = (
     useCurrentAddressStore();
   const { currentTheme } = useCurrentThemeStore();
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
-  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags } = useFeatureFlagStore();
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();

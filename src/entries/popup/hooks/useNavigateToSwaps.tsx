@@ -2,7 +2,7 @@ import React from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
@@ -20,7 +20,7 @@ export const useNavigateToSwaps = () => {
   const isFullScreen = useIsFullScreen();
   const { isWatchingWallet } = useWallets();
   const navigate = useRainbowNavigate();
-  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags } = useFeatureFlagStore();
   const { testnetMode } = useTestnetModeStore();
 
   const allowSwap = React.useMemo(

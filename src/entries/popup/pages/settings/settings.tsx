@@ -23,7 +23,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
   FeatureFlagTypes,
-  useFeatureFlagLocalOverwriteStore,
+  useFeatureFlagStore,
 } from '~/core/state/currentSettings/featureFlags';
 import { useSoundStore } from '~/core/state/sound';
 import { ThemeOption } from '~/core/types/settings';
@@ -50,7 +50,7 @@ export function Settings() {
   const { currentLanguage } = useCurrentLanguageStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
   const { soundsEnabled, toggleSoundsEnabled } = useSoundStore();
-  const { featureFlags, setFeatureFlag } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags, setFeatureFlag } = useFeatureFlagStore();
   const delegationEnabled = useDelegationEnabled();
   const { isWatchingWallet } = useWallets();
   const { getAppUUID, handleUUIDCopy } = useDeviceUUID();
@@ -75,24 +75,9 @@ export function Settings() {
 
   const toggleFeatureFlag = useCallback(
     (key: FeatureFlagTypes) => {
-      const value = featureFlags[key];
-      // For atomic_swaps_enabled and delegation_enabled only: null = use remote config, toggle should set to !remote if currently null, else just toggle
-      if (key === 'atomic_swaps_enabled' || key === 'delegation_enabled') {
-        const remoteValue = config[key] ?? false;
-        setFeatureFlag(key, value === null ? !remoteValue : !value);
-      } else {
-        setFeatureFlag(key, !value);
-      }
+      setFeatureFlag(key, !featureFlags[key]);
     },
     [featureFlags, setFeatureFlag],
-  );
-
-  const handleResetToRemote = useCallback(
-    (flagKey: FeatureFlagTypes) => (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setFeatureFlag(flagKey, null);
-    },
-    [setFeatureFlag],
   );
 
   const testSandboxPopup = useCallback(async () => {
@@ -523,80 +508,27 @@ export function Settings() {
           process.env.IS_TESTING === 'true') && (
           <Menu>
             <MenuItem.Description text="Feature Flags" />
-            {Object.keys(featureFlags).map((key, i) => {
-              const flagKey = key as FeatureFlagTypes;
-              const localValue = featureFlags[flagKey];
-              const isRemoteFlag =
-                flagKey === 'atomic_swaps_enabled' ||
-                flagKey === 'delegation_enabled';
-              const isUsingRemote = isRemoteFlag && localValue === null;
-              // For remote-backed flags, show the live remote value when no local override is set
-              const displayValue = isUsingRemote
-                ? config[flagKey] ?? false
-                : (localValue as boolean);
-
-              return (
-                <MenuItem
-                  key={i}
-                  titleComponent={
-                    <MenuItem.Title
-                      text={i18n.t(`settings.feature_flags.${key}`)}
-                    />
-                  }
-                  rightComponent={
-                    <Inline alignVertical="center" space="8px" wrap={false}>
-                      {isRemoteFlag && (
-                        <Box
-                          onClick={
-                            !isUsingRemote
-                              ? handleResetToRemote(flagKey)
-                              : undefined
-                          }
-                          background={
-                            !isUsingRemote
-                              ? {
-                                  default: 'transparent',
-                                  hover: 'surfaceSecondary',
-                                }
-                              : undefined
-                          }
-                          borderRadius="6px"
-                          paddingHorizontal="6px"
-                          paddingVertical="4px"
-                          style={{
-                            cursor: !isUsingRemote ? 'pointer' : 'default',
-                            transition: 'background-color 0.2s ease',
-                          }}
-                          title={
-                            isUsingRemote
-                              ? 'Using remote value'
-                              : 'Click to reset to remote'
-                          }
-                        >
-                          <Symbol
-                            symbol={
-                              isUsingRemote
-                                ? 'network'
-                                : 'exclamationmark.circle.fill'
-                            }
-                            size={12}
-                            color={isUsingRemote ? 'labelTertiary' : 'yellow'}
-                            weight="semibold"
-                          />
-                        </Box>
-                      )}
-                      <Toggle
-                        tabIndex={-1}
-                        testId={`feature-flag-${key}`}
-                        checked={displayValue}
-                        handleChange={() => toggleFeatureFlag(flagKey)}
-                      />
-                    </Inline>
-                  }
-                  onToggle={() => toggleFeatureFlag(flagKey)}
-                />
-              );
-            })}
+            {Object.keys(featureFlags).map((key, i) => (
+              <MenuItem
+                key={i}
+                titleComponent={
+                  <MenuItem.Title
+                    text={i18n.t(`settings.feature_flags.${key}`)}
+                  />
+                }
+                rightComponent={
+                  <Toggle
+                    tabIndex={-1}
+                    testId={`feature-flag-${key}`}
+                    checked={featureFlags[key as FeatureFlagTypes]}
+                    handleChange={() =>
+                      toggleFeatureFlag(key as FeatureFlagTypes)
+                    }
+                  />
+                }
+                onToggle={() => toggleFeatureFlag(key as FeatureFlagTypes)}
+              />
+            ))}
           </Menu>
         )}
         <Box

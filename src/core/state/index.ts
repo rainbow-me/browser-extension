@@ -20,7 +20,7 @@ export { useNotificationWindowStore } from './notificationWindow';
 export { usePendingTransactionsStore } from './transactions/pendingTransactions';
 export { useRainbowChainsStore } from './rainbowChains';
 export { useUserChainsStore } from './userChains';
-export { useFeatureFlagLocalOverwriteStore as useFeatureFlagsStore } from './currentSettings/featureFlags';
+export { useFeatureFlagStore as useFeatureFlagStoresStore } from './currentSettings/featureFlags';
 export { useConnectedToHardhatStore } from './currentSettings/connectedToHardhat';
 export { useCustomNetworkTransactionsStore } from './transactions/customNetworkTransactions';
 export { useSelectedTransactionStore } from './selectedTransaction';

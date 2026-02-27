@@ -6,7 +6,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagStore } from '~/core/state/currentSettings/featureFlags';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -44,7 +44,7 @@ interface TokenContextMenuProps {
 
 export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags } = useFeatureFlagStore();
   const { currentAddress: address } = useCurrentAddressStore();
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
   const setSelectedToken = useSelectedTokenStore(
