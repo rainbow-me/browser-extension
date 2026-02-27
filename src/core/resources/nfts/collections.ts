@@ -1,7 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Address, Chain } from 'viem';
 
-import remoteConfig from '~/core/firebase/remoteConfig';
 import { fetchNftCollections } from '~/core/network/nfts';
 import {
   InfiniteQueryConfig,
@@ -10,6 +9,7 @@ import {
   createQueryKey,
 } from '~/core/react-query';
 import { NftSort } from '~/core/state/nfts';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { SimpleHashCollectionDetails } from '~/core/types/nfts';
 import {
@@ -138,6 +138,7 @@ export function useNftCollections<TSelectData = NftCollectionsResult>(
     string | null
   > = {},
 ) {
+  const nftsEnabled = useRemoteConfigStore((s) => s.nfts_enabled);
   return useInfiniteQuery({
     queryKey: nftCollectionsQueryKey({
       address,
@@ -154,6 +155,6 @@ export function useNftCollections<TSelectData = NftCollectionsResult>(
     // retry: 3,
     gcTime: Infinity, // Keep data in cache indefinitely
     staleTime: Infinity, // Keep data in cache indefinitely
-    enabled: remoteConfig.nfts_enabled,
+    enabled: nftsEnabled,
   });
 }

@@ -9,7 +9,8 @@ import {
   it,
 } from 'vitest';
 
-import remoteConfig from '~/core/firebase/remoteConfig';
+import { getDelegationEnabled } from '~/core/resources/delegations/featureStatus';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 
 import {
   checkExtensionURL,
@@ -29,10 +30,11 @@ import {
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-const tabsTo = (base: number) =>
-  base +
-  (remoteConfig.approvals_enabled ? 1 : 0) +
-  (remoteConfig.delegation_enabled ? 1 : 0);
+const tabsTo = (base: number) => {
+  const { approvals_enabled } = useRemoteConfigStore.getState();
+  const delegationEnabled = getDelegationEnabled();
+  return base + (approvals_enabled ? 1 : 0) + (delegationEnabled ? 1 : 0);
+};
 
 let rootURL = getRootUrl();
 let driver: WebDriver;

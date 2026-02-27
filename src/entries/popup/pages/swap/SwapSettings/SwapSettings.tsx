@@ -3,11 +3,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { I18n } from 'i18n-js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { useCurrentAddressStore } from '~/core/state';
 import { useDegenMode } from '~/core/state/degenMode';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { ChainId } from '~/core/types/chains';
 import {
   Bleed,
@@ -176,8 +176,9 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
 
 function DegenModeCard() {
   const { isDegenModeEnabled, toggleDegenMode } = useDegenMode();
+  const degenModeEnabled = useRemoteConfigStore((s) => s.degen_mode_enabled);
 
-  if (!config.degen_mode_enabled) return null;
+  if (!degenModeEnabled) return null;
 
   return (
     <Stack marginHorizontal="-8px" space="16px" paddingBottom="8px">

@@ -2,7 +2,7 @@ diff --git a/node_modules/@firebase/remote-config/dist/index.cjs.js b/node_modul
 index 1234567..89abcdef 100644
 --- a/node_modules/@firebase/remote-config/dist/index.cjs.js
 +++ b/node_modules/@firebase/remote-config/dist/index.cjs.js
-@@ -613,7 +613,7 @@ class RestClient {
+@@ -707,7 +707,7 @@
              this.firebaseInstallations.getId(),
              this.firebaseInstallations.getToken()
          ]);
@@ -11,11 +11,20 @@ index 1234567..89abcdef 100644
              'https://firebaseremoteconfig.googleapis.com';
          const url = `${urlBase}/v1/projects/${this.projectId}/namespaces/${this.namespace}:fetch?key=${this.apiKey}`;
          const headers = {
+@@ -1693,7 +1693,7 @@
+         return response;
+     }
+     getRealtimeUrl() {
+-        const urlBase = window.FIREBASE_REMOTE_CONFIG_URL_BASE ||
++        const urlBase = (typeof window !== 'undefined' ? window : globalThis).FIREBASE_REMOTE_CONFIG_URL_BASE ||
+             'https://firebaseremoteconfigrealtime.googleapis.com';
+         const urlString = `${urlBase}/v1/projects/${this.projectId}/namespaces/${this.namespace}:streamFetchInvalidations?key=${this.apiKey}`;
+         return new URL(urlString);
 diff --git a/node_modules/@firebase/remote-config/dist/esm/index.esm.js b/node_modules/@firebase/remote-config/dist/esm/index.esm.js
 index 1234567..89abcdef 100644
 --- a/node_modules/@firebase/remote-config/dist/esm/index.esm.js
 +++ b/node_modules/@firebase/remote-config/dist/esm/index.esm.js
-@@ -609,7 +609,7 @@ class RestClient {
+@@ -703,7 +703,7 @@
              this.firebaseInstallations.getId(),
              this.firebaseInstallations.getToken()
          ]);
@@ -24,3 +33,12 @@ index 1234567..89abcdef 100644
              'https://firebaseremoteconfig.googleapis.com';
          const url = `${urlBase}/v1/projects/${this.projectId}/namespaces/${this.namespace}:fetch?key=${this.apiKey}`;
          const headers = {
+@@ -1689,7 +1689,7 @@
+         return response;
+     }
+     getRealtimeUrl() {
+-        const urlBase = window.FIREBASE_REMOTE_CONFIG_URL_BASE ||
++        const urlBase = (typeof window !== 'undefined' ? window : globalThis).FIREBASE_REMOTE_CONFIG_URL_BASE ||
+             'https://firebaseremoteconfigrealtime.googleapis.com';
+         const urlString = `${urlBase}/v1/projects/${this.projectId}/namespaces/${this.namespace}:streamFetchInvalidations?key=${this.apiKey}`;
+         return new URL(urlString);

@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { i18n, supportedLanguages } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import {
@@ -25,6 +24,7 @@ import {
   FeatureFlagTypes,
   useFeatureFlagLocalOverwriteStore,
 } from '~/core/state/currentSettings/featureFlags';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { useSoundStore } from '~/core/state/sound';
 import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
@@ -54,6 +54,7 @@ export function Settings() {
   const delegationEnabled = useDelegationEnabled();
   const { isWatchingWallet } = useWallets();
   const { getAppUUID, handleUUIDCopy } = useDeviceUUID();
+  const approvalsEnabled = useRemoteConfigStore((s) => s.approvals_enabled);
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
@@ -78,7 +79,10 @@ export function Settings() {
       const value = featureFlags[key];
       // For atomic_swaps_enabled and delegation_enabled only: null = use remote config, toggle should set to !remote if currently null, else just toggle
       if (key === 'atomic_swaps_enabled' || key === 'delegation_enabled') {
-        const remoteValue = config[key] ?? false;
+        const remoteValue =
+          useRemoteConfigStore.getState()[
+            key as 'atomic_swaps_enabled' | 'delegation_enabled'
+          ] ?? false;
         setFeatureFlag(key, value === null ? !remoteValue : !value);
       } else {
         setFeatureFlag(key, !value);
@@ -198,10 +202,7 @@ export function Settings() {
             }
           />
           <MenuItem
-            last={
-              isWatchingWallet ||
-              (!config.approvals_enabled && !delegationEnabled)
-            }
+            last={isWatchingWallet || (!approvalsEnabled && !delegationEnabled)}
             hasRightArrow
             leftComponent={
               <Symbol
@@ -217,7 +218,7 @@ export function Settings() {
             }
             testId="settings-transactions"
           />
-          {isWatchingWallet || !config.approvals_enabled ? null : (
+          {isWatchingWallet || !approvalsEnabled ? null : (
             <MenuItem
               last={!delegationEnabled}
               hasRightArrow
@@ -532,7 +533,9 @@ export function Settings() {
               const isUsingRemote = isRemoteFlag && localValue === null;
               // For remote-backed flags, show the live remote value when no local override is set
               const displayValue = isUsingRemote
-                ? config[flagKey] ?? false
+                ? useRemoteConfigStore.getState()[
+                    flagKey as 'atomic_swaps_enabled' | 'delegation_enabled'
+                  ] ?? false
                 : (localValue as boolean);
 
               return (

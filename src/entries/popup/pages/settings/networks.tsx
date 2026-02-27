@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePromos } from '~/core/state/quickPromo/usePromos';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { useMainChains } from '~/core/utils/chains';
 import { sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
@@ -47,6 +47,7 @@ const chainLabel = ({
 
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
+  const customRpcEnabled = useRemoteConfigStore((s) => s.custom_rpc_enabled);
   const chains = useMainChains();
   const { activePromo, setSeenPromo } = usePromos('network_settings');
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
@@ -110,7 +111,7 @@ export function SettingsNetworks() {
 
   return (
     <Box paddingHorizontal="20px">
-      {config.custom_rpc_enabled && (
+      {customRpcEnabled && (
         <MenuContainer>
           <Menu>
             <MenuItem
