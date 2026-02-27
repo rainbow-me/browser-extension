@@ -45,11 +45,14 @@ import {
   SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
-  getQuoteAllowanceTargetAddress,
   overrideWithFastSpeedIfNeeded,
   populateSwap,
 } from '../utils';
-import { requireAddress, requireHex } from '../validation';
+import {
+  getQuoteAllowanceTargetAddress,
+  requireAddress,
+  requireHex,
+} from '../validation';
 
 import { populateApprove } from './unlock';
 

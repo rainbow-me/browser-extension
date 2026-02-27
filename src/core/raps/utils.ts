@@ -304,5 +304,3 @@ export const getTargetAddressForQuote = (quote: Quote | CrosschainQuote) => {
   }
   return requireAddress(targetAddress, 'quote target address');
 };
-
-export { getQuoteAllowanceTargetAddress } from './validation';

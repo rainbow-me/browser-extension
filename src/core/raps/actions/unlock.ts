@@ -1,30 +1,37 @@
-import { Signer } from '@ethersproject/abstract-signer';
+import type { Signer } from '@ethersproject/abstract-signer';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { type BatchCall, supportsDelegation } from '@rainbow-me/delegation';
-import { Address, Hash, Hex, erc20Abi, erc721Abi, maxUint256 } from 'viem';
+import {
+  type Address,
+  type Hash,
+  type Hex,
+  erc20Abi,
+  erc721Abi,
+  maxUint256,
+} from 'viem';
 
 import { getDelegationEnabled } from '~/core/resources/delegations/featureStatus';
 import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ChainId } from '~/core/types/chains';
-import {
+import type { ChainId } from '~/core/types/chains';
+import type {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { NewTransaction } from '~/core/types/transactions';
+import type { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS } from '../../references';
-import { ParsedAsset } from '../../types/assets';
+import type { ParsedAsset } from '../../types/assets';
 import { toHex } from '../../utils/hex';
 import {
   convertAmountToRawAmount,
   greaterThan,
   toBigNumber,
 } from '../../utils/numbers';
-import {
+import type {
   ActionProps,
   PrepareActionProps,
   RapActionResult,

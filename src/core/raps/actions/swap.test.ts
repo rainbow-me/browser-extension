@@ -13,7 +13,7 @@ import { updateViemClientsWrapper } from '~/core/viem';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
 
-import { ActionProps } from '../references';
+import type { ActionProps } from '../references';
 
 import { estimateSwapGasLimit, executeSwap } from './swap';
 
