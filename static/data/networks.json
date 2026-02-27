@@ -1813,7 +1813,7 @@
           }
         },
         "testnet": false,
-        "internal": false,
+        "internal": true,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://explorer.sanko.xyz",
