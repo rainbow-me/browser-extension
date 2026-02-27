@@ -16,8 +16,9 @@ import { ProviderRequestPayload } from '~/core/transports/providerRequestTranspo
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { chainIdToUse } from '~/core/utils/chains';
+import { chainIdToUse, getChain } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { isInsufficientFundsError } from '~/core/utils/insufficientFunds';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Bleed, Box, Separator, Stack } from '~/design-system';
@@ -139,11 +140,28 @@ export function SendTransaction({
           message: (e as Error)?.message,
         },
       );
-      const extractedError = (e as Error).message.split('[')[0];
-      triggerAlert({
-        text: i18n.t('errors.sending_transaction'),
-        description: extractedError,
-      });
+
+      if (isInsufficientFundsError(e)) {
+        const activeChainId = chainIdToUse(
+          connectedToHardhat,
+          connectedToHardhatOp,
+          activeSession?.chainId,
+        );
+        const nativeSymbol = getChain({ chainId: activeChainId }).nativeCurrency
+          .symbol;
+        triggerAlert({
+          text: i18n.t('send.button_label.insufficient_native_asset_for_gas', {
+            symbol: nativeSymbol,
+          }),
+          description: i18n.t('errors.insufficient_funds_description'),
+        });
+      } else {
+        const extractedError = (e as Error).message.split('[')[0];
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: extractedError,
+        });
+      }
     } finally {
       setWaitingForDevice(false);
       setLoading(false);
