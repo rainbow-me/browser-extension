@@ -1,7 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
-import type { Address, SignedAuthorizationList } from 'viem';
+import { type SignedAuthorizationList, isAddress, isHex } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
@@ -14,7 +14,6 @@ import {
 import {
   PendingTransaction,
   RainbowTransaction,
-  TxHash,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -54,12 +53,34 @@ const addTenPercent = (prevWeiValue = '0') =>
 const greaterValueInHex = (a: string, b: string) =>
   toHex(greaterThan(a, b) ? a : b);
 
+function hasValidNonce(nonce: unknown): nonce is number {
+  return typeof nonce === 'number' && Number.isInteger(nonce) && nonce >= 0;
+}
+
+function resolveReplacementTransactionFields(replaceTx: {
+  from?: string;
+  to?: string | null;
+  hash: string;
+}) {
+  if (!replaceTx.from || !isAddress(replaceTx.from)) {
+    throw new Error(i18n.t('errors.sending_transaction'));
+  }
+
+  const to = replaceTx.to ?? replaceTx.from;
+  if (!isAddress(to) || !isHex(replaceTx.hash)) {
+    throw new Error(i18n.t('errors.sending_transaction'));
+  }
+
+  return {
+    from: replaceTx.from,
+    to,
+    hash: replaceTx.hash,
+  };
+}
+
 function hasIncompleteStoredData(tx: PendingTransaction): boolean {
   const missingEssentialData =
-    tx.data === '0x' ||
-    !tx.gasLimit ||
-    (tx.nonce === 0 &&
-      (tx.type === 'revoke' || tx.type === 'revoke_delegation'));
+    tx.data === '0x' || !tx.gasLimit || !hasValidNonce(tx.nonce);
 
   const isEip7702 =
     tx.delegation || tx.type === 'revoke_delegation' || tx.type === 'delegate';
@@ -92,17 +113,21 @@ async function fetchPendingTransaction(
   hash: string,
   chainId: number,
 ): Promise<FetchedTxForReplacement | null> {
+  if (!isHex(hash)) return null;
+
   const client = getViemClient({ chainId });
-  const tx = await client.getTransaction({ hash: hash as `0x${string}` });
+  const tx = await client.getTransaction({ hash });
   if (!tx || tx.blockNumber != null) return null;
+  if (tx.chainId === undefined) return null;
+  if (!hasValidNonce(tx.nonce)) return null;
 
   const to = tx.to ?? tx.from;
   const base: FetchedTxForReplacement = {
-    chainId: tx.chainId as number,
-    from: tx.from as Address,
-    to: to as Address,
-    nonce: tx.nonce ?? 0,
-    data: (tx.input ?? '0x') as `0x${string}`,
+    chainId: tx.chainId,
+    from: tx.from,
+    to,
+    nonce: tx.nonce,
+    data: tx.input ?? '0x',
     value: tx.value?.toString() ?? '0',
     gasLimit: tx.gas?.toString() ?? '0',
     maxFeePerGas: tx.maxFeePerGas?.toString(),
@@ -160,6 +185,10 @@ const cancelTransaction = async (
     transaction,
     selectedGasParams,
   );
+  if (!hasValidNonce(transaction.nonce)) {
+    throw new Error(i18n.t('speed_up_and_cancel.tx_confirmed_or_not_found'));
+  }
+
   const { nonce, chainId, from } = transaction;
   return { nonce, chainId, from, to: from, value: toHex('0'), ...gasParams };
 };
@@ -172,6 +201,10 @@ const speedUpTransaction = async (
     transaction,
     selectedGasParams,
   );
+  if (!hasValidNonce(transaction.nonce)) {
+    throw new Error(i18n.t('speed_up_and_cancel.tx_confirmed_or_not_found'));
+  }
+
   const {
     data,
     chainId,
@@ -223,7 +256,7 @@ export function SpeedUpAndCancelSheet({
     data: transactionRequest,
     error: fetchError,
     isFetching: isFetchingTx,
-  } = useQuery({
+  } = useQuery<TransactionRequest>({
     queryKey: [
       'speedUpCancelTxRequest',
       transaction.hash,
@@ -246,6 +279,12 @@ export function SpeedUpAndCancelSheet({
         }
         resolvedTx = { ...transaction, ...fetched };
       }
+      if (!hasValidNonce(resolvedTx.nonce)) {
+        throw new Error(
+          i18n.t('speed_up_and_cancel.tx_confirmed_or_not_found'),
+        );
+      }
+
       // EIP-7702 speed up requires authorizationList - fail early with clear message if missing
       const isEip7702 =
         resolvedTx.delegation ||
@@ -268,17 +307,18 @@ export function SpeedUpAndCancelSheet({
     mutationFn: async () => {
       if (!transactionRequest) throw new Error('Transaction request not ready');
       const replaceTx = await sendTransaction(transactionRequest);
+      const replacementFields = resolveReplacementTransactionFields(replaceTx);
 
       updateTransaction({
-        address: replaceTx.from as Address,
+        address: replacementFields.from,
         chainId: replaceTx.chainId,
         transaction: {
           ...transaction,
           data: replaceTx.data,
           value: replaceTx.value?.toString(),
-          from: replaceTx.from as Address,
-          to: replaceTx.to as Address,
-          hash: replaceTx.hash as TxHash,
+          from: replacementFields.from,
+          to: replacementFields.to,
+          hash: replacementFields.hash,
           chainId: replaceTx.chainId,
           maxFeePerGas: replaceTx.maxFeePerGas?.toString(),
           maxPriorityFeePerGas: replaceTx.maxPriorityFeePerGas?.toString(),
@@ -376,7 +416,9 @@ export function SpeedUpAndCancelSheet({
                 <Box paddingHorizontal="20px" paddingVertical="16px">
                   {fetchError ? (
                     <Text size="14pt" color="red" weight="semibold">
-                      {(fetchError as Error).message}
+                      {fetchError instanceof Error
+                        ? fetchError.message
+                        : String(fetchError)}
                     </Text>
                   ) : isFetchingTx || !transactionRequest ? (
                     <Inline
@@ -393,9 +435,7 @@ export function SpeedUpAndCancelSheet({
                     <TransactionFee
                       chainId={transaction.chainId}
                       defaultSpeed={GasSpeed.URGENT}
-                      transactionRequest={
-                        transactionRequest as TransactionRequest
-                      }
+                      transactionRequest={transactionRequest}
                     />
                   )}
                 </Box>

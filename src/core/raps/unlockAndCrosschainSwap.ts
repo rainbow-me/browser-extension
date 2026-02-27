@@ -7,12 +7,12 @@ import { add } from '../utils/numbers';
 import { estimateApprove, needsTokenApproval } from './actions';
 import { estimateCrosschainSwapGasLimit } from './actions/crosschainSwap';
 import { createNewAction, createNewRap } from './common';
-import {
+import type {
   RapAction,
   RapSwapActionParameters,
   RapUnlockActionParameters,
 } from './references';
-import { getQuoteAllowanceTargetAddress } from './utils';
+import { getQuoteAllowanceTargetAddress } from './validation';
 
 export const estimateUnlockAndCrosschainSwap = async (
   swapParameters: RapSwapActionParameters<'crosschainSwap'>,
@@ -116,6 +116,7 @@ export const createUnlockAndCrosschainSwapRap = async (
     chainId,
     requiresApprove: swapAssetNeedsUnlocking,
     quote,
+    gasParams: swapParameters.gasParams,
     meta: swapParameters.meta,
     assetToSell,
     sellAmount,

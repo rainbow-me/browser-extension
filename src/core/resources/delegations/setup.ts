@@ -3,6 +3,7 @@ import { configure } from '@rainbow-me/delegation';
 import { platformHttp } from '~/core/network/platform';
 import { useCurrentAddressStore } from '~/core/state';
 import { getSyncedStorage } from '~/core/state/_internal';
+import { detectScriptType } from '~/core/utils/detectScriptType';
 import { logger } from '~/logger';
 
 /**
@@ -21,7 +22,7 @@ export function setupDelegationClient(): void {
     storeOptions: {
       sync: { engine: syncEngine },
       storage,
-      shouldEnable: () => true,
+      shouldEnable: () => detectScriptType() === 'background',
     },
   });
 }

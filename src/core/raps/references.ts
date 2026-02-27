@@ -1,11 +1,15 @@
-import { Signer } from '@ethersproject/abstract-signer';
+import type { Signer } from '@ethersproject/abstract-signer';
 import type { BatchCall } from '@rainbow-me/delegation';
-import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
-import { Address } from 'viem';
+import type { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import type { Address } from 'viem';
 
-import { ParsedAsset } from '../types/assets';
-import { ChainId } from '../types/chains';
-import { NewTransaction } from '../types/transactions';
+import type { ParsedAsset } from '../types/assets';
+import type { ChainId } from '../types/chains';
+import {
+  type TransactionGasParams,
+  type TransactionLegacyGasParams,
+} from '../types/gas';
+import type { NewTransaction } from '../types/transactions';
 
 export enum SwapModalField {
   input = 'inputAmount',
@@ -53,6 +57,7 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   assetToSell: ParsedAsset;
   assetToBuy: ParsedAsset;
   nonce?: number;
+  gasParams?: TransactionGasParams | TransactionLegacyGasParams;
   quote: QuoteTypeMap[T];
   address?: Address;
   atomic?: boolean;

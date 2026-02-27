@@ -9,10 +9,6 @@ import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import { isLegacyMeteorologyFeeData } from '~/core/resources/gas/classification';
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
-import {
-  MeteorologyLegacyResponse,
-  MeteorologyResponse,
-} from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -20,7 +16,6 @@ import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
-  GasFeeParams,
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
@@ -68,7 +63,11 @@ const useGas = ({
   const [internalMaxBaseFee, setInternalMaxBaseFee] = useState('');
   const [internalGasPrice, setInternalGasPrice] = useState('');
 
-  const feeType = gasData?.meta?.feeType;
+  const legacyGasData =
+    gasData && isLegacyMeteorologyFeeData(gasData) ? gasData : undefined;
+  const eip1559GasData =
+    gasData && !isLegacyMeteorologyFeeData(gasData) ? gasData : undefined;
+  const feeType: 'legacy' | 'eip1559' = legacyGasData ? 'legacy' : 'eip1559';
   const debouncedEstimatedGasLimit = useDebounce(estimatedGasLimit, 500);
   const debouncedMaxPriorityFee = useDebounce(internalMaxPriorityFee, 300);
   const prevDebouncedMaxPriorityFee = usePrevious(debouncedMaxPriorityFee);
@@ -97,6 +96,9 @@ const useGas = ({
     setCustomLegacySpeed,
     clearCustomGasModified,
   } = useGasStore();
+  const customGas = storeGasFeeParamsBySpeed.custom;
+  const customEip1559Gas =
+    customGas && 'maxPriorityFeePerGas' in customGas ? customGas : undefined;
 
   const setCustomMaxBaseFee = useCallback((maxBaseFee = '0') => {
     setInternalMaxBaseFee(maxBaseFee);
@@ -123,7 +125,8 @@ const useGas = ({
       currentCurrency,
     ],
     queryFn: () => {
-      const { data } = gasData as MeteorologyResponse;
+      if (!eip1559GasData || !nativeAsset) return;
+      const { data } = eip1559GasData;
       const currentBaseFee = data.currentBaseFee;
       const secondsPerNewBlock = data.secondsPerNewBlock;
 
@@ -132,18 +135,15 @@ const useGas = ({
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
 
-      const maxPriorityFeePerGas = (
-        storeGasFeeParamsBySpeed?.custom as GasFeeParams
-      )?.maxPriorityFeePerGas?.amount;
-
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
-        maxPriorityFeeWei: maxPriorityFeePerGas,
+        maxPriorityFeeWei:
+          customEip1559Gas?.maxPriorityFeePerGas?.amount ?? '0',
         speed: GasSpeed.CUSTOM,
         baseFeeWei: gweiToWei(debouncedMaxBaseFee || '0'),
         blocksToConfirmation,
         gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
-        nativeAsset: nativeAsset as ParsedAsset,
+        nativeAsset,
         currency: currentCurrency,
         secondsPerNewBlock,
       });
@@ -154,6 +154,7 @@ const useGas = ({
       !!gasData &&
       enabled &&
       feeType === 'eip1559' &&
+      !!eip1559GasData &&
       !!nativeAsset &&
       prevDebouncedMaxBaseFee !== debouncedMaxBaseFee,
   });
@@ -171,8 +172,9 @@ const useGas = ({
       currentCurrency,
     ],
     queryFn: () => {
-      const { data } = gasData as MeteorologyResponse;
-      const currentBaseFee = data.currentBaseFee ?? 0;
+      if (!eip1559GasData || !nativeAsset) return;
+      const { data } = eip1559GasData;
+      const currentBaseFee = data.currentBaseFee;
       const secondsPerNewBlock = data.secondsPerNewBlock;
 
       const blocksToConfirmation = {
@@ -180,19 +182,16 @@ const useGas = ({
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
 
-      const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
-        ?.maxBaseFee?.amount;
-
       const maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
 
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
         maxPriorityFeeWei,
         speed: GasSpeed.CUSTOM,
-        baseFeeWei: maxBaseFee,
+        baseFeeWei: customEip1559Gas?.maxBaseFee?.amount ?? '0',
         blocksToConfirmation,
         gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
-        nativeAsset: nativeAsset as ParsedAsset,
+        nativeAsset,
         currency: currentCurrency,
         secondsPerNewBlock,
       });
@@ -203,6 +202,7 @@ const useGas = ({
       !!gasData &&
       enabled &&
       feeType === 'eip1559' &&
+      !!eip1559GasData &&
       !!nativeAsset &&
       prevDebouncedMaxPriorityFee !== debouncedMaxPriorityFee,
   });
@@ -220,12 +220,13 @@ const useGas = ({
       currentCurrency,
     ],
     queryFn: () => {
+      if (!nativeAsset) return;
       const gasPrice = gweiToWei(debouncedGasPrice || '0');
       const newCustomSpeed = parseCustomGasFeeLegacyParams({
         speed: GasSpeed.CUSTOM,
         gasPriceWei: gasPrice,
         gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
-        nativeAsset: nativeAsset as ParsedAsset,
+        nativeAsset,
         currency: currentCurrency,
         waitTime: 0,
       });
@@ -236,6 +237,7 @@ const useGas = ({
       !!gasData &&
       enabled &&
       feeType === 'legacy' &&
+      !!legacyGasData &&
       !!nativeAsset &&
       prevDebouncedGasPrice !== debouncedGasPrice,
   });
@@ -246,25 +248,23 @@ const useGas = ({
     | GasFeeParamsBySpeed
     | GasFeeLegacyParamsBySpeed
     | null = useMemo(() => {
-    const newGasFeeParamsBySpeed =
-      !isLoading &&
-      gasData &&
-      (isLegacyMeteorologyFeeData(gasData)
-        ? gasData.data?.legacy
-        : (gasData as MeteorologyResponse).data?.currentBaseFee)
-        ? nativeAsset
-          ? parseGasFeeParamsBySpeed({
-              chainId,
-              data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-              gasLimit:
-                debouncedEstimatedGasLimit || chainGasUnits.basic.tokenTransfer,
-              nativeAsset,
-              currency: currentCurrency,
-              optimismL1SecurityFee,
-              additionalTime,
-            })
-          : null
-        : null;
+    if (isLoading || !gasData || !nativeAsset) return null;
+
+    const hasGasPayload = legacyGasData
+      ? !!legacyGasData.data?.legacy
+      : !!eip1559GasData?.data?.currentBaseFee;
+    if (!hasGasPayload) return null;
+
+    const newGasFeeParamsBySpeed = parseGasFeeParamsBySpeed({
+      chainId,
+      data: gasData,
+      gasLimit: debouncedEstimatedGasLimit || chainGasUnits.basic.tokenTransfer,
+      nativeAsset,
+      currency: currentCurrency,
+      optimismL1SecurityFee,
+      additionalTime,
+    });
+
     if (
       customGasModified &&
       newGasFeeParamsBySpeed &&
@@ -277,6 +277,8 @@ const useGas = ({
     isLoading,
     gasData,
     nativeAsset,
+    legacyGasData,
+    eip1559GasData,
     chainId,
     debouncedEstimatedGasLimit,
     currentCurrency,
@@ -355,17 +357,11 @@ const useGas = ({
     setCustomMaxPriorityFee,
     setCustomGasPrice,
     clearCustomGasModified,
-    currentBaseFee:
-      gasData && !isLegacyMeteorologyFeeData(gasData)
-        ? weiToGwei(
-            (gasData as MeteorologyResponse).data?.currentBaseFee ?? '0',
-          )
-        : '',
-    baseFeeTrend:
-      gasData && !isLegacyMeteorologyFeeData(gasData)
-        ? (gasData as MeteorologyResponse).data?.baseFeeTrend ?? 0
-        : 0,
-    feeType: gasData?.meta?.feeType ?? 'eip1559',
+    currentBaseFee: eip1559GasData
+      ? weiToGwei(eip1559GasData.data?.currentBaseFee ?? '0')
+      : '',
+    baseFeeTrend: eip1559GasData ? eip1559GasData.data?.baseFeeTrend ?? 0 : 0,
+    feeType,
   };
 };
 

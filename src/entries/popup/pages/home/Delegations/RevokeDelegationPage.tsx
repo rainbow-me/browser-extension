@@ -11,11 +11,8 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { RevokeReason } from '~/core/types/delegations';
-import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
-} from '~/core/types/gas';
-import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { type TransactionGasParams } from '~/core/types/gas';
+import { type NewTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { getChain } from '~/core/utils/chains';
 import { toHex } from '~/core/utils/hex';
@@ -60,9 +57,6 @@ interface RevokeDelegationLocationState {
   revokeReason?: RevokeReason | string;
 }
 
-// Default gas limit for delegation revoke transactions
-const DEFAULT_GAS_LIMIT = 100000n;
-
 type RevokeStatus = 'ready' | 'revoking' | 'failed';
 
 const REVOKE_REASON_I18N_KEYS: Record<
@@ -105,6 +99,49 @@ const LEGACY_REASON_MAP: Record<string, RevokeReason> = {
   security_alert: RevokeReason.ALERT_UNSPECIFIED,
 };
 
+function isEip1559GasParams(
+  gasParams: unknown,
+): gasParams is TransactionGasParams {
+  if (!gasParams || typeof gasParams !== 'object') return false;
+
+  const maxFeePerGas = Reflect.get(gasParams, 'maxFeePerGas');
+  const maxPriorityFeePerGas = Reflect.get(gasParams, 'maxPriorityFeePerGas');
+
+  return (
+    typeof maxFeePerGas === 'string' &&
+    maxFeePerGas.length > 0 &&
+    typeof maxPriorityFeePerGas === 'string' &&
+    maxPriorityFeePerGas.length > 0
+  );
+}
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
+function resolveRevokeReason(rawRevokeReason: unknown): RevokeReason {
+  if (
+    typeof rawRevokeReason === 'string' &&
+    rawRevokeReason in LEGACY_REASON_MAP
+  ) {
+    return LEGACY_REASON_MAP[rawRevokeReason];
+  }
+
+  switch (rawRevokeReason) {
+    case RevokeReason.DISABLE_SMART_WALLET:
+    case RevokeReason.DISABLE_SINGLE_NETWORK:
+    case RevokeReason.DISABLE_THIRD_PARTY:
+    case RevokeReason.ALERT_VULNERABILITY:
+    case RevokeReason.ALERT_BUG:
+    case RevokeReason.ALERT_UNRECOGNIZED:
+    case RevokeReason.ALERT_UNSPECIFIED:
+      return rawRevokeReason;
+    default:
+      return RevokeReason.DISABLE_SINGLE_NETWORK;
+  }
+}
+
 export const RevokeDelegationPage = () => {
   const location = useLocation();
   const navigate = useRainbowNavigate();
@@ -127,12 +164,7 @@ export const RevokeDelegationPage = () => {
     () => locationState?.delegationsToRevoke ?? [],
     [locationState],
   );
-  const rawRevokeReason = locationState?.revokeReason;
-  const revokeReason: RevokeReason =
-    typeof rawRevokeReason === 'string' && rawRevokeReason in LEGACY_REASON_MAP
-      ? LEGACY_REASON_MAP[rawRevokeReason]
-      : (rawRevokeReason as RevokeReason) ??
-        RevokeReason.DISABLE_SINGLE_NETWORK;
+  const revokeReason = resolveRevokeReason(locationState?.revokeReason);
   const isSecurityAlert = [
     RevokeReason.ALERT_VULNERABILITY,
     RevokeReason.ALERT_BUG,
@@ -196,21 +228,17 @@ export const RevokeDelegationPage = () => {
 
       // Build gas params
       const gasParams = selectedGas.transactionGasParams;
-      // Gas params are strings (hex) from TransactionGasParams, or we fallback to legacy gasPrice
-      const maxFeePerGas =
-        (gasParams as TransactionGasParams)?.maxFeePerGas ??
-        (gasParams as TransactionLegacyGasParams)?.gasPrice ??
-        '0x0';
-      const maxPriorityFeePerGas =
-        (gasParams as TransactionGasParams)?.maxPriorityFeePerGas ?? '0x0';
+      if (!isEip1559GasParams(gasParams)) {
+        throw new Error('Revoke requires EIP-1559 gas params');
+      }
 
       const result = await popupClient.wallet.revokeDelegation({
         chainId: currentDelegation.chainId,
-        userAddress: revokeAddress as Address,
+        userAddress: revokeAddress,
         transactionOptions: {
-          maxFeePerGas: toHex(maxFeePerGas),
-          maxPriorityFeePerGas: toHex(maxPriorityFeePerGas),
-          gasLimit: toHex(DEFAULT_GAS_LIMIT),
+          maxFeePerGas: toHex(gasParams.maxFeePerGas),
+          maxPriorityFeePerGas: toHex(gasParams.maxPriorityFeePerGas),
+          gasLimit: null,
         },
       });
 
@@ -240,21 +268,23 @@ export const RevokeDelegationPage = () => {
       }
 
       if (result.txHash) {
+        if (result.nonce === undefined) {
+          throw new Error('Revoke transaction returned no nonce');
+        }
+
         const transaction: NewTransaction = {
           changes: [],
           data: '0x',
           value: '0',
           from: revokeAddress,
           to: currentDelegation.address ?? revokeAddress,
-          hash: result.txHash as TxHash,
+          hash: result.txHash,
           chainId: currentDelegation.chainId,
           status: 'pending',
           type: 'revoke_delegation',
-          nonce: result.nonce ?? 0,
-          gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
-          maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
-          maxPriorityFeePerGas: (gasParams as TransactionGasParams)
-            ?.maxPriorityFeePerGas,
+          nonce: result.nonce,
+          maxFeePerGas: gasParams.maxFeePerGas,
+          maxPriorityFeePerGas: gasParams.maxPriorityFeePerGas,
         };
 
         await addNewTransaction({
@@ -309,10 +339,13 @@ export const RevokeDelegationPage = () => {
           // State will be reset by useEffect above
         }
       }
-    } catch (e: unknown) {
-      const error = e as Error;
-      if (!isLedgerConnectionError(error)) {
-        const extractedError = error.message?.split('[')[0] || 'Unknown error';
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      const parsedError =
+        error instanceof Error ? error : new Error(errorMessage);
+
+      if (!isLedgerConnectionError(parsedError)) {
+        const extractedError = errorMessage.split('[')[0] || 'Unknown error';
         triggerAlert({
           text: i18n.t('errors.sending_transaction'),
           description: extractedError,
@@ -320,7 +353,7 @@ export const RevokeDelegationPage = () => {
       }
 
       logger.error(new RainbowError('delegation: error executing revoke'), {
-        message: error.message,
+        message: errorMessage,
         chainId: currentDelegation.chainId,
         contractAddress: currentDelegation.address,
       });
@@ -328,7 +361,7 @@ export const RevokeDelegationPage = () => {
       analytics.track(event.delegationRevokeFailed, {
         chainId: currentDelegation.chainId,
         contractAddress: currentDelegation.address,
-        error: error.message,
+        error: errorMessage,
       });
 
       setRevokeStatus('failed');
