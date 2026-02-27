@@ -187,9 +187,11 @@ async function positionsQueryFunctionRetryByChain({
       await persistQueryCache();
     } catch (persistError) {
       // Silently fail persistence - don't disrupt the main flow
-      logger.error(new RainbowError('Failed to persist positions cache'), {
-        message: persistError,
-      });
+      logger.error(
+        new RainbowError('Failed to persist positions cache', {
+          cause: persistError,
+        }),
+      );
     }
   } catch (e) {
     logger.error(new RainbowError('positionsQueryFunctionRetryByChain: '), {
