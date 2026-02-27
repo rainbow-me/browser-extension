@@ -76,7 +76,6 @@
       ],
       "resources": [
         "inpage.js",
-        "delegation-sdk.js",
         "*.woff2",
         "popup.css",
         "assets/badges/*.png"
