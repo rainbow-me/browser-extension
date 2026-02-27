@@ -4,7 +4,6 @@ import {
 } from '@rainbow-me/delegation';
 import { BaseError, IntrinsicGasTooLowError } from 'viem';
 
-import { ChainId } from '~/core/types/chains';
 import { getNextNonce } from '~/core/utils/transactions';
 import { getViemClient } from '~/core/viem/clients';
 import {
@@ -31,7 +30,7 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
       // Get wallet client for signing
       const walletClient = await getViemWalletClient({
         address: userAddress,
-        chainId: chainId as ChainId,
+        chainId,
       });
 
       if (!walletClient) {
@@ -41,7 +40,7 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
       }
 
       // Get public client for the chain
-      const publicClient = getViemClient({ chainId: chainId as ChainId });
+      const publicClient = getViemClient({ chainId });
 
       // Convert hex strings to BigInt for SDK
       // Hex strings come in as "0x..." format, BigInt can parse them directly
@@ -57,7 +56,7 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
       // Get nonce for the transaction
       const nonce = await getNextNonce({
         address: userAddress,
-        chainId: chainId as ChainId,
+        chainId,
       });
 
       // Execute revoke delegation via SDK
@@ -66,22 +65,25 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
         result = await sdkExecuteRevokeDelegation({
           walletClient,
           publicClient,
-          chainId: chainId as ChainId,
+          chainId,
           nonce,
           transactionOptions: transactionOptionsForSdk,
         });
       } catch (error) {
         if (!isIntrinsicEstimateGasFailure(error)) throw error;
 
-        logger.warn('Revoke gas estimate failed, retrying with fallback gas limit', {
-          chainId,
-          gasLimit: REVOKE_ESTIMATE_FALLBACK_GAS_LIMIT.toString(),
-        });
+        logger.warn(
+          'Revoke gas estimate failed, retrying with fallback gas limit',
+          {
+            chainId,
+            gasLimit: REVOKE_ESTIMATE_FALLBACK_GAS_LIMIT.toString(),
+          },
+        );
 
         result = await sdkExecuteRevokeDelegation({
           walletClient,
           publicClient,
-          chainId: chainId as ChainId,
+          chainId,
           nonce,
           transactionOptions: {
             ...transactionOptionsForSdk,
@@ -109,5 +111,7 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
 
 function isIntrinsicEstimateGasFailure(error: unknown): boolean {
   if (!(error instanceof BaseError)) return false;
-  return error.walk((cause) => cause instanceof IntrinsicGasTooLowError) !== null;
+  return (
+    error.walk((cause) => cause instanceof IntrinsicGasTooLowError) !== null
+  );
 }
