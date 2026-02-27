@@ -1584,7 +1584,6 @@
     "revoke_approval": "Revoke Approval",
     "estimating_fee": "Estimating fee…",
     "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
-    "eip7702_auth_list_unavailable": "Cannot speed up this transaction: delegation data is not available. Try again later or use a different RPC.",
     "speed_up_failed": {
       "title": "Speed up failed",
       "description": "Attempts to speed up a transaction can fail during network congestion, gas limit increases, or when the original transaction is confirmed first"

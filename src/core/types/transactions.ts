@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { type Address, type SignedAuthorizationList } from 'viem';
+import { type Address } from 'viem';
 
 import {
   AssetApiResponse,
@@ -61,9 +61,7 @@ type BaseTransaction = {
   gasPrice?: string;
   gasLimit?: string;
   baseFee?: string;
-  /** EIP-7702 authorization list - required for type 4 speed up. Stored at tx creation. */
-  authorizationList?: SignedAuthorizationList;
-  /** True when EIP-7702 (type 4) - used for speed up to know we need authorizationList */
+  /** True when EIP-7702 (type 4) */
   delegation?: boolean;
   explorer?: {
     name: string;

@@ -3,7 +3,6 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { BigNumber } from '@ethersproject/bignumber';
 import { Wallet } from '@ethersproject/wallet';
 import {
   SignTypedDataVersion,
@@ -39,7 +38,6 @@ import {
   sanitizeTypedData,
 } from '../utils/ethereum';
 import { addHexPrefix } from '../utils/hex';
-import { getViemClient } from '../viem/clients';
 
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
@@ -239,8 +237,6 @@ export const exportAccount = async (
   return keychainManager.exportAccount(address, password);
 };
 
-const EIP_7702_TX_TYPE = 4;
-
 export const sendTransaction = async (
   txPayload: TransactionRequest,
   provider: Provider,
@@ -251,49 +247,6 @@ export const sendTransaction = async (
 
   const signer = await keychainManager.getSigner(txPayload.from as Address);
   const wallet = signer.connect(provider);
-
-  // TEMP: txv4 (EIP-7702) bypass - ethers rejects authorizationList and parseTransaction for type 4.
-  // Use viem sign + send, build response manually. Remove when ethers→viem migration PR lands.
-  if (Number(txPayload.type) === EIP_7702_TX_TYPE) {
-    const signedTx = await signer.signTransaction(txPayload);
-    const client = getViemClient({ chainId: txPayload.chainId });
-    const hash = await client.sendRawTransaction({
-      serializedTransaction: signedTx as `0x${string}`,
-    });
-    const response: TransactionResponse = {
-      hash,
-      from: txPayload.from as string,
-      to: txPayload.to as string,
-      nonce: txPayload.nonce !== undefined ? Number(txPayload.nonce) : 0,
-      gasLimit: BigNumber.from(txPayload.gasLimit ?? 0),
-      gasPrice: txPayload.gasPrice
-        ? BigNumber.from(txPayload.gasPrice)
-        : undefined,
-      maxFeePerGas: txPayload.maxFeePerGas
-        ? BigNumber.from(txPayload.maxFeePerGas)
-        : undefined,
-      maxPriorityFeePerGas: txPayload.maxPriorityFeePerGas
-        ? BigNumber.from(txPayload.maxPriorityFeePerGas)
-        : undefined,
-      data: (txPayload.data?.toString() ?? '0x') as string,
-      value: BigNumber.from(txPayload.value ?? 0),
-      chainId: txPayload.chainId ?? 1,
-      confirmations: 0,
-      wait: async () => {
-        /* eslint-disable no-await-in-loop -- intentional poll for receipt */
-        for (let i = 0; i < 120; i++) {
-          const receipt = await provider.getTransactionReceipt(hash);
-          if (receipt) return receipt;
-          await new Promise<void>((r) => {
-            setTimeout(r, 1000);
-          });
-        }
-        /* eslint-enable no-await-in-loop */
-        throw new Error('Transaction receipt not found');
-      },
-    };
-    return normalizeTransactionResponsePayload(response);
-  }
 
   let response = await wallet.sendTransaction(txPayload);
   response = normalizeTransactionResponsePayload(response);
