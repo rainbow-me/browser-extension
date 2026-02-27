@@ -53,9 +53,10 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
 };
 
 /**
- * Persists the query client cache immediately.
- * Use this after calling `setQueryData` to ensure cache updates are persisted
- * before navigation, bypassing the default throttled persistence.
+ * Persists the current query cache using the configured persistence options.
+ * Call this after `setQueryData` to schedule a save without waiting for the
+ * next cache subscription event.
+ * This still uses the persister's throttle window (default 1s).
  */
 export const persistQueryCache = async () => {
   await persistQueryClientSave({
