@@ -155,9 +155,9 @@ export const sendTransaction = async (
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
-        return sendTransactionFromLedger(params);
+        return await sendTransactionFromLedger(params);
       case 'Trezor':
-        return sendTransactionFromTrezor(params);
+        return await sendTransactionFromTrezor(params);
       default:
         throw new Error('Unsupported hardware wallet');
     }
