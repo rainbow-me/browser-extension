@@ -1,35 +1,38 @@
-import { Signer } from '@ethersproject/abstract-signer';
+import { type Signer } from '@ethersproject/abstract-signer';
 import type { BatchCall } from '@rainbow-me/delegation';
 import {
-  CrosschainQuote,
+  type CrosschainQuote,
+  type Quote,
   SwapType,
-  fillCrosschainQuote,
   prepareFillCrosschainQuote,
 } from '@rainbow-me/swaps';
-import { Address } from 'viem';
 
-import { REFERRER, ReferrerType } from '~/core/references';
+import { REFERRER, type ReferrerType } from '~/core/references';
 import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
-import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { type NewTransaction } from '~/core/types/transactions';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
+  type TransactionGasParams,
+  type TransactionLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
 import {
-  ActionProps,
-  PrepareActionProps,
-  RapActionResult,
-  RapSwapActionParameters,
+  type ActionProps,
+  type PrepareActionProps,
+  type RapActionResult,
+  type RapSwapActionParameters,
 } from '../references';
+import {
+  type ReplayableExecution,
+  extractReplayableExecution,
+} from '../replay';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -110,15 +113,24 @@ export const executeCrosschainSwap = async ({
   quote: CrosschainQuote;
   wallet: Signer;
   referrer?: ReferrerType;
-}) => {
+}): Promise<ReplayableExecution | null> => {
   if (!wallet || !quote || quote.swapType !== SwapType.crossChain) return null;
 
+  const preparedCall = await prepareFillCrosschainQuote(quote, referrer);
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
-    nonce: nonce ? toHex(String(nonce)) : undefined,
+    nonce: nonce !== undefined ? toHex(String(nonce)) : undefined,
     ...gasParams,
   };
-  return fillCrosschainQuote(quote, transactionParams, wallet, referrer);
+  return extractReplayableExecution(
+    await wallet.sendTransaction({
+      data: preparedCall.data,
+      to: preparedCall.to,
+      value: preparedCall.value,
+      ...transactionParams,
+    }),
+    preparedCall,
+  );
 };
 
 const REFERRER_BX = 'browser-extension';
@@ -129,6 +141,8 @@ const REFERRER_BX = 'browser-extension';
 function buildCrosschainSwapTransaction(
   parameters: RapSwapActionParameters<'crosschainSwap'>,
   gasParams: TransactionGasParams | TransactionLegacyGasParams,
+  nonce?: number,
+  gasLimit?: string,
 ): Omit<NewTransaction, 'hash'> {
   const { quote, assetToSell, assetToBuy } = parameters;
   const isBridge = isSameAssetInDiffChains(assetToBuy, assetToSell);
@@ -149,13 +163,15 @@ function buildCrosschainSwapTransaction(
         value: quote.buyAmount.toString(),
       },
     ],
-    from: quote.from as Address,
-    to: quote.to as Address,
+    from: requireAddress(quote.from, 'crosschain quote.from'),
+    to: requireAddress(quote.to, 'crosschain quote.to'),
     chainId: assetToSell.chainId,
+    nonce: nonce ?? 0,
+    gasLimit,
     status: 'pending',
     type: isBridge ? 'bridge' : 'swap',
     ...gasParams,
-  } as Omit<NewTransaction, 'hash'>;
+  };
 }
 
 /**
@@ -169,13 +185,14 @@ export const prepareCrosschainSwap = async ({
   call: BatchCall;
   transaction: Omit<NewTransaction, 'hash'>;
 }> => {
-  const { selectedGas } = useGasStore.getState();
-  const gasParams = selectedGas.transactionGasParams;
+  if (!isCrosschainQuote(quote)) {
+    throw new RainbowError('prepareCrosschainSwap: quote must be crossChain');
+  }
 
-  const tx = await prepareFillCrosschainQuote(
-    quote as CrosschainQuote,
-    REFERRER_BX,
-  );
+  const { selectedGas } = useGasStore.getState();
+  const gasParams = parameters.gasParams ?? selectedGas.transactionGasParams;
+
+  const tx = await prepareFillCrosschainQuote(quote, REFERRER_BX);
 
   return {
     call: {
@@ -216,12 +233,12 @@ export const crosschainSwap = async ({
     logger.error(
       new RainbowError('crosschainSwap: error estimateCrosschainSwapGasLimit'),
       {
-        message: (e as Error)?.message,
+        message: e instanceof Error ? e.message : String(e),
       },
     );
     throw e;
   }
-  const nonce = baseNonce ? baseNonce + index : undefined;
+  const nonce = typeof baseNonce === 'number' ? baseNonce + index : undefined;
 
   const swapParams = {
     chainId,
@@ -238,47 +255,27 @@ export const crosschainSwap = async ({
   } catch (e) {
     logger.error(
       new RainbowError('crosschainSwap: error executeCrosschainSwap'),
-      { message: (e as Error)?.message },
+      { message: e instanceof Error ? e.message : String(e) },
     );
     throw e;
   }
   if (!swap)
     throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
 
-  const isBridge = isSameAssetInDiffChains(
-    parameters.assetToBuy,
-    parameters.assetToSell,
-  );
-
-  const transaction = {
-    data: parameters.quote.data,
-    value: parameters.quote.value?.toString(),
-    asset: parameters.assetToSell,
-    changes: [
-      {
-        direction: 'out',
-        asset: parameters.assetToSell,
-        value: quote.sellAmount.toString(),
-      },
-      {
-        direction: 'in',
-        asset: parameters.assetToBuy,
-        value: quote.buyAmount.toString(),
-      },
-    ],
-    from: parameters.quote.from as Address,
-    to: parameters.quote.to as Address,
-    hash: swap.hash as TxHash,
-    chainId: parameters.assetToSell.chainId,
-    nonce: swap.nonce,
-    status: 'pending',
-    type: isBridge ? 'bridge' : 'swap',
-    ...gasParams,
-  } satisfies NewTransaction;
+  const transaction: NewTransaction = {
+    ...buildCrosschainSwapTransaction(
+      parameters,
+      gasParams,
+      swap.nonce,
+      gasLimit?.toString(),
+    ),
+    ...swap.replayableCall,
+    hash: requireHex(swap.hash, 'crosschain swap hash'),
+  };
 
   addNewTransaction({
-    address: parameters.quote.from as Address,
-    chainId: parameters.chainId as ChainId,
+    address: requireAddress(parameters.quote.from, 'crosschain quote.from'),
+    chainId: parameters.chainId,
     transaction,
   });
 
@@ -287,3 +284,9 @@ export const crosschainSwap = async ({
     hash: swap.hash,
   };
 };
+
+function isCrosschainQuote(
+  quote: Quote | CrosschainQuote,
+): quote is CrosschainQuote {
+  return quote.swapType === SwapType.crossChain;
+}

@@ -63,7 +63,6 @@ test('[rap/swap] :: should execute swap', async () => {
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_2, provider);
   const swapTx = await executeSwap({
-    chainId: mainnet.id,
     gasLimit: '600000',
     gasParams: {
       maxFeePerGas: '800000000000',

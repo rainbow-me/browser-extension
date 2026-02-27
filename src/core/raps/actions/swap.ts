@@ -1,13 +1,10 @@
-import { Signer } from '@ethersproject/abstract-signer';
+import { type Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { Transaction } from '@ethersproject/transactions';
 import type { BatchCall } from '@rainbow-me/delegation';
 import {
-  CrosschainQuote,
-  Quote,
-  ChainId as SwapChainId,
+  type CrosschainQuote,
+  type Quote,
   SwapType,
-  fillQuote,
   getQuoteExecutionDetails,
   getWrappedAssetAddress,
   getWrappedAssetMethod,
@@ -15,12 +12,12 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { Address } from 'viem';
+import { type Address } from 'viem';
 
 import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ChainId } from '~/core/types/chains';
-import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { type ChainId } from '~/core/types/chains';
+import { type NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -28,24 +25,27 @@ import { RainbowError, logger } from '~/logger';
 import { REFERRER } from '../../references';
 import { estimateTransactionsGasLimit } from '../../resources/transactions/simulation';
 import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
+  type TransactionGasParams,
+  type TransactionLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
 import {
-  ActionProps,
-  PrepareActionProps,
-  RapActionResult,
-  RapSwapActionParameters,
+  type ActionProps,
+  type PrepareActionProps,
+  type RapActionResult,
+  type RapSwapActionParameters,
 } from '../references';
+import {
+  type ReplayableExecution,
+  extractReplayableExecution,
+} from '../replay';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
   getQuoteAllowanceTargetAddress,
-  getTargetAddressForQuote,
   overrideWithFastSpeedIfNeeded,
   populateSwap,
 } from '../utils';
@@ -54,6 +54,11 @@ import { requireAddress, requireHex } from '../validation';
 import { populateApprove } from './unlock';
 
 const WRAP_GAS_PADDING = 1.002;
+type SwapExecutionResult = {
+  hash: string;
+  nonce: number;
+  replayableCall: ReplayableExecution['replayableCall'];
+};
 
 export const estimateSwapGasLimit = async ({
   chainId,
@@ -145,11 +150,6 @@ export const estimateSwapGasLimit = async ({
   }
 };
 
-const getApproveSpender = (quote: Quote | CrosschainQuote) =>
-  quote.swapType === 'normal'
-    ? getTargetAddressForQuote(quote)
-    : getQuoteAllowanceTargetAddress(quote);
-
 export const estimateUnlockAndSwap = async ({
   requiresApprove,
   chainId,
@@ -167,7 +167,7 @@ export const estimateUnlockAndSwap = async ({
     ? await populateApprove({
         owner: accountAddress,
         tokenAddress: sellTokenAddress,
-        spender: getApproveSpender(quote),
+        spender: getQuoteAllowanceTargetAddress(quote),
         chainId,
       })
     : null;
@@ -212,7 +212,7 @@ export const estimateUnlockAndSwap = async ({
           : null,
       label: 'swap',
       fallbackEstimate: async () =>
-        getDefaultGasLimitForTrade(quote as Quote, chainId) || undefined,
+        getDefaultGasLimitForTrade(quote, chainId) || undefined,
     },
   ];
 
@@ -220,55 +220,68 @@ export const estimateUnlockAndSwap = async ({
 };
 
 export const executeSwap = async ({
-  chainId,
   gasLimit,
   nonce,
   quote,
   gasParams,
   wallet,
 }: {
-  chainId: ChainId;
   gasLimit: string;
   gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: Quote;
   wallet: Signer;
-}): Promise<Transaction | null> => {
+}): Promise<SwapExecutionResult | null> => {
   if (!wallet || !quote) return null;
 
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
-    nonce: nonce ? toHex(`${nonce}`) : undefined,
+    nonce: nonce !== undefined ? toHex(`${nonce}`) : undefined,
     ...gasParams,
   };
 
-  // Wrap native
   if (quote.swapType === SwapType.wrap) {
-    return wrapNativeAsset(
-      quote.buyAmount,
-      wallet,
-      getWrappedAssetAddress(quote),
-      transactionParams,
+    return extractReplayableExecution(
+      await wrapNativeAsset(
+        quote.buyAmount,
+        wallet,
+        getWrappedAssetAddress(quote),
+        transactionParams,
+      ),
     );
-    // Unwrap native
-  } else if (quote.swapType === SwapType.unwrap) {
-    return unwrapNativeAsset(
-      quote.sellAmount,
-      wallet,
-      getWrappedAssetAddress(quote),
-      transactionParams,
+  }
+
+  if (quote.swapType === SwapType.unwrap) {
+    return extractReplayableExecution(
+      await unwrapNativeAsset(
+        quote.sellAmount,
+        wallet,
+        getWrappedAssetAddress(quote),
+        transactionParams,
+      ),
     );
-    // Swap
-  } else if (quote.swapType === SwapType.normal) {
-    return fillQuote(
+  }
+
+  if (quote.swapType === SwapType.normal) {
+    const preparedCall = await prepareFillQuote(
       quote,
       transactionParams,
       wallet,
       false,
-      chainId as unknown as SwapChainId,
+      quote.chainId,
       REFERRER,
     );
+    return extractReplayableExecution(
+      await wallet.sendTransaction({
+        data: preparedCall.data,
+        to: preparedCall.to,
+        value: preparedCall.value,
+        ...transactionParams,
+      }),
+      preparedCall,
+    );
   }
+
   return null;
 };
 
@@ -280,13 +293,18 @@ const REFERRER_BX = 'browser-extension';
 function buildSwapTransaction(
   parameters: RapSwapActionParameters<'swap'>,
   gasParams: TransactionGasParams | TransactionLegacyGasParams,
+  nonce?: number,
+  gasLimit?: string,
 ): Omit<NewTransaction, 'hash'> {
   const { quote, chainId, assetToSell, assetToBuy } = parameters;
+
   return {
-    data: '0x',
-    from: quote.from as Address,
-    to: quote.to as Address,
+    data: quote.data,
+    from: requireAddress(quote.from, 'swap quote.from'),
+    to: requireAddress(quote.to, 'swap quote.to'),
     value: quote.value?.toString(),
+    nonce: nonce ?? 0,
+    gasLimit,
     asset: assetToBuy,
     changes: [
       {
@@ -304,7 +322,7 @@ function buildSwapTransaction(
     status: 'pending',
     type: 'swap',
     ...gasParams,
-  } as Omit<NewTransaction, 'hash'>;
+  };
 }
 
 /**
@@ -315,20 +333,19 @@ export const prepareSwap = async ({
   parameters,
   quote,
   wallet,
-  chainId,
 }: PrepareActionProps<'swap'>): Promise<{
   call: BatchCall;
   transaction: Omit<NewTransaction, 'hash'>;
 }> => {
   const { selectedGas } = useGasStore.getState();
-  const gasParams = selectedGas.transactionGasParams;
+  const gasParams = parameters.gasParams ?? selectedGas.transactionGasParams;
 
   const tx = await prepareFillQuote(
-    quote as Quote,
+    quote,
     {},
     wallet,
     false,
-    chainId as unknown as SwapChainId,
+    quote.chainId,
     REFERRER_BX,
   );
 
@@ -373,67 +390,51 @@ export const swap = async ({
     });
   } catch (e) {
     logger.error(new RainbowError('swap: error estimateSwapGasLimit'), {
-      message: (e as Error)?.message,
+      message: e instanceof Error ? e.message : String(e),
     });
 
     throw e;
   }
 
-  let swap;
+  let execution;
   try {
-    const nonce = baseNonce ? baseNonce + index : undefined;
+    const nonce = typeof baseNonce === 'number' ? baseNonce + index : undefined;
     const swapParams = {
       gasParams,
-      chainId,
       gasLimit,
       nonce,
       quote,
       wallet,
     };
-    swap = await executeSwap(swapParams);
+    execution = await executeSwap(swapParams);
   } catch (e) {
     logger.error(new RainbowError('swap: error executeSwap'), {
-      message: (e as Error)?.message,
+      message: e instanceof Error ? e.message : String(e),
     });
     throw e;
   }
 
-  if (!swap) throw new RainbowError('swap: error executeSwap');
+  if (!execution) throw new RainbowError('swap: error executeSwap');
 
-  const transaction = {
-    data: swap.data,
-    from: swap.from as Address,
-    to: swap.to as Address,
-    value: quote.value?.toString(),
-    asset: parameters.assetToBuy,
-    changes: [
-      {
-        direction: 'out',
-        asset: parameters.assetToSell,
-        value: quote.sellAmount.toString(),
-      },
-      {
-        direction: 'in',
-        asset: parameters.assetToBuy,
-        value: quote.buyAmount.toString(),
-      },
-    ],
-    hash: swap.hash as TxHash,
-    chainId: parameters.chainId,
-    nonce: swap.nonce,
-    status: 'pending',
-    type: 'swap',
-    ...gasParams,
-  } satisfies NewTransaction;
+  const transaction: NewTransaction = {
+    ...buildSwapTransaction(
+      parameters,
+      gasParams,
+      execution.nonce,
+      gasLimit?.toString(),
+    ),
+    ...execution.replayableCall,
+    hash: requireHex(execution.hash, 'swap tx hash'),
+  };
 
   addNewTransaction({
-    address: parameters.quote.from as Address,
-    chainId: parameters.chainId as ChainId,
+    address: requireAddress(parameters.quote.from, 'swap quote.from'),
+    chainId: parameters.chainId,
     transaction,
   });
 
   return {
-    nonce: swap.nonce,
-    hash: swap.hash,
+    nonce: execution.nonce,
+    hash: execution.hash,
   };
 };
