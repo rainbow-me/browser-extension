@@ -1,9 +1,8 @@
-import { ORPCError } from '@orpc/client';
 import {
   type TransactionGasOptions,
   executeRevokeDelegation as sdkExecuteRevokeDelegation,
 } from '@rainbow-me/delegation';
-import { Hex } from 'viem';
+import { BaseError, IntrinsicGasTooLowError } from 'viem';
 
 import { ChainId } from '~/core/types/chains';
 import { getNextNonce } from '~/core/utils/transactions';
@@ -15,6 +14,8 @@ import {
 import { RainbowError, logger } from '~/logger';
 
 import { walletOs } from '../os';
+
+const REVOKE_ESTIMATE_FALLBACK_GAS_LIMIT = 96_000n;
 
 export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
   async ({ input: { chainId, userAddress, transactionOptions } }) => {
@@ -45,11 +46,12 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
       // Convert hex strings to BigInt for SDK
       // Hex strings come in as "0x..." format, BigInt can parse them directly
       const transactionOptionsForSdk: TransactionGasOptions = {
-        maxFeePerGas: BigInt(transactionOptions.maxFeePerGas as Hex),
-        maxPriorityFeePerGas: BigInt(
-          transactionOptions.maxPriorityFeePerGas as Hex,
-        ),
-        gasLimit: BigInt(transactionOptions.gasLimit as Hex),
+        maxFeePerGas: BigInt(transactionOptions.maxFeePerGas),
+        maxPriorityFeePerGas: BigInt(transactionOptions.maxPriorityFeePerGas),
+        gasLimit:
+          transactionOptions.gasLimit === null
+            ? null
+            : BigInt(transactionOptions.gasLimit),
       };
 
       // Get nonce for the transaction
@@ -59,35 +61,53 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
       });
 
       // Execute revoke delegation via SDK
-      const result = await sdkExecuteRevokeDelegation({
-        walletClient,
-        publicClient,
-        chainId: chainId as ChainId,
-        nonce,
-        transactionOptions: transactionOptionsForSdk,
-      }).catch((e) => {
-        throw new ORPCError('REVOKE_DELEGATION_FAILED', {
-          message: 'Revoking delegation failed',
-          cause: e,
+      let result;
+      try {
+        result = await sdkExecuteRevokeDelegation({
+          walletClient,
+          publicClient,
+          chainId: chainId as ChainId,
+          nonce,
+          transactionOptions: transactionOptionsForSdk,
         });
-      });
+      } catch (error) {
+        if (!isIntrinsicEstimateGasFailure(error)) throw error;
+
+        logger.warn('Revoke gas estimate failed, retrying with fallback gas limit', {
+          chainId,
+          gasLimit: REVOKE_ESTIMATE_FALLBACK_GAS_LIMIT.toString(),
+        });
+
+        result = await sdkExecuteRevokeDelegation({
+          walletClient,
+          publicClient,
+          chainId: chainId as ChainId,
+          nonce,
+          transactionOptions: {
+            ...transactionOptionsForSdk,
+            gasLimit: REVOKE_ESTIMATE_FALLBACK_GAS_LIMIT,
+          },
+        });
+      }
 
       return {
-        txHash: result.hash ? (result.hash as `0x${string}`) : undefined,
+        txHash: result.hash ?? undefined,
         nonce,
         error: null,
       };
     } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
       logger.error(new RainbowError('Failed to revoke delegation'), {
-        message: e instanceof Error ? e.message : (e as string),
+        message: errorMessage,
       });
-      const errorMessage =
-        e instanceof ORPCError
-          ? e.message
-          : (e as Error).message || 'Unknown error revoking delegation';
       return {
-        error: errorMessage,
+        error: errorMessage || 'Unknown error revoking delegation',
       };
     }
   },
 );
+
+function isIntrinsicEstimateGasFailure(error: unknown): boolean {
+  if (!(error instanceof BaseError)) return false;
+  return error.walk((cause) => cause instanceof IntrinsicGasTooLowError) !== null;
+}

@@ -10,7 +10,7 @@ const revokeDelegationRequestSchema = z.object({
   transactionOptions: z.object({
     maxFeePerGas: hexSchema,
     maxPriorityFeePerGas: hexSchema,
-    gasLimit: hexSchema,
+    gasLimit: hexSchema.nullable(),
   }),
 });
 
