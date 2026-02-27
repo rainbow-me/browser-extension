@@ -1584,7 +1584,6 @@
     "revoke_approval": "撤销授权",
     "estimating_fee": "正在估算费用…",
     "tx_confirmed_or_not_found": "交易可能已确认或无法找到",
-    "eip7702_auth_list_unavailable": "无法加速此交易：委托数据不可用。请稍后再试或使用其他 RPC。",
     "speed_up_failed": {
       "title": "加速失败",
       "description": "尝试加速交易可能会在网络拥堵、燃气限制增加或原始交易首先确认时失败"

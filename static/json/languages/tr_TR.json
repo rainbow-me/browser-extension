@@ -1584,7 +1584,6 @@
     "revoke_approval": "Onayı İptal Et",
     "estimating_fee": "Ücret hesaplanıyor…",
     "tx_confirmed_or_not_found": "İşlem zaten onaylanmış olabilir veya bulunamadı",
-    "eip7702_auth_list_unavailable": "Bu işlem hızlandırılamıyor: delegasyon verileri mevcut değil. Daha sonra tekrar deneyin veya farklı bir RPC kullanın.",
     "speed_up_failed": {
       "title": "Hızlanma başarısız",
       "description": "Bir işlemi hızlandırma girişimleri ağ tıkanıklığı, gaz limit artışları veya orijinal işlem ilk onaylandığında başarısız olabilir"

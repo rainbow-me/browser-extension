@@ -1584,7 +1584,6 @@
     "revoke_approval": "Révoquer l'autorisation",
     "estimating_fee": "Estimation des frais…",
     "tx_confirmed_or_not_found": "La transaction a peut-être déjà été confirmée ou est introuvable",
-    "eip7702_auth_list_unavailable": "Impossible d’accélérer cette transaction : les données de délégation ne sont pas disponibles. Réessayez plus tard ou utilisez un autre RPC.",
     "speed_up_failed": {
       "title": "Échec de l'accélération",
       "description": "Les tentatives d'accélération d'une transaction peuvent échouer en cas de congestion du réseau, d'augmentation de la limite de gaz, ou si la transaction originale est confirmée en premier"
