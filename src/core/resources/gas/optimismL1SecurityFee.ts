@@ -34,7 +34,7 @@ const optimismL1SecurityFeeQueryKey = ({
   chainId,
 }: OptimismL1SecurityFeeArgs) =>
   createQueryKey(
-    'optimismL1SecrityFee',
+    'optimismL1SecurityFee',
     { transactionRequest, chainId },
     { persisterVersion: 1 },
   );
