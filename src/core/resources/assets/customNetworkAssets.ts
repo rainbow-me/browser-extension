@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address, zeroAddress } from 'viem';
+import { Address, parseUnits, zeroAddress } from 'viem';
 
-import { requestMetadata } from '~/core/graphql';
+import { metadataClient } from '~/core/graphql';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -18,21 +18,19 @@ import {
 } from '~/core/state/rainbowChainAssets';
 import {
   AddressOrEth,
-  AssetMetadata,
   ParsedAssetsDict,
   ParsedUserAsset,
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
-  createAssetQuery,
   extractFulfilledValue,
   getAssetBalance,
   getCustomChainIconUrl,
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getErrorMessage } from '~/core/utils/errors';
+import { getViemClient } from '~/core/viem/clients';
 import { RainbowError, logger } from '~/logger';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';
@@ -172,13 +170,13 @@ async function customNetworkAssetsFunction({
     const assetsPromises = customChains
       .filter((chain) => !supportedMainnetChains[chain.id])
       .map(async (chain) => {
-        const provider = getProvider({ chainId: chain.id });
+        const client = getViemClient({ chainId: chain.id });
         const nativeAssetBalance = (
-          await provider.getBalance(address)
+          await client.getBalance({ address })
         )?.toString();
         const customNetworkNativeAssetParsed =
           nativeAssetBalance &&
-          (filterZeroBalance ? !isZero(nativeAssetBalance) : true)
+          (filterZeroBalance ? Number(nativeAssetBalance) !== 0 : true)
             ? parseUserAssetBalances({
                 asset: {
                   address: zeroAddress,
@@ -215,7 +213,7 @@ async function customNetworkAssetsFunction({
           .map((balance, i) => {
             const fulfilledBalance = extractFulfilledValue(balance);
             return fulfilledBalance &&
-              (filterZeroBalance ? !isZero(fulfilledBalance) : true)
+              (filterZeroBalance ? Number(fulfilledBalance) !== 0 : true)
               ? parseUserAssetBalances({
                   asset: {
                     ...chainAssets[i],
@@ -237,24 +235,23 @@ async function customNetworkAssetsFunction({
           ? [customNetworkNativeAssetParsed, ...chainParsedAssets]
           : chainParsedAssets;
 
-        // Now we'll try to fetch the prices for all the assets in this network
-        const batchedQuery = allCustomNetworkAssets.map(
-          ({ address }) => address,
+        const tokenResponses = await Promise.all(
+          allCustomNetworkAssets.map(({ address }) =>
+            metadataClient.tokenMetadata(
+              { address, chainId: chain.id, currency },
+              { timeout: ASSETS_TIMEOUT_DURATION },
+            ),
+          ),
         );
-        const results: Record<string, AssetMetadata>[] = (await requestMetadata(
-          createAssetQuery(batchedQuery, chain.id, currency, true),
-          {
-            timeout: ASSETS_TIMEOUT_DURATION,
-          },
-        )) as Record<string, AssetMetadata>[];
 
-        const assets = Object.values(results).flat();
-        assets.forEach((asset, i) => {
-          const a = asset as unknown as AssetMetadata;
-          const address = a.networks?.[chain.id]?.address as AddressOrEth;
+        tokenResponses.forEach((response, i) => {
+          const asset = response.token;
+          if (!asset) return;
+          const tokenAddress = asset.networks[chain.id]
+            ?.address as AddressOrEth;
           const parsedAsset = parseAssetMetadata({
-            address,
-            asset: a,
+            address: tokenAddress,
+            asset,
             chainId: chain.id,
             currency,
           });
@@ -268,10 +265,10 @@ async function customNetworkAssetsFunction({
             const assetWithPriceAndNativeBalance = parseUserAssetBalances({
               asset: allCustomNetworkAssets[i],
               currency,
-              balance: convertDecimalFormatToRawAmount(
+              balance: parseUnits(
                 allCustomNetworkAssets[i].balance.amount,
                 allCustomNetworkAssets[i].decimals,
-              ),
+              ).toString(),
             });
 
             allCustomNetworkAssets[i] = assetWithPriceAndNativeBalance;
@@ -304,7 +301,7 @@ async function customNetworkAssetsFunction({
     return parsedAssetsDict;
   } catch (e) {
     logger.error(new RainbowError('customNetworkAssetsFunction: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
 
     return cachedCustomNetworkAssets;

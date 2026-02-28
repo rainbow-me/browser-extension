@@ -1,17 +1,11 @@
 import { useMemo } from 'react';
+import { parseEther, parseUnits } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { getChain } from '~/core/utils/chains';
-import { toWei } from '~/core/utils/ethereum';
-import {
-  add,
-  convertAmountToRawAmount,
-  lessOrEqualThan,
-  lessThan,
-} from '~/core/utils/numbers';
 
 import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
 import { useUserAsset } from '../useUserAsset';
@@ -23,7 +17,7 @@ export const useSwapValidations = ({
 }: {
   assetToSell?: ParsedSearchAsset | null;
   assetToSellValue?: string;
-  selectedGas?: GasFeeParams | GasFeeLegacyParams;
+  selectedGas?: GasFeeParams | GasFeeLegacyParams | null;
 }) => {
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId,
@@ -33,20 +27,15 @@ export const useSwapValidations = ({
   const enoughAssetBalance = useMemo(() => {
     if (assetToSellValue) {
       if (!assetToSell?.isNativeAsset) {
-        return lessOrEqualThan(
-          convertAmountToRawAmount(
-            assetToSellValue,
-            assetToSell?.decimals || 18,
-          ),
-          convertAmountToRawAmount(
-            assetToSell?.balance?.amount || '0',
-            assetToSell?.decimals || 18,
-          ),
+        const decimals = assetToSell?.decimals || 18;
+        return (
+          parseUnits(assetToSellValue, decimals) <=
+          parseUnits(assetToSell?.balance?.amount || '0', decimals)
         );
       } else {
-        return lessOrEqualThan(
-          toWei(assetToSellValue || '0'),
-          toWei(assetToSell?.balance?.amount || '0'),
+        return (
+          parseEther(assetToSellValue || '0') <=
+          parseEther(assetToSell?.balance?.amount || '0')
         );
       }
     }
@@ -54,16 +43,17 @@ export const useSwapValidations = ({
   }, [assetToSell, assetToSellValue]);
 
   const enoughNativeAssetBalanceForGas = useMemo(() => {
+    const nativeBalanceWei = parseEther(
+      userNativeAsset?.balance?.amount || '0',
+    );
     if (assetToSell?.isNativeAsset) {
-      return lessOrEqualThan(
-        add(toWei(assetToSellValue || '0'), selectedGas?.gasFee?.amount || '0'),
-        toWei(userNativeAsset?.balance?.amount || '0'),
+      return (
+        parseEther(assetToSellValue || '0') +
+          (selectedGas?.gasFee?.amount ?? 0n) <=
+        nativeBalanceWei
       );
     }
-    return lessThan(
-      selectedGas?.gasFee?.amount || '0',
-      toWei(userNativeAsset?.balance?.amount || '0'),
-    );
+    return (selectedGas?.gasFee?.amount ?? 0n) < nativeBalanceWei;
   }, [
     assetToSell?.isNativeAsset,
     assetToSellValue,
@@ -97,6 +87,6 @@ export const useSwapValidations = ({
     enoughAssetBalance,
     enoughNativeAssetBalanceForGas,
     enoughAssetsForSwap,
-    readyForReview: enoughAssetsForSwap && selectedGas?.gasFee?.amount,
+    readyForReview: enoughAssetsForSwap && selectedGas?.gasFee?.amount != null,
   };
 };

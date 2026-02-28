@@ -1,3 +1,5 @@
+import { formatUnits } from 'viem';
+
 import { ChainName } from '../types/chains';
 import {
   SimpleHashChain,
@@ -8,7 +10,7 @@ import {
   ValidatedSimpleHashNFT,
 } from '../types/nfts';
 
-import { convertRawAmountToDecimalFormat } from './numbers';
+import { safeBigInt } from './numbers';
 
 const POAP_NFT_ADDRESS = '0x22c1f6050e56d2876009903609a2cc3fef83b415';
 const ENS_NFT_CONTRACT_ADDRESS = '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85';
@@ -275,9 +277,9 @@ export function simpleHashNFTToUniqueAsset(
     familyName: isENS ? 'ENS' : collection.name,
     floorPriceEth:
       floorPrice?.value !== null && floorPrice?.value !== undefined
-        ? convertRawAmountToDecimalFormat(
-            floorPrice?.value,
-            floorPrice?.payment_token?.decimals,
+        ? formatUnits(
+            safeBigInt(floorPrice?.value ?? '0'),
+            floorPrice?.payment_token?.decimals || 18,
           )
         : undefined,
     fullUniqueId: `${nft.chain}_${nft.contract_address}_${nft.token_id}`,

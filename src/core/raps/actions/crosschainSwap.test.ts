@@ -1,17 +1,17 @@
-import { Wallet } from '@ethersproject/wallet';
 import {
   CrosschainQuote,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   QuoteError,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
+import { createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { updateViemClientsWrapper } from '~/core/viem';
-import { getProvider } from '~/core/viem/clientToProvider';
 import {
   TEST_ADDRESS_3,
   TEST_PK_3,
@@ -35,8 +35,8 @@ vi.mock('./crosschainSwap', async () => {
 
   return {
     ...actual,
-    estimateCrosschainSwapGasLimit: vi.fn().mockResolvedValue('600000'),
-    executeCrosschainSwap: vi.fn().mockResolvedValue({ hash: '0x123456' }),
+    estimateCrosschainSwapGasLimit: vi.fn().mockResolvedValue(600000n),
+    executeCrosschainSwap: vi.fn().mockResolvedValue('0x123456'),
   };
 });
 
@@ -48,7 +48,7 @@ beforeAll(async () => {
     chainId: 1,
     fromAddress: TEST_ADDRESS_3,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
-    buyTokenAddress: USDC_ARBITRUM_ASSET.address,
+    buyTokenAddress: USDC_ARBITRUM_ASSET.address as `0x${string}`,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_3,
@@ -69,18 +69,22 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
 });
 
 test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
-  const provider = getProvider({ chainId: mainnet.id });
-  const wallet = new Wallet(TEST_PK_3, provider);
+  const account = privateKeyToAccount(TEST_PK_3);
+  const wallet = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(),
+  });
 
-  const swapTx = await executeCrosschainSwap({
-    gasLimit: '600000',
+  const txHash = await executeCrosschainSwap({
+    gasLimit: 600000n,
     gasParams: {
-      maxFeePerGas: '2000000000000',
-      maxPriorityFeePerGas: '2000000000',
+      maxFeePerGas: BigInt('2000000000000'),
+      maxPriorityFeePerGas: BigInt('2000000000'),
     },
     quote: { ...crosschainQuote } as CrosschainQuote,
     wallet,
   });
 
-  expect(swapTx?.hash).toBeDefined();
+  expect(txHash).toBeDefined();
 });

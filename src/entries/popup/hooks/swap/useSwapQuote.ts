@@ -1,8 +1,5 @@
 import {
-  CrosschainQuote,
   ETH_ADDRESS,
-  Quote,
-  QuoteError,
   QuoteParams,
   Source,
   SwapType,
@@ -11,12 +8,11 @@ import {
 } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useRef } from 'react';
-import { Address } from 'viem';
+import { parseUnits } from 'viem';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
-import { convertAmountToRawAmount } from '~/core/utils/numbers';
-import { isQuote, isQuoteError } from '~/core/utils/quotes';
+import { isQuoteError } from '~/core/utils/swaps';
 
 import { analyticsTrackQuoteFailed } from './analyticsTrackQuoteFailed';
 import { IndependentField } from './useSwapInputs';
@@ -60,7 +56,7 @@ export const useSwapQuote = ({
     [assetToBuy, assetToSell],
   );
 
-  const quotesParams: QuoteParams | undefined = useMemo(() => {
+  const quotesParams = useMemo((): QuoteParams | undefined => {
     const independentValue =
       independentField === 'buyField'
         ? Number(assetToBuyValue)
@@ -73,31 +69,23 @@ export const useSwapQuote = ({
       source: source === 'auto' ? undefined : source,
       chainId: assetToSell.chainId,
       fromAddress: currentAddress,
-      sellTokenAddress: assetToSell.isNativeAsset
+      sellTokenAddress: (assetToSell.isNativeAsset
         ? ETH_ADDRESS
-        : (assetToSell.address as Address),
-      buyTokenAddress: assetToBuy.isNativeAsset
+        : assetToSell.address) as `0x${string}`,
+      buyTokenAddress: (assetToBuy.isNativeAsset
         ? ETH_ADDRESS
-        : (assetToBuy.address as Address),
+        : assetToBuy.address) as `0x${string}`,
       sellAmount:
         (independentField === 'sellField' ||
           independentField === 'sellNativeField') &&
         Number(assetToSellValue)
-          ? convertAmountToRawAmount(
-              assetToSellValue || '0',
-              assetToSell.decimals,
-            )
+          ? parseUnits(assetToSellValue || '0', assetToSell.decimals ?? 18)
           : undefined,
       buyAmount:
         independentField === 'buyField' && Number(assetToBuyValue)
-          ? convertAmountToRawAmount(
-              assetToBuyValue || '0',
-              assetToBuy.decimals,
-            )
+          ? parseUnits(assetToBuyValue || '0', assetToBuy.decimals ?? 18)
           : undefined,
       slippage: Number(slippage),
-      refuel: false,
-      swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
       toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
       feePercentageBasisPoints: INTERNAL_BUILD || isClaim ? 0 : undefined,
       currency,
@@ -123,7 +111,7 @@ export const useSwapQuote = ({
         quotesParams,
         signal,
       );
-      if (quote && isQuoteError(quote)) {
+      if (quote && 'error' in quote) {
         analyticsTrackQuoteFailed(quote, {
           inputAsset: assetToSell,
           outputAsset: assetToBuy,
@@ -134,7 +122,7 @@ export const useSwapQuote = ({
 
       lastFetchedInputHashRef.current = currentInputHash;
 
-      return quote as Quote | CrosschainQuote | QuoteError;
+      return quote ?? undefined;
     },
     queryKey: ['getSwapQuote', currentInputHash],
     enabled: !!quotesParams,
@@ -151,23 +139,21 @@ export const useSwapQuote = ({
   }, [currentInputHash, fetchStatus]);
 
   const isWrapOrUnwrapEth = useMemo(() => {
-    if (!data || !isQuote(data)) return false;
-    const quote = data as Quote | CrosschainQuote;
-    return quote.swapType == SwapType.wrap || quote.swapType == SwapType.unwrap;
+    if (!data || isQuoteError(data)) return false;
+    return data.swapType === SwapType.wrap || data.swapType === SwapType.unwrap;
   }, [data]);
 
   const quote = useMemo(() => {
     if (!data || isQuoteError(data)) return data;
-    const quote = data as Quote | CrosschainQuote;
     return {
-      ...quote,
+      ...data,
       buyAmountDisplay: isWrapOrUnwrapEth
-        ? quote.buyAmount
-        : quote.buyAmountDisplay,
+        ? data.buyAmount
+        : data.buyAmountDisplay,
       sellAmountDisplay: isWrapOrUnwrapEth
-        ? quote.sellAmount
-        : quote.sellAmountDisplay,
-      feeInEth: isWrapOrUnwrapEth ? '0' : quote.feeInEth,
+        ? data.sellAmount
+        : data.sellAmountDisplay,
+      feeInEth: isWrapOrUnwrapEth ? '0' : data.feeInEth,
       fromChainId: assetToSell?.chainId,
       toChainId: assetToBuy?.chainId,
     };

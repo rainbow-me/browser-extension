@@ -1,74 +1,72 @@
-import { RainbowProvider } from '@rainbow-me/provider';
+/**
+ * Inpage script - injected into dapps
+ *
+ * Creates the window.ethereum provider using viem-inpage + viem-portal.
+ */
+
 import { uuid4 } from '@sentry/core';
 import _ from 'lodash';
 import { EIP1193Provider, announceProvider } from 'mipd';
+import { type Eip1193Provider, createEip1193Provider } from 'viem-inpage';
+import {
+  type PortalClient,
+  createClient,
+  createWindowTransport,
+} from 'viem-portal';
 
-import { initializeMessenger } from '~/core/messengers';
 import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
-import { providerRequestTransport } from '~/core/transports';
-import { ChainId } from '~/core/types/chains';
-import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
-import { toHex } from '~/core/utils/hex';
 
-import { injectNotificationIframe } from '../iframe';
-import { IN_DAPP_NOTIFICATION_STATUS } from '../iframe/notification';
+type InpageSchema = {
+  eth_request: {
+    params: [method: string, params?: unknown[]];
+    result: unknown;
+  };
+};
 
 declare global {
   interface Window {
-    ethereum: RainbowProvider;
+    ethereum: Eip1193Provider;
     lodash: unknown;
-    rainbow: RainbowProvider;
-    providers: RainbowProvider[];
+    rainbow: Eip1193Provider;
+    providers: Eip1193Provider[];
     rnbwWalletRouter: {
-      rainbowProvider: RainbowProvider;
-      lastInjectedProvider?: RainbowProvider;
-      currentProvider: RainbowProvider;
-      providers: RainbowProvider[];
+      rainbowProvider: Eip1193Provider;
+      lastInjectedProvider?: Eip1193Provider;
+      currentProvider: Eip1193Provider;
+      providers: Eip1193Provider[];
       setDefaultProvider: (rainbowAsDefault: boolean) => void;
-      addProvider: (provider: RainbowProvider) => void;
+      addProvider: (provider: Eip1193Provider) => void;
     };
   }
 }
 
 window.lodash = _.noConflict();
 
-const backgroundMessenger = initializeMessenger({ connect: 'background' });
+const portalClient: PortalClient<InpageSchema> = createClient<InpageSchema>(
+  createWindowTransport(),
+);
 
-const rainbowProvider = new RainbowProvider({
-  backgroundMessenger,
-  providerRequestTransport: providerRequestTransport,
-  onConstruct({ emit }) {
-    // RainbowInjectedProvider is also used in popup via RainbowConnector
-    // here we don't need to listen to anything so we don't need these listeners
-    if (isValidUrl(window.location.href)) {
-      const host = getDappHost(window.location.href);
-      backgroundMessenger?.reply(`accountsChanged:${host}`, async (address) => {
-        emit('accountsChanged', [address]);
-      });
-      backgroundMessenger?.reply(
-        `chainChanged:${host}`,
-        async (chainId: number) => {
-          emit('chainChanged', toHex(String(chainId)));
-        },
-      );
-      backgroundMessenger?.reply(`disconnect:${host}`, async () => {
-        emit('accountsChanged', []);
-        emit('disconnect', []);
-      });
-      backgroundMessenger?.reply(`connect:${host}`, async (connectionInfo) => {
-        emit('connect', connectionInfo);
-      });
-    }
-  },
-});
+// Route all EIP-1193 requests through the portal's eth_request handler.
+// createEip1193Provider calls client.request({ method, params }) (viem object-style)
+// which is incompatible with the portal client's positional args interface.
+const rainbowProvider = createEip1193Provider(
+  portalClient as Parameters<typeof createEip1193Provider>[0],
+);
+rainbowProvider.request = async (args: {
+  method: string;
+  params?: unknown[];
+}) => {
+  return portalClient.request('eth_request', args.method, args.params);
+};
 
 if (shouldInjectProvider()) {
-  // eslint-disable-next-line prefer-object-spread
+  // Create a copy without isMetaMask for EIP-6963
   const providerCopy = Object.create(
     Object.getPrototypeOf(rainbowProvider),
     Object.getOwnPropertyDescriptors(rainbowProvider),
   );
   providerCopy.isMetaMask = false;
+
   announceProvider({
     info: {
       icon: RAINBOW_ICON_RAW_SVG,
@@ -76,32 +74,7 @@ if (shouldInjectProvider()) {
       rdns: 'me.rainbow',
       uuid: uuid4(),
     },
-    provider: providerCopy as RainbowProvider as EIP1193Provider,
-  });
-
-  backgroundMessenger.reply(
-    'rainbow_ethereumChainEvent',
-    async ({
-      chainId,
-      chainName,
-      status,
-      extensionUrl,
-      host,
-    }: {
-      chainId: ChainId;
-      chainName?: string;
-      status: IN_DAPP_NOTIFICATION_STATUS;
-      extensionUrl: string;
-      host: string;
-    }) => {
-      if (getDappHost(window.location.href) === host) {
-        injectNotificationIframe({ chainId, chainName, status, extensionUrl });
-      }
-    },
-  );
-
-  backgroundMessenger.reply('rainbow_reload', async () => {
-    window.location.reload();
+    provider: providerCopy as EIP1193Provider,
   });
 
   Object.defineProperties(window, {
@@ -137,7 +110,7 @@ if (shouldInjectProvider()) {
             window.rnbwWalletRouter.currentProvider = nonDefaultProvider;
           }
         },
-        addProvider(provider: RainbowProvider) {
+        addProvider(provider: Eip1193Provider) {
           if (!window.rnbwWalletRouter?.providers?.includes(provider)) {
             window.rnbwWalletRouter?.providers?.push(provider);
           }
@@ -152,58 +125,24 @@ if (shouldInjectProvider()) {
   });
 
   window.dispatchEvent(new Event('ethereum#initialized'));
-
-  backgroundMessenger.reply(
-    'rainbow_setDefaultProvider',
-    async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
-      window.rnbwWalletRouter?.setDefaultProvider(rainbowAsDefault);
-    },
-  );
 }
 
 /**
- * Determines if the provider should be injected
+ * Check if provider should be injected
  */
-function shouldInjectProvider() {
-  return doctypeCheck() && suffixCheck() && documentElementCheck();
-}
-
-/**
- * Checks the doctype of the current document if it exists
- */
-function doctypeCheck() {
+function shouldInjectProvider(): boolean {
+  // Check doctype
   const { doctype } = window.document;
-  if (doctype) {
-    return doctype.name === 'html';
-  }
-  return true;
-}
+  if (doctype && doctype.name !== 'html') return false;
 
-/**
- * Returns whether or not the extension (suffix) of the current document is prohibited
- *
- * This checks {@code window.location.pathname} against a set of file extensions
- * that we should not inject the provider into. This check is indifferent of
- * query parameters in the location.
- */
-function suffixCheck() {
+  // Check file extension
   const prohibitedTypes = [/\.xml$/u, /\.pdf$/u];
-  const currentUrl = window.location.pathname;
-  for (let i = 0; i < prohibitedTypes.length; i++) {
-    if (prohibitedTypes[i].test(currentUrl)) {
-      return false;
-    }
-  }
-  return true;
-}
+  const pathname = window.location.pathname;
+  if (prohibitedTypes.some((rx) => rx.test(pathname))) return false;
 
-/**
- * Checks the documentElement of the current document
- */
-function documentElementCheck() {
-  const documentElement = document.documentElement.nodeName;
-  if (documentElement) {
-    return documentElement.toLowerCase() === 'html';
-  }
+  // Check document element
+  const nodeName = document.documentElement.nodeName;
+  if (nodeName && nodeName.toLowerCase() !== 'html') return false;
+
   return true;
 }

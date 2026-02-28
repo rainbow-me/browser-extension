@@ -14,7 +14,6 @@ import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
-import { getProvider } from '~/core/viem/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -93,12 +92,10 @@ async function userTestnetNativeAssetQueryFunction({
     }
 
     const nativeAsset = getNativeAssetMock({ chainId });
-    const provider = getProvider({ chainId });
     const parsedAsset = await fetchAssetBalanceViaProvider({
       parsedAsset: nativeAsset,
       currentAddress: address,
       currency,
-      provider,
     });
     return parsedAsset;
   } catch (e) {

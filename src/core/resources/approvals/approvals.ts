@@ -15,6 +15,7 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { AssetApiResponse } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { TxHash } from '~/core/types/transactions';
+import { getErrorMessage } from '~/core/utils/errors';
 import { RainbowError, logger } from '~/logger';
 
 export interface ApprovalSpender {
@@ -99,7 +100,7 @@ async function approvalsQueryFunction({
     return approvalsReponse.payload;
   } catch (e) {
     logger.error(new RainbowError('approvalsQueryFunction: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     return null;
   }

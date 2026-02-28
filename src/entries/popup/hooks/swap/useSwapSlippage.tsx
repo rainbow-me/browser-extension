@@ -1,9 +1,6 @@
-import {
-  ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
-  getSlippage,
-} from '@rainbow-me/swaps';
+import { getSlippage } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
-import { BigNumberish } from 'ethers';
+import { Address } from 'viem';
 
 import {
   QueryConfig,
@@ -11,7 +8,6 @@ import {
   QueryFunctionResult,
   createQueryKey,
 } from '~/core/react-query';
-import { ETH_ADDRESS } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
@@ -27,8 +23,8 @@ export type SwapSlippageArgs = {
   toChainId: ChainId | undefined;
   sellTokenAddress: AddressOrEth | undefined;
   buyTokenAddress: AddressOrEth | undefined;
-  sellAmount: BigNumberish;
-  buyAmount: BigNumberish;
+  sellAmount: string | bigint;
+  buyAmount: string | bigint;
 };
 
 // ///////////////////////////////////////////////
@@ -60,11 +56,6 @@ type SwapSlippageQueryKey = ReturnType<typeof swapSlippageQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-const toAggregatorAddress = (address: AddressOrEth): `0x${string}` =>
-  address === ETH_ADDRESS
-    ? ETH_ADDRESS_AGGREGATORS
-    : (address as `0x${string}`);
-
 async function swapSlippageQueryFunction({
   queryKey: [
     {
@@ -83,8 +74,8 @@ async function swapSlippageQueryFunction({
   const slippage = await getSlippage({
     chainId,
     toChainId,
-    sellTokenAddress: toAggregatorAddress(sellTokenAddress),
-    buyTokenAddress: toAggregatorAddress(buyTokenAddress),
+    sellTokenAddress: sellTokenAddress as Address,
+    buyTokenAddress: buyTokenAddress as Address,
     sellAmount,
     buyAmount,
   });

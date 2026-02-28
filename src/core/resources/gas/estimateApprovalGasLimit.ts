@@ -55,7 +55,7 @@ async function estimateApprovalGasLimitQueryFunction({
 }: QueryFunctionArgs<typeof estimateApprovalGasLimitQueryKey>) {
   if (!assetAddress || !spenderAddress) {
     const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
-    return chainGasUnits.basic.approval;
+    return BigInt(chainGasUnits.basic.approval);
   }
   if (assetType === 'erc20') {
     const gasLimit = await estimateApprove({

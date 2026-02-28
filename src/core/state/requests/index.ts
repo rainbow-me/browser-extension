@@ -3,7 +3,7 @@ import mitt from 'mitt';
 
 import { onlyBackground } from '~/core/utils/onlyBackground';
 
-import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
+import { ProviderRequestPayload } from '../../provider/types';
 import { createExtensionStoreOptions } from '../_internal';
 
 type Responses =

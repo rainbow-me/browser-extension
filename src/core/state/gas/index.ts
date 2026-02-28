@@ -11,8 +11,8 @@ import {
 import { createExtensionStoreOptions } from '../_internal';
 
 export interface GasStore {
-  selectedGas: GasFeeParams | GasFeeLegacyParams;
-  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
+  selectedGas: GasFeeParams | GasFeeLegacyParams | null;
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
   customGasModified: boolean;
   setCustomSpeed: (speed: GasFeeParams) => void;
   setCustomLegacySpeed: (speed: GasFeeLegacyParams) => void;
@@ -31,34 +31,40 @@ export interface GasStore {
 
 export const useGasStore = createBaseStore<GasStore>(
   (set) => ({
-    selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
-    gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
+    selectedGas: null,
+    gasFeeParamsBySpeed: null,
     customGasModified: false,
     setSelectedGas: ({ selectedGas }) => set({ selectedGas }),
     setGasFeeParamsBySpeed: ({ gasFeeParamsBySpeed }) =>
       set({ gasFeeParamsBySpeed }),
     setCustomSpeed: (speed: GasFeeParams) =>
-      set((state) => ({
-        gasFeeParamsBySpeed: {
-          ...state.gasFeeParamsBySpeed,
-          [GasSpeed.CUSTOM]: speed,
-        } as GasFeeParamsBySpeed,
-        customGasModified: true,
-      })),
+      set((state) => {
+        if (!state.gasFeeParamsBySpeed) return { customGasModified: true };
+        return {
+          gasFeeParamsBySpeed: {
+            ...state.gasFeeParamsBySpeed,
+            [GasSpeed.CUSTOM]: speed,
+          } as GasFeeParamsBySpeed,
+          customGasModified: true,
+        };
+      }),
     setCustomLegacySpeed: (speed: GasFeeLegacyParams) =>
-      set((state) => ({
-        gasFeeParamsBySpeed: {
-          ...state.gasFeeParamsBySpeed,
-          [GasSpeed.CUSTOM]: speed,
-        } as GasFeeLegacyParamsBySpeed,
-        customGasModified: true,
-      })),
+      set((state) => {
+        if (!state.gasFeeParamsBySpeed) return { customGasModified: true };
+        return {
+          gasFeeParamsBySpeed: {
+            ...state.gasFeeParamsBySpeed,
+            [GasSpeed.CUSTOM]: speed,
+          } as GasFeeLegacyParamsBySpeed,
+          customGasModified: true,
+        };
+      }),
     clearCustomGasModified: () => {
       set({ customGasModified: false });
     },
   }),
   createExtensionStoreOptions({
     storageKey: 'gas',
-    version: 0,
+    version: 2,
   }),
 );

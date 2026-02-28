@@ -3,9 +3,9 @@ import { useState } from 'react';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { ProviderRequestPayload } from '~/core/provider/types';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { copy } from '~/core/utils/copy';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';

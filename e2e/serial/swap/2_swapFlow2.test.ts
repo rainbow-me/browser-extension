@@ -1,8 +1,6 @@
-import { Contract } from '@ethersproject/contracts';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { ChainId } from '@rainbow-me/swaps';
 import { Key, WebDriver } from 'selenium-webdriver';
-import { erc20Abi } from 'viem';
+import { Address, createPublicClient, erc20Abi, http } from 'viem';
 import {
   afterAll,
   afterEach,
@@ -165,18 +163,18 @@ describe('Swap Flow 2', () => {
   // - Gas estimation for atomic unlock+swap
   // - Balance changes after atomic token swap execution
   it.todo('should be able to execute unlock and swap', async () => {
-    const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
-    await provider.ready;
+    const client = createPublicClient({
+      transport: http('http://127.0.0.1:8545/1'),
+    });
+    await client.getChainId();
     await delayTime('short');
-    const tokenContract = new Contract(
-      SWAP_VARIABLES.USDC_MAINNET_ADDRESS,
-      erc20Abi,
-      provider,
-    );
     await delayTime('long');
-    const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
-      WALLET_TO_USE_ADDRESS,
-    );
+    const usdcBalanceBeforeSwap = await client.readContract({
+      address: SWAP_VARIABLES.USDC_MAINNET_ADDRESS as Address,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [WALLET_TO_USE_ADDRESS as Address],
+    });
 
     await findElementByTestIdAndClick({
       id: 'swap-settings-navbar-button',
@@ -217,9 +215,12 @@ describe('Swap Flow 2', () => {
     // waiting for balances to update / swap to execute
     await delay(20_000);
 
-    const usdcBalanceAfterSwap = await tokenContract.balanceOf(
-      WALLET_TO_USE_ADDRESS,
-    );
+    const usdcBalanceAfterSwap = await client.readContract({
+      address: SWAP_VARIABLES.USDC_MAINNET_ADDRESS as Address,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [WALLET_TO_USE_ADDRESS as Address],
+    });
     const balanceDifference = subtract(
       usdcBalanceBeforeSwap.toString(),
       usdcBalanceAfterSwap.toString(),

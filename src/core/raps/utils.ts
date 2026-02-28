@@ -1,17 +1,25 @@
-import { Block, Provider } from '@ethersproject/abstract-provider';
-import { MaxUint256 } from '@ethersproject/constants';
-import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
+  BatchCall,
   CrosschainQuote,
   Quote,
-  getQuoteExecutionDetails,
+  TransactionOptions,
   getTargetAddress,
+  prepareFillQuote,
 } from '@rainbow-me/swaps';
-import { erc20Abi } from 'viem';
+import {
+  Address,
+  PublicClient,
+  encodeFunctionData,
+  erc20Abi,
+  maxUint256,
+  numberToHex,
+  toHex as viemToHex,
+} from 'viem';
 import { mainnet } from 'viem/chains';
 
+import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import { RainbowError } from '~/logger';
 
 import { ChainId } from '../types/chains';
 import {
@@ -22,16 +30,85 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '../types/gas';
-import { toHexNoLeadingZeros } from '../utils/hex';
-import { greaterThan, multiply } from '../utils/numbers';
-
-import { getQuoteAllowanceTargetAddress, requireAddress } from './validation';
 
 export const CHAIN_IDS_WITH_TRACE_SUPPORT = [mainnet.id];
 export const SWAP_GAS_PADDING = 1.1;
 
+export const toTransactionOptions = ({
+  gasLimit,
+  gasParams,
+  nonce,
+}: {
+  gasLimit: bigint;
+  gasParams: TransactionGasParams | TransactionLegacyGasParams;
+  nonce?: number;
+}): TransactionOptions => ({
+  gasLimit: gasLimit ? gasLimit.toString() : undefined,
+  nonce: nonce ? numberToHex(nonce) : undefined,
+  ...('gasPrice' in gasParams
+    ? { gasPrice: gasParams.gasPrice.toString() }
+    : {
+        maxFeePerGas: gasParams.maxFeePerGas.toString(),
+        maxPriorityFeePerGas: gasParams.maxPriorityFeePerGas.toString(),
+      }),
+});
+
+export const deserializeGasParams = (
+  serialized: Record<string, string> | undefined,
+): TransactionGasParams | TransactionLegacyGasParams | undefined => {
+  if (!serialized || typeof serialized !== 'object') return undefined;
+  if ('gasPrice' in serialized && serialized.gasPrice) {
+    return { gasPrice: BigInt(serialized.gasPrice) };
+  }
+  if (
+    'maxFeePerGas' in serialized &&
+    'maxPriorityFeePerGas' in serialized &&
+    serialized.maxFeePerGas &&
+    serialized.maxPriorityFeePerGas
+  ) {
+    return {
+      maxFeePerGas: BigInt(serialized.maxFeePerGas),
+      maxPriorityFeePerGas: BigInt(serialized.maxPriorityFeePerGas),
+    };
+  }
+  return undefined;
+};
+
+export const isValidGasParams = (
+  params: TransactionGasParams | TransactionLegacyGasParams | undefined,
+): params is TransactionGasParams | TransactionLegacyGasParams => {
+  if (!params || typeof params !== 'object') return false;
+  if ('gasPrice' in params) return params.gasPrice != null;
+  return (
+    'maxFeePerGas' in params &&
+    params.maxFeePerGas != null &&
+    'maxPriorityFeePerGas' in params &&
+    params.maxPriorityFeePerGas != null
+  );
+};
+
+const delay = (ms: number) =>
+  new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+export const waitForGasParams = async (
+  maxAttempts = 10,
+): Promise<TransactionGasParams | TransactionLegacyGasParams> => {
+  for (let i = 0; i < maxAttempts; i++) {
+    const { selectedGas } = useGasStore.getState();
+    if (selectedGas && isValidGasParams(selectedGas.transactionGasParams)) {
+      return selectedGas.transactionGasParams;
+    }
+    // eslint-disable-next-line no-await-in-loop
+    await delay(200);
+  }
+  throw new RainbowError(
+    'swap: gas params not available after waiting for store sync',
+  );
+};
+
 const GAS_LIMIT_INCREMENT = 50000;
-const EXTRA_GAS_PADDING = 1.5;
 const TRACE_CALL_BLOCK_NUMBER_OFFSET = 20;
 
 /**
@@ -44,83 +121,64 @@ export const overrideWithFastSpeedIfNeeded = ({
 }: {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   chainId: ChainId;
-  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
-}) => {
-  const gasParams = selectedGas.transactionGasParams ?? {};
-  // approvals should always use fast gas or custom (whatever is faster)
-  if (chainId === ChainId.mainnet) {
-    const transactionGasParams = gasParams as TransactionGasParams;
-    if (
-      !transactionGasParams.maxFeePerGas ||
-      !transactionGasParams.maxPriorityFeePerGas
-    ) {
-      const fastTransactionGasParams = gasFeeParamsBySpeed?.fast
-        ?.transactionGasParams as TransactionGasParams;
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
+}): TransactionGasParams | TransactionLegacyGasParams => {
+  const gasParams = selectedGas.transactionGasParams;
 
-      if (
-        greaterThan(
-          fastTransactionGasParams.maxFeePerGas,
-          transactionGasParams?.maxFeePerGas || 0,
-        )
-      ) {
-        (gasParams as TransactionGasParams).maxFeePerGas =
-          fastTransactionGasParams.maxFeePerGas;
-      }
-      if (
-        greaterThan(
-          fastTransactionGasParams.maxPriorityFeePerGas,
-          transactionGasParams?.maxPriorityFeePerGas || 0,
-        )
-      ) {
-        (gasParams as TransactionGasParams).maxPriorityFeePerGas =
-          fastTransactionGasParams.maxPriorityFeePerGas;
-      }
-    }
-  } else if (chainId === ChainId.polygon) {
-    const transactionGasParams = gasParams as TransactionLegacyGasParams;
-    if (!transactionGasParams.gasPrice) {
-      const fastGasPrice = (
-        gasFeeParamsBySpeed?.fast
-          ?.transactionGasParams as TransactionLegacyGasParams
-      ).gasPrice;
+  if (chainId === ChainId.mainnet && 'maxFeePerGas' in gasParams) {
+    const fast = gasFeeParamsBySpeed?.fast?.transactionGasParams;
+    if (!fast || !('maxFeePerGas' in fast)) return gasParams;
 
-      if (greaterThan(fastGasPrice, transactionGasParams?.gasPrice || 0)) {
-        (gasParams as TransactionLegacyGasParams).gasPrice = fastGasPrice;
-      }
+    const maxFee =
+      !gasParams.maxFeePerGas || fast.maxFeePerGas > gasParams.maxFeePerGas
+        ? fast.maxFeePerGas
+        : gasParams.maxFeePerGas;
+    const maxPriority =
+      !gasParams.maxPriorityFeePerGas ||
+      fast.maxPriorityFeePerGas > gasParams.maxPriorityFeePerGas
+        ? fast.maxPriorityFeePerGas
+        : gasParams.maxPriorityFeePerGas;
+
+    return { maxFeePerGas: maxFee, maxPriorityFeePerGas: maxPriority };
+  }
+
+  if (chainId === ChainId.polygon && 'gasPrice' in gasParams) {
+    const fast = gasFeeParamsBySpeed?.fast?.transactionGasParams;
+    if (!fast || !('gasPrice' in fast)) return gasParams;
+
+    if (!gasParams.gasPrice || fast.gasPrice > gasParams.gasPrice) {
+      return { gasPrice: fast.gasPrice };
     }
   }
+
   return gasParams;
 };
 
 const getStateDiff = async (
-  provider: Provider,
+  client: PublicClient,
   quote: Quote | CrosschainQuote,
 ): Promise<unknown> => {
   const tokenAddress = quote.sellTokenAddress;
   const fromAddr = quote.from;
-  const toAddr = getQuoteAllowanceTargetAddress(quote);
-  const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
-
-  const { number: blockNumber } = await (
-    provider.getBlock as () => Promise<Block>
-  )();
+  const toAddr =
+    quote.swapType === 'normal'
+      ? getTargetAddressForQuote(quote)
+      : (quote as CrosschainQuote).allowanceTarget;
+  const block = await client.getBlock();
+  const blockNumber = Number(block.number);
 
   let data: string;
 
   if (quote.fallback && quote.data) {
-    data = quote.data;
+    data = quote.data as string;
   } else {
-    const result = await tokenContract.populateTransaction.approve(
-      toAddr,
-      MaxUint256.toHexString(),
-    );
-    if (!result.data) {
-      return;
-    }
-    data = result.data;
+    data = encodeFunctionData({
+      abi: erc20Abi,
+      functionName: 'approve',
+      args: [toAddr as Address, maxUint256],
+    });
   }
 
-  // trace_call default params
   const callParams = [
     {
       data,
@@ -132,20 +190,22 @@ const getStateDiff = async (
     blockNumber - TRACE_CALL_BLOCK_NUMBER_OFFSET,
   ];
 
-  const trace = await (provider as StaticJsonRpcProvider).send(
-    'trace_call',
-    callParams,
-  );
+  const trace = await client.request({
+    method: 'trace_call' as never,
+    params: callParams as never,
+  });
 
-  if (trace.stateDiff) {
-    const slotAddress = Object.keys(
-      trace.stateDiff[tokenAddress]?.storage,
-    )?.[0];
+  type StateDiffResponse = {
+    stateDiff?: Record<string, { storage: Record<string, unknown> }>;
+  };
+  if ((trace as StateDiffResponse).stateDiff) {
+    const stateDiff = (trace as StateDiffResponse).stateDiff!;
+    const slotAddress = Object.keys(stateDiff[tokenAddress]?.storage)?.[0];
     if (slotAddress) {
       const formattedStateDiff = {
         [tokenAddress]: {
           stateDiff: {
-            [slotAddress]: MaxUint256.toHexString(),
+            [slotAddress]: viemToHex(maxUint256),
           },
         },
       };
@@ -156,7 +216,7 @@ const getStateDiff = async (
 
 const getClosestGasEstimate = async (
   estimationFn: (gasEstimate: number) => Promise<boolean>,
-): Promise<string> => {
+): Promise<bigint> => {
   // From 200k to 1M
   const gasEstimates = Array.from(Array(21).keys())
     .filter((x) => x > 3)
@@ -200,72 +260,67 @@ const getClosestGasEstimate = async (
       (lowestSuccessfulGuess !== null &&
         lowestFailureGuess === lowestSuccessfulGuess - 1)
     ) {
-      return String(gasEstimates[lowestSuccessfulGuess]);
+      return BigInt(gasEstimates[lowestSuccessfulGuess]);
     }
 
     if (highestFailedGuess === gasEstimates.length - 1) {
-      return '-1';
+      return -1n;
     }
   }
-  return '-1';
+  return -1n;
 };
 
 export const getDefaultGasLimitForTrade = (
-  quote: Quote | CrosschainQuote,
+  quote: Quote,
   chainId: ChainId,
-): string => {
+): bigint => {
   const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
-  return (
-    quote?.defaultGasLimit ||
-    multiply(chainGasUnits.basic.swap, EXTRA_GAS_PADDING)
-  );
+  return quote?.defaultGasLimit
+    ? BigInt(quote.defaultGasLimit)
+    : (BigInt(chainGasUnits.basic.swap) * 3n) / 2n;
 };
 
 export const estimateSwapGasLimitWithFakeApproval = async (
   chainId: number,
-  provider: Provider,
+  client: PublicClient,
   quote: Quote | CrosschainQuote,
-): Promise<string> => {
+): Promise<bigint> => {
   let stateDiff: unknown;
 
   try {
-    stateDiff = await getStateDiff(provider, quote);
-    const { router, methodName, params, methodArgs } = getQuoteExecutionDetails(
-      quote,
+    stateDiff = await getStateDiff(client, quote);
+    const batchCall = await prepareFillQuote(
+      quote as Quote,
       { from: quote.from },
-      provider as StaticJsonRpcProvider,
-    );
-
-    const { data } = await router.populateTransaction[methodName](
-      ...(methodArgs ?? []),
-      params,
+      false,
+      chainId,
     );
 
     const gasLimit = await getClosestGasEstimate(async (gas: number) => {
       const callParams = [
         {
-          data,
+          data: batchCall.data,
           from: quote.from,
-          gas: toHexNoLeadingZeros(String(gas)),
-          gasPrice: toHexNoLeadingZeros(`100000000000`),
-          to: getQuoteAllowanceTargetAddress(quote),
-          value: '0x0', // 100 gwei
+          gas: numberToHex(BigInt(gas)),
+          gasPrice: numberToHex(100000000000n),
+          to: batchCall.to,
+          value: '0x0',
         },
         'latest',
       ];
 
       try {
-        await (provider as StaticJsonRpcProvider).send('eth_call', [
-          ...callParams,
-          stateDiff,
-        ]);
+        await client.request({
+          method: 'eth_call' as never,
+          params: [...callParams, stateDiff] as never,
+        });
         return true;
       } catch (e) {
         return false;
       }
     });
     const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
-    if (gasLimit && greaterThan(gasLimit, chainGasUnits.basic.swap)) {
+    if (gasLimit > 0n && gasLimit > BigInt(chainGasUnits.basic.swap)) {
       return gasLimit;
     }
   } catch (e) {
@@ -275,23 +330,18 @@ export const estimateSwapGasLimitWithFakeApproval = async (
 };
 
 export const populateSwap = async ({
-  provider,
   quote,
 }: {
-  provider: Provider;
   quote: Quote | CrosschainQuote;
-}): Promise<PopulatedTransaction | null> => {
+}): Promise<BatchCall | null> => {
   try {
-    const { router, methodName, params, methodArgs } = getQuoteExecutionDetails(
-      quote,
+    const batchCall = await prepareFillQuote(
+      quote as Quote,
       { from: quote.from },
-      provider as StaticJsonRpcProvider,
+      false,
+      quote.chainId,
     );
-    const swapTransaction = await router.populateTransaction[methodName](
-      ...(methodArgs ?? []),
-      params,
-    );
-    return swapTransaction;
+    return batchCall;
   } catch (e) {
     return null;
   }
@@ -302,5 +352,5 @@ export const getTargetAddressForQuote = (quote: Quote | CrosschainQuote) => {
   if (!targetAddress) {
     throw new Error('Target address not found for quote');
   }
-  return requireAddress(targetAddress, 'quote target address');
+  return targetAddress as Address;
 };

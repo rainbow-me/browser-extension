@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertRawAmountToBalance } from '~/core/utils/numbers';
+import { isQuoteError } from '~/core/utils/swaps';
 
 import usePrevious from '../usePrevious';
 
@@ -28,10 +29,8 @@ export const useSwapQuoteHandler = ({
   const prevQuote = usePrevious(quote);
 
   useEffect(() => {
-    if (quote && !(quote as QuoteError)?.error) {
-      const { sellAmountDisplay, buyAmountDisplay } = (quote || {}) as
-        | Quote
-        | CrosschainQuote;
+    if (quote && !isQuoteError(quote)) {
+      const { sellAmountDisplay, buyAmountDisplay } = quote;
 
       if (
         (independentField === 'sellField' ||

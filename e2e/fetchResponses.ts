@@ -149,14 +149,13 @@ async function removeUnusedMocks(expectedHashes: Set<string>) {
     // that mockFetch.ts will use for lookup at runtime.
     const hash = sha256(normalizeSwapUrlForMock(url));
     try {
-      // For /v1/quote URLs, disable RFQ and PMM (Private Market Maker)
-      // protocols.  Both embed chain-specific EIP-712 signed orders that
-      // fail verification on our fork (chain ID 1337 vs mainnet 1).
-      // The response is stored under the ORIGINAL URL's hash so that
-      // mockFetch.ts can look it up at runtime using the extension's URL.
-      let fetchUrl = url;
-      if (new URL(url).pathname.includes('/v1/quote')) {
-        const u = new URL(url);
+      // Use normalized URL for fetch when it has the large sell amount.
+      // The API returns 500 for sellAmount=10000000000000000000000 (10k ETH);
+      // normalizing to 1 ETH yields a valid quote that mockFetch will serve
+      // for both the large and fallback amounts at runtime.
+      let fetchUrl = normalizeSwapUrlForMock(url);
+      if (new URL(fetchUrl).pathname.includes('/v1/quote')) {
+        const u = new URL(fetchUrl);
         u.searchParams.set('disableRFQs', 'true');
         u.searchParams.set('disablePMMProtocols', 'true');
         fetchUrl = u.href;

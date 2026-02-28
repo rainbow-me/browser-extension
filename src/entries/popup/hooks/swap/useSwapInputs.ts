@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { parseUnits } from 'viem';
 
 import { ETH_ADDRESS } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -8,14 +9,10 @@ import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { isNativeAsset } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
-  addBuffer,
   convertAmountFromNativeValue,
-  convertAmountToRawAmount,
   convertRawAmountToBalance,
   handleSignificantDecimals,
   isExceedingMaxCharacters,
-  lessThan,
-  minus,
   truncateNumber,
 } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -52,7 +49,7 @@ export const useSwapInputs = ({
   setAssetToSell: (asset: ParsedSearchAsset | null) => void;
   setAssetToBuy: (asset: ParsedSearchAsset | null) => void;
   setHasRequestedMaxValueAssetToSell: (hasRequestedMaxValue: boolean) => void;
-  selectedGas: GasFeeParams | GasFeeLegacyParams;
+  selectedGas: GasFeeParams | GasFeeLegacyParams | null;
   inputToOpenOnMount: 'sell' | 'buy' | null;
   bridge: boolean;
 }) => {
@@ -218,15 +215,15 @@ export const useSwapInputs = ({
   );
 
   const assetToSellMaxValue = useMemo(() => {
-    const assetBalanceAmount = convertAmountToRawAmount(
+    const assetBalanceAmount = parseUnits(
       assetToSell?.balance?.amount || '0',
       assetToSell?.decimals || 18,
     );
 
+    const gasFeeWithBuffer = ((selectedGas?.gasFee?.amount ?? 0n) * 13n) / 10n;
     const rawAssetBalanceAmount =
-      assetToSell?.isNativeAsset &&
-      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, addBuffer(selectedGas?.gasFee?.amount, 1.3))
+      assetToSell?.isNativeAsset && gasFeeWithBuffer < assetBalanceAmount
+        ? assetBalanceAmount - gasFeeWithBuffer
         : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {

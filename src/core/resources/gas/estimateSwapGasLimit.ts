@@ -18,13 +18,14 @@ import {
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { isQuoteError } from '~/core/utils/swaps';
 
 // ///////////////////////////////////////////////
 // Query Types
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type EstimateSwapGasLimitResponse = {
-  gasLimit: string;
+  gasLimit: bigint;
 };
 
 type EstimateSwapGasLimitArgs = {
@@ -59,33 +60,32 @@ type EstimateSwapGasLimitQueryKey = ReturnType<
 async function estimateSwapGasLimitQueryFunction({
   queryKey: [{ chainId, quote, assetToSell, assetToBuy }],
 }: QueryFunctionArgs<typeof estimateSwapGasLimitQueryKey>) {
-  if (!quote || (quote as QuoteError).error || !assetToSell || !assetToBuy) {
+  if (!quote || isQuoteError(quote) || !assetToSell || !assetToBuy) {
     const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
-    return chainGasUnits.basic.swap;
+    return BigInt(chainGasUnits.basic.swap);
   }
-  const q = quote as Quote | CrosschainQuote;
   const gasLimit =
-    q.swapType === SwapType.crossChain
+    quote.swapType === SwapType.crossChain
       ? await estimateUnlockAndCrosschainSwap({
           chainId,
-          quote: q as CrosschainQuote,
-          sellAmount: q.sellAmount.toString(),
+          quote: quote as CrosschainQuote,
+          sellAmount: quote.sellAmount.toString(),
           assetToBuy,
           assetToSell,
         })
       : await estimateUnlockAndSwap({
           chainId,
-          quote: q as Quote,
-          sellAmount: q.sellAmount.toString(),
+          quote: quote as Quote,
+          sellAmount: quote.sellAmount.toString(),
           assetToBuy,
           assetToSell,
         });
 
   if (!gasLimit) {
     const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
-    return chainGasUnits.basic.swap;
+    return BigInt(chainGasUnits.basic.swap);
   }
-  return gasLimit;
+  return BigInt(gasLimit);
 }
 
 type EstimateSwapGasLimitResult = QueryFunctionResult<

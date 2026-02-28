@@ -13,8 +13,6 @@ import {
   fetchAssetBalanceViaProvider,
   parseUserAsset,
 } from '~/core/utils/assets';
-import { greaterThan } from '~/core/utils/numbers';
-import { getProvider } from '~/core/viem/clientToProvider';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
@@ -63,7 +61,7 @@ export async function parseUserAssets({
     {},
   ) as ParsedAssetsDictByChain;
   for (const { asset, quantity, small_balance, value } of assets) {
-    if (greaterThan(quantity, 0)) {
+    if (Number(quantity) > 0) {
       const parsedAsset = parseUserAsset({
         asset,
         currency,
@@ -79,7 +77,6 @@ export async function parseUserAssets({
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore.getState();
   if (connectedToHardhat || connectedToHardhatOp) {
-    // separating out these ternaries for readability
     const selectedHardhatChainId = connectedToHardhat
       ? ChainId.hardhat
       : ChainId.hardhatOptimism;
@@ -107,13 +104,12 @@ export async function parseUserAssets({
 
     const balanceRequests = Object.values(assets).map(async (asset) => {
       if (asset.chainId !== mainnetOrOptimismChainId) return asset;
-      const provider = getProvider({ chainId: selectedHardhatChainId });
       try {
         const parsedAsset = await fetchAssetBalanceViaProvider({
           parsedAsset: asset,
           currentAddress: address,
           currency,
-          provider,
+          chainIdOverride: selectedHardhatChainId,
         });
         return parsedAsset;
       } catch (e) {

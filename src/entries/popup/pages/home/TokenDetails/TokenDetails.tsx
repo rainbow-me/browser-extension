@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer } from 'react';
 import { Navigate, To, useParams, useSearchParams } from 'react-router-dom';
-import { Address } from 'viem';
+import { Address, formatUnits } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -39,7 +39,6 @@ import {
   formatCurrencyParts,
   formatNumber,
 } from '~/core/utils/formatNumber';
-import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import {
@@ -933,9 +932,11 @@ export function TokenDetails() {
                           'unlimited'
                             ? approval.spender?.quantity_allowed
                             : `${formatNumber(
-                                convertRawAmountToDecimalFormat(
-                                  approval.spender?.quantity_allowed || '0',
-                                  approval?.approval.asset.decimals,
+                                formatUnits(
+                                  BigInt(
+                                    approval.spender?.quantity_allowed || '0',
+                                  ),
+                                  approval?.approval.asset.decimals || 18,
                                 ),
                               )} ${approval?.approval.asset.symbol}`}
                         </Text>

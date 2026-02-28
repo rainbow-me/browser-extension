@@ -1,7 +1,7 @@
-import { TransactionRequest } from '@ethersproject/providers';
 import { Address, Hex } from 'viem';
 
 import { PersonalSignMessage, TypedDataMessage } from './messageSigning';
+import { TransactionRequest } from './transactions';
 
 export type HWSigningAction = HWSigningRequest['action'];
 

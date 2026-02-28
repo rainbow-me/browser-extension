@@ -1,4 +1,4 @@
-import { TypedDataDefinition } from 'viem';
+import { type Address, TypedDataDefinition } from 'viem';
 
 // Personal sign message - always string
 export type PersonalSignMessage = {
@@ -31,4 +31,15 @@ export const isTypedDataMessage = (
 // Helper to extract message content
 export const getMessageContent = (msg: SigningMessage): string => {
   return msg.type === 'personal_sign' ? msg.message : JSON.stringify(msg.data);
+};
+
+// Arguments types for signing functions
+export type SignMessageArguments = {
+  address: Address;
+  message: PersonalSignMessage;
+};
+
+export type SignTypedDataArguments = {
+  address: Address;
+  message: TypedDataMessage;
 };

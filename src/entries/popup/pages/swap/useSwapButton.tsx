@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { KeychainType } from '~/core/types/keychainTypes';
+import { isQuoteError } from '~/core/utils/swaps';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
@@ -101,7 +102,7 @@ export const useSwapButton = ({
     };
   }
 
-  if (!(quote as QuoteError).error) {
+  if (!isQuoteError(quote)) {
     if (!enoughAssetsForSwap) {
       return {
         buttonColor: 'fillSecondary',
@@ -214,7 +215,7 @@ export const useSwapButton = ({
     };
   }
 
-  switch ((quote as QuoteError).error_code) {
+  switch (quote.error_code) {
     case 502:
       // insufficient liquidity
       return {
