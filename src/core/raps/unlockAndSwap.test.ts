@@ -28,11 +28,11 @@ import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
 
 let swapGasLimit = 0;
 
-let needsUnlockQuote!: Quote;
-let doesntNeedUnlockQuote!: Quote;
-let ethToEnsQuote!: Quote;
-let unwrapEthQuote!: Quote;
-let wrapEthQuote!: Quote;
+let needsUnlockQuote: Quote;
+let doesntNeedUnlockQuote: Quote;
+let ethToEnsQuote: Quote;
+let unwrapEthQuote: Quote;
+let wrapEthQuote: Quote;
 
 const SELECTED_GAS = {
   display: '73 - 86 Gwei',
