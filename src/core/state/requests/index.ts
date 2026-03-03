@@ -1,9 +1,9 @@
 import { createBaseStore } from '@storesjs/stores';
 import mitt from 'mitt';
 
+import type { ProviderRequestPayload } from '~/core/provider/types';
 import { onlyBackground } from '~/core/utils/onlyBackground';
 
-import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
 import { createExtensionStoreOptions } from '../_internal';
 
 type Responses =

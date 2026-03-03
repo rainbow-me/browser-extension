@@ -1,20 +1,27 @@
-import {
-  AddEthereumChainProposedChain,
-  handleProviderRequest as rnbwHandleProviderRequest,
-} from '@rainbow-me/provider';
+/**
+ * Creates the config for processProviderRequest / handlePortalHost.
+ * Shares logic with handleProviderRequest for consistency.
+ */
 import { Chain, UserRejectedRequestError } from 'viem';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
-import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
+import {
+  type ProcessProviderRequestConfig,
+  ProviderErrorCodes,
+  type ProviderRequestInput,
+} from '~/core/provider/processProviderRequest';
+import type {
+  AddEthereumChainProposedChain,
+  ProviderRequestMeta,
+  ProviderRequestPayload,
+} from '~/core/provider/types';
 import { useAppSessionsStore, useNotificationWindowStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { SessionStorage } from '~/core/storage';
-import { providerRequestTransport } from '~/core/transports';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isCustomChain } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -24,8 +31,8 @@ import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 
 const MAX_REQUEST_PER_SECOND = 10;
 const MAX_REQUEST_PER_MINUTE = 90;
-let minuteTimer: NodeJS.Timeout | null = null;
-let secondTimer: NodeJS.Timeout | null = null;
+let minuteTimer: ReturnType<typeof setTimeout> | null = null;
+let secondTimer: ReturnType<typeof setTimeout> | null = null;
 
 const getPopupTitleBarHeight = (platform: string) => {
   if (platform.includes('Mac')) return 28;
@@ -53,9 +60,7 @@ const createNewWindow = async (tabId: string) => {
 };
 
 const focusOnWindow = (windowId: number) => {
-  chrome.windows.update(windowId, {
-    focused: true,
-  });
+  chrome.windows.update(windowId, { focused: true });
 };
 
 const openWindowForTabId = async (tabId: string) => {
@@ -67,12 +72,10 @@ const openWindowForTabId = async (tabId: string) => {
       async (existingWindow) => {
         if (chrome.runtime.lastError) {
           createNewWindow(tabId);
+        } else if (existingWindow) {
+          focusOnWindow(existingWindow.id as number);
         } else {
-          if (existingWindow) {
-            focusOnWindow(existingWindow.id as number);
-          } else {
-            createNewWindow(tabId);
-          }
+          createNewWindow(tabId);
         }
       },
     );
@@ -81,19 +84,16 @@ const openWindowForTabId = async (tabId: string) => {
   }
 };
 
-/**
- * Uses extensionMessenger to send messages to popup for the user to approve or reject
- * @param {PendingRequest} request
- */
-const messengerProviderRequest = async (request: ProviderRequestPayload) => {
+const messengerProviderRequest = async (
+  request: ProviderRequestInput,
+): Promise<unknown> => {
   const { addPendingRequest, waitForPendingRequest } =
     usePendingRequestStore.getState();
-  // Add pending request to global background state.
-  addPendingRequest(request);
+  addPendingRequest(request as ProviderRequestPayload);
 
   let ready = isInitialized();
   while (!ready) {
-    // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
+    // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
     await new Promise((resolve) => setTimeout(resolve, 100));
     ready = isInitialized();
   }
@@ -101,13 +101,11 @@ const messengerProviderRequest = async (request: ProviderRequestPayload) => {
   const passwordSet = _hasVault && (await isPasswordSet());
 
   if (_hasVault && passwordSet) {
-    openWindowForTabId(Number(request.meta?.sender.tab?.id).toString());
+    openWindowForTabId(Number(request.meta?.sender?.tab?.id).toString());
   } else {
-    goToNewTab({
-      url: WELCOME_URL,
-    });
+    goToNewTab({ url: WELCOME_URL });
   }
-  // Wait for response from the popup.
+
   const { status, payload } = await waitForPendingRequest(request.id);
   if (status === 'REJECTED') {
     throw new UserRejectedRequestError(Error('User rejected the request.'));
@@ -117,98 +115,16 @@ const messengerProviderRequest = async (request: ProviderRequestPayload) => {
 
 const resetRateLimit = async (host: string, second: boolean) => {
   const rateLimits = await SessionStorage.get('rateLimits');
-  if (second) {
-    if (rateLimits[host]) {
+  if (rateLimits) {
+    if (second && rateLimits[host]) {
       rateLimits[host].perSecond = 0;
-    }
-    secondTimer = null;
-  } else {
-    if (rateLimits[host]) {
+    } else if (!second && rateLimits[host]) {
       rateLimits[host].perMinute = 0;
     }
-    minuteTimer = null;
+    await SessionStorage.set('rateLimits', rateLimits);
   }
-  return SessionStorage.set('rateLimits', rateLimits);
-};
-
-const checkRateLimit = async ({
-  url,
-  host,
-  name,
-}: {
-  url: string;
-  host: string;
-  name: string;
-}) => {
-  try {
-    // Read from session
-    let rateLimits = await SessionStorage.get('rateLimits');
-
-    // Initialize if needed
-    if (rateLimits === undefined) {
-      rateLimits = {
-        [host]: {
-          perSecond: 0,
-          perMinute: 0,
-        },
-      };
-    }
-
-    if (rateLimits[host] === undefined) {
-      rateLimits[host] = {
-        perSecond: 1,
-        perMinute: 1,
-      };
-    } else {
-      rateLimits[host] = {
-        perSecond: rateLimits[host].perSecond + 1,
-        perMinute: rateLimits[host].perMinute + 1,
-      };
-    }
-
-    // Clear after 1 sec
-    if (!secondTimer) {
-      secondTimer = setTimeout(async () => {
-        resetRateLimit(host, true);
-      }, 1000);
-    }
-
-    if (!minuteTimer) {
-      minuteTimer = // Clear after 1 min
-        setTimeout(async () => {
-          resetRateLimit(host, false);
-        }, 60000);
-    }
-
-    // Write to session
-    SessionStorage.set('rateLimits', rateLimits);
-
-    // Check rate limits
-    if (rateLimits[host].perSecond > MAX_REQUEST_PER_SECOND) {
-      queueEventTracking(event.dappProviderRateLimit, {
-        dappURL: url,
-        dappDomain: host,
-        dappName: name,
-        typeOfLimitHit: 'perSecond',
-        requests: rateLimits[host].perSecond,
-      });
-      return true;
-    }
-
-    if (rateLimits[host].perMinute > MAX_REQUEST_PER_MINUTE) {
-      queueEventTracking(event.dappProviderRateLimit, {
-        dappURL: url,
-        dappDomain: host,
-        dappName: name,
-        typeOfLimitHit: 'perMinute',
-        requests: rateLimits[host].perMinute,
-      });
-      return true;
-    }
-    return false;
-  } catch (error) {
-    return false;
-  }
+  if (second) secondTimer = null;
+  else minuteTimer = null;
 };
 
 const skipRateLimitCheck = (method: string) =>
@@ -228,45 +144,85 @@ const skipRateLimitCheck = (method: string) =>
     'personal_ecRecover',
   ].includes(method) || method.startsWith('wallet_');
 
-/**
- * Handles RPC requests from the provider.
- */
-export const handleProviderRequest = ({
-  inpageMessenger,
-}: {
-  inpageMessenger: Messenger;
-}) =>
-  rnbwHandleProviderRequest({
-    providerRequestTransport: providerRequestTransport,
-    isSupportedChain: (chainId: number) =>
+export function createPortalHostConfig(
+  inpageMessenger: Messenger,
+): ProcessProviderRequestConfig {
+  return {
+    getProvider,
+    getActiveSession: ({ host }) =>
+      useAppSessionsStore.getState().getActiveSession({ host }),
+    getChainNativeCurrency: (chainId) =>
+      useNetworkStore.getState().getChain(chainId)?.nativeCurrency,
+    isSupportedChain: (chainId) =>
       !!useNetworkStore.getState().getBackendSupportedChain(chainId) ||
       isCustomChain(chainId),
-    getActiveSession: ({ host }: { host: string }) =>
-      useAppSessionsStore.getState().getActiveSession({ host }),
-    removeAppSession: ({ host }: { host: string }) => {
-      inpageMessenger.send(`disconnect:${host}`, null);
-      useAppSessionsStore.getState().removeAppSession({ host });
+    getFeatureFlags: () => ({ custom_rpc: true }),
+    checkRateLimit: async ({ id, meta, method }) => {
+      const url = meta?.sender?.url ?? '';
+      const host = (isValidUrl(url) && getDappHost(url)) || '';
+      const name = meta?.sender?.tab?.title ?? host;
+      if (!skipRateLimitCheck(method)) {
+        let rateLimits = await SessionStorage.get('rateLimits');
+        if (!rateLimits) {
+          rateLimits = { [host]: { perSecond: 0, perMinute: 0 } };
+        }
+        if (!rateLimits[host]) {
+          rateLimits[host] = { perSecond: 1, perMinute: 1 };
+        } else {
+          rateLimits[host] = {
+            perSecond: rateLimits[host].perSecond + 1,
+            perMinute: rateLimits[host].perMinute + 1,
+          };
+        }
+        if (!secondTimer) {
+          secondTimer = setTimeout(() => resetRateLimit(host, true), 1000);
+        }
+        if (!minuteTimer) {
+          minuteTimer = setTimeout(() => resetRateLimit(host, false), 60000);
+        }
+        await SessionStorage.set('rateLimits', rateLimits);
+        if (rateLimits[host].perSecond > MAX_REQUEST_PER_SECOND) {
+          queueEventTracking(event.dappProviderRateLimit, {
+            dappURL: url,
+            dappDomain: host,
+            dappName: name,
+            typeOfLimitHit: 'perSecond',
+            requests: rateLimits[host].perSecond,
+          });
+          return {
+            id,
+            error: {
+              code: ProviderErrorCodes.LIMIT_EXCEEDED.code,
+              message: 'Rate Limit Exceeded',
+              name: ProviderErrorCodes.LIMIT_EXCEEDED.name,
+            },
+          };
+        }
+        if (rateLimits[host].perMinute > MAX_REQUEST_PER_MINUTE) {
+          queueEventTracking(event.dappProviderRateLimit, {
+            dappURL: url,
+            dappDomain: host,
+            dappName: name,
+            typeOfLimitHit: 'perMinute',
+            requests: rateLimits[host].perMinute,
+          });
+          return {
+            id,
+            error: {
+              code: ProviderErrorCodes.LIMIT_EXCEEDED.code,
+              message: 'Rate Limit Exceeded',
+              name: ProviderErrorCodes.LIMIT_EXCEEDED.name,
+            },
+          };
+        }
+      }
+      return undefined;
     },
-    getChainNativeCurrency: (chainId: number) =>
-      useNetworkStore.getState().getChain(chainId)?.nativeCurrency,
-    getFeatureFlags: () => ({
-      // TODO: Populate with the remote config feature flag
-      custom_rpc: true,
-    }),
-    getProvider: getProvider,
-    messengerProviderRequest: (request: ProviderRequestPayload) =>
-      messengerProviderRequest(request),
-    onAddEthereumChain: ({
-      proposedChain,
-      callbackOptions,
-    }: {
-      proposedChain: AddEthereumChainProposedChain;
-      callbackOptions?: CallbackOptions;
-    }): { chainAlreadyAdded: boolean } => {
-      const url = callbackOptions?.sender.url || '';
+    messengerProviderRequest,
+    onAddEthereumChain: ({ proposedChain, callbackOptions }) => {
+      const url = callbackOptions?.sender?.url ?? '';
       const host = (isValidUrl(url) && getDappHost(url)) || '';
       const { getAllChains, addCustomChain } = useNetworkStore.getState();
-
       const allChains = getAllChains(true);
       const alreadyAddedChain = allChains[+proposedChain.chainId];
       if (alreadyAddedChain) {
@@ -291,24 +247,16 @@ export const handleProviderRequest = ({
         const rainbowChain = allChains[chainObject.id];
         const alreadyAddedRpcUrl = rainbowChain.rpcs[rpcUrl];
         const isActiveRpc = rainbowChain.activeRpcUrl === rpcUrl;
-
         if (!alreadyAddedRpcUrl) {
           addCustomChain(chainObject.id, chainObject, rpcUrl, false);
         }
-
-        let rpcStatus;
-        if (alreadyAddedRpcUrl) {
-          if (isActiveRpc) {
-            rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_active;
-          } else {
-            rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
-          }
-        } else {
-          rpcStatus = IN_DAPP_NOTIFICATION_STATUS.rpc_added;
-        }
-
+        const rpcStatus = alreadyAddedRpcUrl
+          ? isActiveRpc
+            ? IN_DAPP_NOTIFICATION_STATUS.already_active
+            : IN_DAPP_NOTIFICATION_STATUS.already_added
+          : IN_DAPP_NOTIFICATION_STATUS.rpc_added;
         const extensionUrl = chrome.runtime.getURL('');
-        inpageMessenger?.send('rainbow_ethereumChainEvent', {
+        inpageMessenger.send('rainbow_ethereumChainEvent', {
           chainId: Number(proposedChain.chainId),
           status: rpcStatus,
           extensionUrl,
@@ -317,34 +265,9 @@ export const handleProviderRequest = ({
       }
       return { chainAlreadyAdded: !!alreadyAddedChain };
     },
-    checkRateLimit: async ({
-      id,
-      meta,
-      method,
-    }: {
-      id: number;
-      meta: CallbackOptions;
-      method: string;
-    }) => {
-      const url = meta?.sender.url || '';
+    onSwitchEthereumChainNotSupported: ({ proposedChain, callbackOptions }) => {
+      const url = callbackOptions?.sender?.url ?? '';
       const host = (isValidUrl(url) && getDappHost(url)) || '';
-      const name = meta?.sender.tab?.title || host;
-      if (!skipRateLimitCheck(method)) {
-        const rateLimited = await checkRateLimit({ url, host, name });
-        if (rateLimited) {
-          return { id, error: <Error>new Error('Rate Limit Exceeded') };
-        }
-      }
-    },
-    onSwitchEthereumChainNotSupported: ({
-      proposedChain,
-      callbackOptions,
-    }: {
-      proposedChain: AddEthereumChainProposedChain;
-      callbackOptions?: CallbackOptions;
-    }) => {
-      const url = callbackOptions?.sender.url || '';
-      const host = (isValidUrl(url || '') && getDappHost(url)) || '';
       const extensionUrl = chrome.runtime.getURL('');
       const proposedChainId = Number(proposedChain.chainId);
       const chain = useNetworkStore
@@ -353,18 +276,13 @@ export const handleProviderRequest = ({
       const supportedChain =
         isCustomChain(proposedChainId) ||
         !!useNetworkStore.getState().getBackendSupportedChain(proposedChainId);
-
-      inpageMessenger?.send('rainbow_ethereumChainEvent', {
+      inpageMessenger.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
-        chainName: chain?.name || 'NO NAME',
+        chainName: chain?.name ?? 'NO NAME',
         status: !supportedChain
           ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
           : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
         extensionUrl,
-        host,
-      });
-      console.warn('Chain Id not supported', {
-        proposedChainId,
         host,
       });
     },
@@ -373,22 +291,21 @@ export const handleProviderRequest = ({
       callbackOptions,
     }: {
       proposedChain: AddEthereumChainProposedChain;
-      callbackOptions?: CallbackOptions;
+      callbackOptions?: ProviderRequestMeta;
     }) => {
-      const url = callbackOptions?.sender.url || '';
-      const host = (isValidUrl(url || '') && getDappHost(url)) || '';
-      const dappName = callbackOptions?.sender.tab?.title || host;
+      const url = callbackOptions?.sender?.url ?? '';
+      const host = (isValidUrl(url) && getDappHost(url)) || '';
+      const dappName = callbackOptions?.sender?.tab?.title ?? host;
       const extensionUrl = chrome.runtime.getURL('');
       const proposedChainId = Number(proposedChain.chainId);
-      const { updateActiveSessionChainId } = useAppSessionsStore.getState();
-      updateActiveSessionChainId({
+      useAppSessionsStore.getState().updateActiveSessionChainId({
         chainId: proposedChainId,
         host,
       });
       const chain = useNetworkStore
         .getState()
         .getActiveRpcForChain(proposedChainId);
-      inpageMessenger?.send('rainbow_ethereumChainEvent', {
+      inpageMessenger.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name,
         status: IN_DAPP_NOTIFICATION_STATUS.success,
@@ -398,9 +315,14 @@ export const handleProviderRequest = ({
       queueEventTracking(event.dappProviderNetworkSwitched, {
         dappURL: host,
         dappDomain: host,
-        dappName: dappName,
+        dappName,
         chainId: proposedChainId,
       });
       inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
     },
-  });
+    removeAppSession: ({ host }) => {
+      inpageMessenger.send(`disconnect:${host}`, null);
+      useAppSessionsStore.getState().removeAppSession({ host });
+    },
+  };
+}

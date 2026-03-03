@@ -1,1 +1,1 @@
-export { providerRequestTransport } from './providerRequestTransport';
+export { createTransport } from './internal/createTransport';

@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import React, { useCallback, useEffect } from 'react';
 
+import type { ProviderRequestPayload } from '~/core/provider/types';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 

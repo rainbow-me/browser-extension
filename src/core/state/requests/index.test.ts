@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import type { ProviderRequestPayload } from '../../transports/providerRequestTransport';
+import type { ProviderRequestPayload } from '~/core/provider/types';
 
 import { usePendingRequestStore } from '.';
 

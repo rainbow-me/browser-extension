@@ -1,3 +1,5 @@
+import { createRelayTransport } from 'viem-portal';
+
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
 // eslint-disable-next-line boundaries/element-types
@@ -18,6 +20,9 @@ const insertInpageScriptIfNeeded = () => {
 };
 
 insertInpageScriptIfNeeded();
+
+// Relay portal messages between inpage (window) and background (tab)
+createRelayTransport();
 
 setupBridgeMessengerRelay();
 

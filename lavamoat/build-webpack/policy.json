@@ -1,106 +1,5 @@
 {
   "resources": {
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/helper-plugin-utils": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/helper-validator-option": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-syntax-jsx": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-syntax-jsx": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-syntax-jsx>@babel/helper-plugin-utils": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-plugin-utils": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript": {
-      "builtin": {
-        "assert": true
-      },
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-plugin-utils": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env": true
-      },
-      "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-replace-supers": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
-        "semver": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-replace-supers": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-plugin-utils": true
-      }
-    },
     "@vanilla-extract/css": {
       "globals": {
         "process.env.NODE_ENV": true
@@ -610,7 +509,6 @@
         "structuredClone": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator": true,
@@ -625,7 +523,8 @@
         "eslint>debug": true,
         "file-loader>loader-utils>json5": true,
         "lavamoat-browserify>convert-source-map": true,
-        "semver": true
+        "semver": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": {
@@ -735,11 +634,11 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/helper-validator-option": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>lru-cache": true,
-        "semver": true
+        "semver": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/helper-validator-option": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist": {
@@ -787,7 +686,7 @@
         "assert": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": {
@@ -795,13 +694,13 @@
         "console.log": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/parser": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/template": true,
         "eslint>debug": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": {
@@ -821,10 +720,10 @@
         "console.warn": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>jsesc": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>jsesc": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": {
@@ -865,9 +764,9 @@
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/template": {
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/parser": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/parser": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": {
@@ -1594,6 +1493,107 @@
       },
       "packages": {
         "web-ext>source-map-support": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/helper-plugin-utils": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/helper-validator-option": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-syntax-jsx": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-syntax-jsx": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-syntax-jsx>@babel/helper-plugin-utils": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-plugin-utils": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript": {
+      "builtin": {
+        "assert": true
+      },
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-plugin-utils": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
+        "semver": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-replace-supers": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-replace-supers": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
+      }
+    },
+    "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": {
+      "packages": {
+        "viem-hw>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-plugin-utils": true
       }
     },
     "viem>ws": {

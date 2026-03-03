@@ -1,11 +1,11 @@
-import { RainbowProvider } from '@rainbow-me/provider';
 import { uuid4 } from '@sentry/core';
 import _ from 'lodash';
 import { EIP1193Provider, announceProvider } from 'mipd';
+import { createEip1193Provider } from 'viem-inpage';
+import { createClient, createWindowTransport } from 'viem-portal';
 
 import { initializeMessenger } from '~/core/messengers';
 import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
-import { providerRequestTransport } from '~/core/transports';
 import { ChainId } from '~/core/types/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { toHex } from '~/core/utils/hex';
@@ -13,19 +13,21 @@ import { toHex } from '~/core/utils/hex';
 import { injectNotificationIframe } from '../iframe';
 import { IN_DAPP_NOTIFICATION_STATUS } from '../iframe/notification';
 
+type RainbowEip1193Provider = ReturnType<typeof createEip1193Provider>;
+
 declare global {
   interface Window {
-    ethereum: RainbowProvider;
+    ethereum: RainbowEip1193Provider;
     lodash: unknown;
-    rainbow: RainbowProvider;
-    providers: RainbowProvider[];
+    rainbow: RainbowEip1193Provider;
+    providers: RainbowEip1193Provider[];
     rnbwWalletRouter: {
-      rainbowProvider: RainbowProvider;
-      lastInjectedProvider?: RainbowProvider;
-      currentProvider: RainbowProvider;
-      providers: RainbowProvider[];
+      rainbowProvider: RainbowEip1193Provider;
+      lastInjectedProvider?: RainbowEip1193Provider;
+      currentProvider: RainbowEip1193Provider;
+      providers: RainbowEip1193Provider[];
       setDefaultProvider: (rainbowAsDefault: boolean) => void;
-      addProvider: (provider: RainbowProvider) => void;
+      addProvider: (provider: RainbowEip1193Provider) => void;
     };
   }
 }
@@ -34,33 +36,66 @@ window.lodash = _.noConflict();
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
-const rainbowProvider = new RainbowProvider({
-  backgroundMessenger,
-  providerRequestTransport: providerRequestTransport,
-  onConstruct({ emit }) {
-    // RainbowInjectedProvider is also used in popup via RainbowConnector
-    // here we don't need to listen to anything so we don't need these listeners
-    if (isValidUrl(window.location.href)) {
-      const host = getDappHost(window.location.href);
-      backgroundMessenger?.reply(`accountsChanged:${host}`, async (address) => {
-        emit('accountsChanged', [address]);
-      });
-      backgroundMessenger?.reply(
-        `chainChanged:${host}`,
-        async (chainId: number) => {
-          emit('chainChanged', toHex(String(chainId)));
-        },
-      );
-      backgroundMessenger?.reply(`disconnect:${host}`, async () => {
-        emit('accountsChanged', []);
-        emit('disconnect', []);
-      });
-      backgroundMessenger?.reply(`connect:${host}`, async (connectionInfo) => {
-        emit('connect', connectionInfo);
-      });
-    }
-  },
+// viem-portal: EthRpcSchema uses eth_request with params [method, params]
+type ProviderSchema = {
+  eth_request: {
+    params: [method: string, params?: unknown[]];
+    result: unknown;
+  };
+};
+
+const windowTransport = createWindowTransport();
+const portalClient = createClient<ProviderSchema>(windowTransport);
+
+const portalRequestAdapter = {
+  request: (args: { method: string; params?: unknown[] }) =>
+    portalClient.request('eth_request', args.method, args.params ?? []),
+};
+
+const rainbowProvider = createEip1193Provider(portalRequestAdapter, {
+  isRainbow: true,
+  isMetaMask: true,
 });
+
+// Wire up event listeners for accountsChanged, chainChanged, disconnect, connect
+if (isValidUrl(window.location.href)) {
+  const host = getDappHost(window.location.href);
+  backgroundMessenger?.reply(
+    `accountsChanged:${host}`,
+    async (address: string) => {
+      rainbowProvider.emit('accountsChanged', [address]);
+    },
+  );
+  backgroundMessenger?.reply(
+    `chainChanged:${host}`,
+    async (chainId: number) => {
+      rainbowProvider.emit('chainChanged', toHex(String(chainId)));
+    },
+  );
+  backgroundMessenger?.reply(`disconnect:${host}`, async () => {
+    rainbowProvider.emit('accountsChanged', []);
+    rainbowProvider.emit('disconnect', []);
+  });
+  backgroundMessenger?.reply(
+    `connect:${host}`,
+    async (connectionInfo: unknown) => {
+      rainbowProvider.emit('connect', connectionInfo);
+    },
+  );
+}
+
+// Wrap request to prefetch before each call
+const originalRequest = rainbowProvider.request.bind(rainbowProvider);
+rainbowProvider.request = async (args: {
+  method: string;
+  params?: unknown[];
+}) => {
+  backgroundMessenger?.send(
+    'rainbow_prefetchDappMetadata',
+    window.location.href,
+  );
+  return originalRequest(args);
+};
 
 if (shouldInjectProvider()) {
   // eslint-disable-next-line prefer-object-spread
@@ -68,7 +103,7 @@ if (shouldInjectProvider()) {
     Object.getPrototypeOf(rainbowProvider),
     Object.getOwnPropertyDescriptors(rainbowProvider),
   );
-  providerCopy.isMetaMask = false;
+  (providerCopy as { isMetaMask: boolean }).isMetaMask = false;
   announceProvider({
     info: {
       icon: RAINBOW_ICON_RAW_SVG,
@@ -76,7 +111,7 @@ if (shouldInjectProvider()) {
       rdns: 'me.rainbow',
       uuid: uuid4(),
     },
-    provider: providerCopy as RainbowProvider as EIP1193Provider,
+    provider: providerCopy as unknown as EIP1193Provider,
   });
 
   backgroundMessenger.reply(
@@ -137,7 +172,7 @@ if (shouldInjectProvider()) {
             window.rnbwWalletRouter.currentProvider = nonDefaultProvider;
           }
         },
-        addProvider(provider: RainbowProvider) {
+        addProvider(provider: RainbowEip1193Provider) {
           if (!window.rnbwWalletRouter?.providers?.includes(provider)) {
             window.rnbwWalletRouter?.providers?.push(provider);
           }
