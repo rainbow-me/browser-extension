@@ -47,7 +47,7 @@ import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { ApprovalFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
-import { isLedgerConnectionError } from '~/entries/popup/handlers/ledger';
+import { isConnectionError } from '~/entries/popup/handlers/hardwareWallet';
 import { getWallet, sendTransaction } from '~/entries/popup/handlers/wallet';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
@@ -214,7 +214,7 @@ export const RevokeApprovalSheet = ({
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      if (!isLedgerConnectionError(e)) {
+      if (!isConnectionError(e)) {
         const extractedError = (e as Error).message.split('[')[0];
         triggerAlert({
           text: i18n.t('errors.sending_transaction'),
