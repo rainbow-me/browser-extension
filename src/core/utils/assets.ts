@@ -1,13 +1,11 @@
-import { Contract } from '@ethersproject/contracts';
-import { Provider } from '@ethersproject/providers';
-import BigNumber from 'bignumber.js';
-import { Address, erc20Abi, getContract, zeroAddress } from 'viem';
+import { Address, erc20Abi, formatUnits, getContract, zeroAddress } from 'viem';
 
+import { metadataClient } from '~/core/graphql';
+import { TokenMetadataQuery } from '~/core/graphql/__generated__/metadata';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
   AddressOrEth,
   AssetApiResponse,
-  AssetMetadata,
   ParsedAsset,
   ParsedSearchAsset,
   ParsedUserAsset,
@@ -16,23 +14,24 @@ import {
 } from '~/core/types/assets';
 import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
-import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
 import { customChainIdsToAssetNames } from '../references/assets';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
-import { getProvider } from '../viem/clientToProvider';
 import { getViemClient } from '../viem/clients';
 
 import { isNativeAsset } from './chains';
+import { SCALE, decToFixed } from './dinero';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
   convertAmountToNativeDisplay,
   convertAmountToPercentageDisplay,
-  convertRawAmountToDecimalFormat,
+  safeBigInt,
 } from './numbers';
 import { isLowerCaseMatch } from './strings';
+
+export type TokenMetadata = NonNullable<TokenMetadataQuery['token']>;
 
 const get24HrChange = (priceData?: ZerionAssetPrice) => {
   const twentyFourHrChange = priceData?.relative_change_24h;
@@ -143,26 +142,31 @@ export function parseAssetMetadata({
   currency,
 }: {
   address: AddressOrEth;
-  asset: AssetMetadata;
+  asset: TokenMetadata;
   chainId: ChainId;
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
-  const mainnetAddress = asset.networks?.[ChainId.mainnet]?.address || address;
+  const mainnetAddress =
+    (asset.networks[ChainId.mainnet]?.address as AddressOrEth) || address;
   const uniqueId = `${address}_${chainId}`;
-  const priceData = {
-    relative_change_24h: asset?.price?.relativeChange24h,
-    value: asset?.price?.value,
+  const priceData: ZerionAssetPrice = {
+    relative_change_24h: asset.price.relativeChange24h ?? undefined,
+    value: asset.price.value ?? 0,
   };
   const parsedAsset = {
     address,
     chainId,
     chainName: chainIdToNameMapping[chainId],
-    colors: asset?.colors,
-    decimals: asset?.decimals,
-    icon_url: asset?.iconUrl,
+    colors: {
+      primary: asset.colors.primary,
+      fallback: asset.colors.fallback ?? undefined,
+      shadow: asset.colors.shadow ?? undefined,
+    },
+    decimals: asset.decimals,
+    icon_url: asset.iconUrl ?? undefined,
     isNativeAsset: isNativeAsset(address, chainId),
     mainnetAddress,
-    name: asset?.name || i18n.t('tokens_tab.unknown_token'),
+    name: asset.name || i18n.t('tokens_tab.unknown_token'),
     native: {
       price: getNativeAssetPrice({
         currency,
@@ -170,9 +174,9 @@ export function parseAssetMetadata({
       }),
     },
     price: priceData,
-    symbol: asset?.symbol,
+    symbol: asset.symbol,
     uniqueId,
-    networks: asset?.networks,
+    networks: asset.networks as ParsedAsset['networks'],
   } satisfies ParsedAsset;
   return parsedAsset;
 }
@@ -214,7 +218,7 @@ export function parseUserAssetBalances({
   smallBalance?: boolean;
 }) {
   const { decimals, symbol, price } = asset;
-  const amount = convertRawAmountToDecimalFormat(balance, decimals);
+  const amount = formatUnits(safeBigInt(balance), decimals);
   const calculatedNativeBalance = getNativeAssetBalance({
     currency,
     decimals,
@@ -229,11 +233,14 @@ export function parseUserAssetBalances({
         }
       : undefined;
 
-  // TODO: remove the next 5 lines after BE fixes their smallBalance issue
-  const isZeroCappedAmount =
-    platformValue !== undefined &&
-    !new BigNumber(platformValue).isNaN() &&
-    new BigNumber(platformValue).isZero();
+  // TODO: remove the next 2 lines after BE fixes their smallBalance issue
+  let isZeroCappedAmount = false;
+  try {
+    isZeroCappedAmount =
+      platformValue !== undefined && decToFixed(platformValue) === 0n;
+  } catch {
+    /* non-numeric platformValue */
+  }
   const resolvedSmallBalance = smallBalance || isZeroCappedAmount;
 
   return {
@@ -272,26 +279,28 @@ export const compareCappedAmountToCalculatedValue = ({
     return { shouldApproximate: false, direction: 'equal' };
   }
 
-  const platform = new BigNumber(cappedAmount || '0');
-  const calculated = new BigNumber(calculatedAmount || '0');
+  const platformFixed = decToFixed(cappedAmount || '0');
+  const calculatedFixed = decToFixed(calculatedAmount || '0');
 
-  if (calculated.isZero()) {
-    if (platform.isZero()) {
+  if (calculatedFixed === 0n) {
+    if (platformFixed === 0n) {
       return { shouldApproximate: false, direction: 'equal' };
     }
     return {
       shouldApproximate: true,
-      direction: platform.gt(0) ? 'higher' : 'equal',
+      direction: platformFixed > 0n ? 'higher' : 'equal',
     };
   }
 
-  const difference = platform.minus(calculated).abs();
-  const ratio = difference.dividedBy(calculated.abs());
+  const diffFixed = platformFixed - calculatedFixed;
+  const absDiff = diffFixed < 0n ? -diffFixed : diffFixed;
+  const absCalc = calculatedFixed < 0n ? -calculatedFixed : calculatedFixed;
+  const ratioFixed = (absDiff * SCALE) / absCalc;
+  const thresholdFixed = decToFixed(String(threshold));
 
-  if (ratio.gt(threshold)) {
-    const direction: PlatformValueComparisonDirection = platform.gt(calculated)
-      ? 'higher'
-      : 'lower';
+  if (ratioFixed > thresholdFixed) {
+    const direction: PlatformValueComparisonDirection =
+      platformFixed > calculatedFixed ? 'higher' : 'lower';
     return { shouldApproximate: true, direction };
   }
 
@@ -336,18 +345,24 @@ export const fetchAssetBalanceViaProvider = async ({
   parsedAsset,
   currentAddress,
   currency,
-  provider,
+  chainIdOverride,
 }: {
   parsedAsset: ParsedUserAsset;
   currentAddress: Address;
   currency: SupportedCurrencyKey;
-  provider: Provider;
+  chainIdOverride?: number;
 }) => {
+  const client = getViemClient({
+    chainId: chainIdOverride ?? parsedAsset.chainId,
+  });
   const balance = parsedAsset.isNativeAsset
-    ? await provider.getBalance(currentAddress)
-    : await new Contract(parsedAsset.address, erc20Abi, provider).balanceOf(
-        currentAddress,
-      );
+    ? await client.getBalance({ address: currentAddress })
+    : await client.readContract({
+        address: parsedAsset.address as Address,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [currentAddress],
+      });
 
   const updatedAsset = parseUserAssetBalances({
     asset: parsedAsset,
@@ -356,29 +371,6 @@ export const fetchAssetBalanceViaProvider = async ({
     cappedValue: parsedAsset.balance.capped?.amount,
   });
   return updatedAsset;
-};
-
-const assetQueryFragment = (
-  address: AddressOrEth,
-  chainId: ChainId,
-  currency: SupportedCurrencyKey,
-  index: number,
-  withPrice?: boolean,
-) => {
-  const priceQuery = withPrice ? 'price { value relativeChange24h }' : '';
-  return `Q${index}: token(address: "${address}", chainID: ${chainId}, currency: "${currency}") {
-      colors {
-        primary
-        fallback
-        shadow
-      }
-      decimals
-      iconUrl
-      name
-      networks
-      symbol
-      ${priceQuery}
-  }`;
 };
 
 export const chunkArray = <TItem>(arr: TItem[], chunkSize: number) => {
@@ -391,19 +383,6 @@ export const chunkArray = <TItem>(arr: TItem[], chunkSize: number) => {
   return result;
 };
 
-export const createAssetQuery = (
-  addresses: AddressOrEth[],
-  chainId: ChainId,
-  currency: SupportedCurrencyKey,
-  withPrice?: boolean,
-) => {
-  return `{
-        ${addresses
-          .map((a, i) => assetQueryFragment(a, chainId, currency, i, withPrice))
-          .join(',')}
-    }`;
-};
-
 export const getAssetMetadata = async ({
   address,
   chainId,
@@ -411,12 +390,23 @@ export const getAssetMetadata = async ({
   address: Address;
   chainId: ChainId;
 }) => {
-  const provider = getProvider({ chainId });
-  const contract = new Contract(address, erc20Abi, provider);
+  const client = getViemClient({ chainId });
   const [decimals, symbol, name] = await Promise.allSettled([
-    contract.decimals(),
-    contract.symbol(),
-    contract.name(),
+    client.readContract({
+      address,
+      abi: erc20Abi,
+      functionName: 'decimals',
+    }),
+    client.readContract({
+      address,
+      abi: erc20Abi,
+      functionName: 'symbol',
+    }),
+    client.readContract({
+      address,
+      abi: erc20Abi,
+      functionName: 'name',
+    }),
   ]);
   return {
     decimals: extractFulfilledValue<number>(decimals),
@@ -455,30 +445,25 @@ export const fetchAssetWithPrice = async ({
   parsedAsset: ParsedUserAsset;
   currency: SupportedCurrencyKey;
 }): Promise<ParsedUserAsset | null> => {
-  const results: Record<string, AssetMetadata>[] = (await requestMetadata(
-    createAssetQuery(
-      [parsedAsset.address],
-      parsedAsset.chainId,
-      currency,
-      true,
-    ),
+  const response = await metadataClient.tokenMetadata(
     {
-      timeout: 10000,
+      address: parsedAsset.address,
+      chainId: parsedAsset.chainId,
+      currency,
     },
-  )) as Record<string, AssetMetadata>[];
+    { timeout: 10000 },
+  );
 
-  const assets = Object.values(results).flat();
-  const asset = assets[0];
+  const asset = response.token;
+  if (!asset) return null;
   const parsedAssetWithPrice = parseAssetMetadata({
     address: parsedAsset.address,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     asset,
     chainId: parsedAsset.chainId,
     currency,
   });
   if (parsedAssetWithPrice?.native.price) {
-    const assetToReturn = {
+    const assetToReturn: ParsedAsset = {
       ...parsedAsset,
       native: {
         ...parsedAsset.native,
@@ -488,7 +473,7 @@ export const fetchAssetWithPrice = async ({
         value: parsedAssetWithPrice.native.price.amount,
       },
       icon_url: parsedAssetWithPrice.icon_url,
-    } as ParsedAsset;
+    };
 
     return parseUserAssetBalances({
       asset: assetToReturn,

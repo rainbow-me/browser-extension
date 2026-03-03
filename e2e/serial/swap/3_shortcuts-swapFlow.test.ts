@@ -1,4 +1,3 @@
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import {
   afterAll,
@@ -17,6 +16,7 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByText,
+  getAnvilClient,
   getExtensionIdByName,
   getRootUrl,
   goToPopup,
@@ -231,8 +231,8 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
   // - Balance updates correctly after atomic swap via keyboard
 
   it('should be able to initiate swap with keyboard navigation', async () => {
-    const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
-    await provider.ready;
+    const client = getAnvilClient();
+    await client.getChainId();
     await delayTime('short');
     // const ethBalanceBeforeSwap = await provider.getBalance(
     //   WALLET_TO_USE_ADDRESS,

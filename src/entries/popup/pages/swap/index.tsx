@@ -20,7 +20,7 @@ import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
-import { getQuoteServiceTime } from '~/core/utils/swaps';
+import { getQuoteServiceTime, isQuoteError } from '~/core/utils/swaps';
 import {
   Box,
   Button,
@@ -285,7 +285,7 @@ const SwapAlerts = ({
     );
   }, [priceImpact?.type, timeEstimate?.isLongWait]);
 
-  const quoteError = (quote as QuoteError)?.error;
+  const quoteError = quote && isQuoteError(quote);
 
   if (showWarning) {
     return (
@@ -570,9 +570,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
       assetToSell,
       assetToSellValue,
       isWrapOrUnwrapEth,
-      quote: (quote as QuoteError)?.error
-        ? undefined
-        : (quote as Quote | CrosschainQuote),
+      quote: quote && !isQuoteError(quote) ? quote : undefined,
     });
 
   const { priceImpact } = useSwapPriceImpact({
@@ -1003,9 +1001,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                         assetToSell={assetToSell}
                         assetToBuy={assetToBuy}
                         enabled={!inReviewSheet}
-                        defaultSpeed={selectedGas.option}
+                        defaultSpeed={selectedGas?.option}
                         quoteServiceTime={getQuoteServiceTime({
-                          quote: quote as CrosschainQuote,
+                          quote: quote as unknown as CrosschainQuote,
                         })}
                         feeLabel={
                           showSmartWalletActivationFee

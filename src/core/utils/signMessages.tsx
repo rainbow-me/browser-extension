@@ -7,7 +7,7 @@ import {
 } from '~/core/types/messageSigning';
 import { RainbowError, logger } from '~/logger';
 
-import { ProviderRequestPayload } from '../transports/providerRequestTransport';
+import { ProviderRequestPayload } from '../provider/types';
 import { RPCMethod } from '../types/rpcMethods';
 
 import { sanitizeTypedData } from './ethereum';
@@ -25,15 +25,15 @@ export const getSigningRequestDisplayDetails = (
   try {
     switch (payload.method) {
       case 'personal_sign': {
-        let message = payload?.params?.[0] as string;
-        let address = payload?.params?.[1] as Address;
+        const [param0, param1] = (payload?.params ?? []) as [string, Address];
+        let message = param0;
+        let address = param1;
 
         // Only swap parameters when the first param is an address
         // AND the second param is NOT an address
         // This prevents incorrect swapping when both params could be interpreted as addresses
         if (isAddress(message) && !isAddress(address)) {
-          message = payload?.params?.[1] as string;
-          address = payload?.params?.[0] as Address;
+          [message, address] = [param1, param0 as Address];
         }
 
         try {
@@ -46,7 +46,7 @@ export const getSigningRequestDisplayDetails = (
           logger.error(
             new RainbowError('Error decoding personal_sign message'),
             {
-              error: (error as Error)?.message,
+              error: error instanceof Error ? error.message : String(error),
               originalMessage: message,
               method: payload.method,
             },

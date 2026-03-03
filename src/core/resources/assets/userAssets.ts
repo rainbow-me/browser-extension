@@ -21,6 +21,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 import type { GetAssetUpdatesResponse as PlatformGetAssetUpdatesResponse } from '~/core/types/gen/platform/assets/updates';
 import { getSupportedChains } from '~/core/utils/chains';
+import { getErrorMessage } from '~/core/utils/errors';
 import {
   convertPlatformAssetToAssetApiResponse,
   isAddressOrEth,
@@ -163,7 +164,7 @@ async function userAssetsQueryFunction({
         cause: e,
       }),
       {
-        message: (e as Error)?.message,
+        message: getErrorMessage(e),
       },
     );
 
@@ -345,7 +346,7 @@ async function userAssetsByChainQueryFunction({
           `userAssetsByChainQueryFunction - chainId = ${chainId}:`,
         ),
         {
-          message: (e as Error)?.message,
+          message: getErrorMessage(e),
         },
       );
     return cachedDataForChain;

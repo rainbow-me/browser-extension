@@ -1,7 +1,11 @@
-import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 
 import { i18n } from '../languages';
 import { ParsedSearchAsset } from '../types/assets';
+
+export const isQuoteError = (
+  q: Quote | CrosschainQuote | QuoteError,
+): q is QuoteError => 'error' in q && !!q.error;
 
 export const getQuoteServiceTime = ({
   quote,

@@ -1,19 +1,23 @@
 /* eslint-disable no-await-in-loop */
-import { type Signer } from '@ethersproject/abstract-signer';
 import {
   type BatchCall,
   type UnsupportedReason,
   executeBatchedTransaction,
   supportsDelegation,
 } from '@rainbow-me/delegation';
-import { UserRejectedRequestError } from 'viem';
+import type { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import { PublicClient, UserRejectedRequestError, WalletClient } from 'viem';
 
 import {
   getAtomicSwapsEnabled,
   getDelegationEnabled,
 } from '~/core/resources/delegations/featureStatus';
+import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { type TransactionGasParams } from '~/core/types/gas';
+import {
+  type TransactionGasParams,
+  type TransactionLegacyGasParams,
+} from '~/core/types/gas';
 import { type NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getViemClient } from '~/core/viem/clients';
@@ -29,8 +33,6 @@ import { prepareSwap } from './actions/swap';
 import { prepareUnlock } from './actions/unlock';
 import {
   type ActionProps,
-  type PrepareActionProps,
-  type PrepareActionResult,
   type Rap,
   type RapAction,
   type RapActionResponse,
@@ -42,73 +44,92 @@ import {
 import { extractReplayableCall } from './replay';
 import { createUnlockAndCrosschainSwapRap } from './unlockAndCrosschainSwap';
 import { createUnlockAndSwapRap } from './unlockAndSwap';
-
-const ACTION_REJECTED = 'ACTION_REJECTED';
-const NODE_ACK_MAX_TRIES = 10;
+import { deserializeGasParams } from './utils';
 
 type AtomicPrepareActionType = Extract<
   RapActionTypes,
   'unlock' | 'swap' | 'crosschainSwap'
 >;
-type AtomicPrepareResult = PrepareActionResult;
-type RapFactoryResult = { actions: RapAction<RapActionTypes>[] };
 
-type Executors = {
-  action: {
-    [K in RapActionTypes]: (props: ActionProps<K>) => Promise<RapActionResult>;
-  };
-  prepare: {
-    [K in AtomicPrepareActionType]: (
-      props: PrepareActionProps<K>,
-    ) => Promise<AtomicPrepareResult>;
-  };
-  rapFactory: {
-    [K in RapTypes]: (
-      params: RapSwapActionParameters<K>,
-    ) => Promise<RapFactoryResult>;
-  };
+type PrepareActionProps<T extends AtomicPrepareActionType> = {
+  parameters: ActionProps<T>['parameters'];
+  wallet: WalletClient;
+  chainId: ChainId;
+  quote: Quote | CrosschainQuote;
 };
 
-const executors: Executors = {
-  action: {
-    crosschainSwap,
-    swap,
-    unlock,
+type PrepareActionResult =
+  | { call: BatchCall | null }
+  | { call: BatchCall; transaction: Omit<NewTransaction, 'hash'> };
+
+const ACTION_REJECTED = 'ACTION_REJECTED';
+
+function runAtomicPrepareAction<T extends AtomicPrepareActionType>(
+  type: T,
+  props: PrepareActionProps<T> & {
+    gasParams?: TransactionGasParams | TransactionLegacyGasParams;
   },
-  prepare: {
-    crosschainSwap: prepareCrosschainSwap,
-    swap: prepareSwap,
-    unlock: prepareUnlock,
-  },
-  rapFactory: {
-    crosschainSwap: createUnlockAndCrosschainSwapRap,
-    swap: createUnlockAndSwapRap,
-  },
-};
+): Promise<PrepareActionResult> {
+  switch (type) {
+    case 'unlock':
+      return prepareUnlock(props as PrepareActionProps<'unlock'>);
+    case 'swap':
+      return prepareSwap({
+        ...props,
+        gasParams: props.gasParams,
+      } as PrepareActionProps<'swap'> & {
+        gasParams?: TransactionGasParams | TransactionLegacyGasParams;
+      });
+    case 'crosschainSwap': {
+      const crosschainProps = {
+        ...props,
+        quote: props.quote as CrosschainQuote,
+        gasParams: props.gasParams,
+      };
+      return prepareCrosschainSwap(
+        crosschainProps as Parameters<typeof prepareCrosschainSwap>[0],
+      );
+    }
+    default:
+      throw new Error(`Unsupported atomic action type: ${type}`);
+  }
+}
 
 export function createSwapRapByType<T extends RapTypes>(
   type: T,
   swapParameters: RapSwapActionParameters<T>,
-): Promise<RapFactoryResult> {
-  return executors.rapFactory[type](swapParameters);
+) {
+  switch (type) {
+    case 'crosschainSwap':
+      return createUnlockAndCrosschainSwapRap(
+        swapParameters as RapSwapActionParameters<'crosschainSwap'>,
+      );
+    case 'swap':
+      return createUnlockAndSwapRap(
+        swapParameters as RapSwapActionParameters<'swap'>,
+      );
+    default:
+      return { actions: [] };
+  }
 }
 
-function runAction<T extends RapActionTypes>(
-  type: T,
-  props: ActionProps<T>,
-): Promise<RapActionResult> {
-  return executors.action[type](props);
-}
-
-function runAtomicPrepareAction<T extends AtomicPrepareActionType>(
-  type: T,
-  props: PrepareActionProps<T>,
-): Promise<AtomicPrepareResult> {
-  return executors.prepare[type](props);
+function typeAction<T extends RapActionTypes>(type: T, props: ActionProps<T>) {
+  switch (type) {
+    case 'unlock':
+      return () => unlock(props as ActionProps<'unlock'>);
+    case 'swap':
+      return () => swap(props as ActionProps<'swap'>);
+    case 'crosschainSwap':
+      return () => crosschainSwap(props as ActionProps<'crosschainSwap'>);
+    default:
+      // eslint-disable-next-line react/display-name
+      return () => null;
+  }
 }
 
 export async function executeAction<T extends RapActionTypes>({
   action,
+  client,
   wallet,
   rap,
   index,
@@ -116,74 +137,84 @@ export async function executeAction<T extends RapActionTypes>({
   rapName,
 }: {
   action: RapAction<T>;
-  wallet: Signer;
+  client: PublicClient;
+  wallet: WalletClient;
   rap: Rap;
   index: number;
   baseNonce?: number;
   rapName: string;
 }): Promise<RapActionResponse> {
   const { type, parameters } = action;
-
   try {
-    const { nonce, hash } = await runAction(type, {
+    const actionProps = {
+      client,
       wallet,
       currentRap: rap,
       index,
       parameters,
       baseNonce,
-    });
-
+    };
+    const { nonce, hash } = (await typeAction<T>(
+      type,
+      actionProps,
+    )()) as RapActionResult;
     return { baseNonce: nonce, errorMessage: null, hash };
   } catch (error) {
-    const parsedError = toError(error);
     logger.error(new RainbowError(`rap: ${rapName} - error execute action`), {
-      message: parsedError.message,
+      message: (error as Error)?.message,
     });
-
-    return { baseNonce: null, errorMessage: parsedError.toString() };
+    if (index === 0) {
+      return {
+        baseNonce: null,
+        errorMessage: error != null ? String(error) : null,
+      };
+    }
+    return { baseNonce: null, errorMessage: null };
   }
 }
 
 function getRapFullName<T extends RapActionTypes>(actions: RapAction<T>[]) {
-  return actions.map((action) => action.type).join(' + ');
+  const actionTypes = actions.map((action) => action.type);
+  return actionTypes.join(' + ');
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
+const delay = (ms: number) =>
+  new Promise<void>((res) => {
+    setTimeout(res, ms);
   });
-}
 
-async function waitForNodeAck(
+const NODE_ACK_MAX_TRIES = 10;
+
+const waitForNodeAck = async (
   hash: string,
-  provider: Signer['provider'],
+  client: PublicClient,
   tries = 0,
-): Promise<void> {
+): Promise<void> => {
   try {
-    const tx = await provider?.getTransaction(hash);
-
-    // Node has accepted tx into mempool (or mined it)
+    const tx = await client.getTransaction({
+      hash: hash as `0x${string}`,
+    });
     if (
       (tx && tx.blockNumber === null) ||
-      (tx && tx.blockNumber && tx.blockNumber > 0)
+      (tx && tx?.blockNumber && tx.blockNumber > 0n)
     ) {
       return;
+    } else {
+      if (tries < NODE_ACK_MAX_TRIES) {
+        await delay(1000);
+        return waitForNodeAck(hash, client, tries + 1);
+      }
     }
-
+  } catch (error) {
     if (tries < NODE_ACK_MAX_TRIES) {
       await delay(1000);
-      return waitForNodeAck(hash, provider, tries + 1);
-    }
-  } catch {
-    if (tries < NODE_ACK_MAX_TRIES) {
-      await delay(1000);
-      return waitForNodeAck(hash, provider, tries + 1);
+      return waitForNodeAck(hash, client, tries + 1);
     }
   }
-}
+};
 
 export const walletExecuteRap = async (
-  wallet: Signer,
+  wallet: WalletClient,
   type: RapTypes,
   parameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>,
 ): Promise<{
@@ -192,6 +223,7 @@ export const walletExecuteRap = async (
   hash?: string | null;
 }> => {
   const rap: Rap = await createSwapRapByType(type, parameters);
+
   const { actions } = rap;
   const rapName = getRapFullName(rap.actions);
 
@@ -236,7 +268,14 @@ export const walletExecuteRap = async (
   }
 
   if (canAttemptAtomic && delegationSupported) {
-    const { chainId, gasParams, nonce, quote } = parameters;
+    const { chainId, nonce, quote } = parameters;
+    let gasParams =
+      parameters.gasParams ??
+      deserializeGasParams(parameters.serializedGasParams);
+    if (!gasParams) {
+      const { selectedGas } = useGasStore.getState();
+      gasParams = selectedGas?.transactionGasParams;
+    }
 
     if (!quote) {
       return {
@@ -266,6 +305,7 @@ export const walletExecuteRap = async (
             wallet,
             chainId,
             quote,
+            gasParams,
           });
 
           if (prepareResult.call) {
@@ -375,60 +415,54 @@ export const walletExecuteRap = async (
   let txHash: string | null = null;
 
   if (actions.length) {
+    const client = getViemClient({ chainId: parameters.chainId });
     const firstAction = actions[0];
     const {
       baseNonce,
-      errorMessage: firstActionError,
+      errorMessage: error,
       hash: firstHash,
     } = await executeAction({
       action: firstAction,
+      client,
       wallet,
       rap,
       index: 0,
       baseNonce: nonce,
       rapName,
     });
-
-    txHash = firstHash ?? null;
-
     const shouldWaitForNodeAck = parameters.chainId !== ChainId.mainnet;
 
     if (typeof baseNonce === 'number') {
-      let latestHash = firstHash ?? null;
-
+      let latestHash = firstHash;
       for (let index = 1; index < actions.length; index++) {
-        if (latestHash && shouldWaitForNodeAck) {
-          await waitForNodeAck(latestHash, wallet.provider);
-        }
-
+        latestHash &&
+          shouldWaitForNodeAck &&
+          (await waitForNodeAck(latestHash, client));
         const action = actions[index];
-        const { hash, errorMessage: actionError } = await executeAction({
+        const { hash } = await executeAction({
           action,
+          client,
           wallet,
           rap,
           index,
           baseNonce,
           rapName,
         });
-
-        if (!errorMessage && actionError) {
-          errorMessage = actionError;
-        }
-
-        if (hash) {
-          latestHash = hash;
-          txHash = hash;
+        latestHash = hash;
+        if (index === actions.length - 1) {
+          txHash = hash ?? null;
         }
       }
-
       nonce = baseNonce + actions.length - 1;
     } else {
-      errorMessage = firstActionError;
-      txHash = null;
+      errorMessage = error ?? null;
     }
   }
-
-  return { nonce, errorMessage, hash: txHash };
+  return {
+    nonce,
+    errorMessage: errorMessage ?? null,
+    hash: txHash ?? null,
+  };
 };
 
 function isAtomicRapType(type: RapTypes): type is 'swap' | 'crosschainSwap' {
@@ -453,10 +487,11 @@ function isAtomicGasParams(
   const maxFeePerGas = Reflect.get(gasParams, 'maxFeePerGas');
   const maxPriorityFeePerGas = Reflect.get(gasParams, 'maxPriorityFeePerGas');
   return (
-    typeof maxFeePerGas === 'string' &&
-    maxFeePerGas.length > 0 &&
-    typeof maxPriorityFeePerGas === 'string' &&
-    maxPriorityFeePerGas.length > 0
+    ((typeof maxFeePerGas === 'bigint' && maxFeePerGas > 0n) ||
+      (typeof maxFeePerGas === 'string' && maxFeePerGas.length > 0)) &&
+    ((typeof maxPriorityFeePerGas === 'bigint' && maxPriorityFeePerGas > 0n) ||
+      (typeof maxPriorityFeePerGas === 'string' &&
+        maxPriorityFeePerGas.length > 0))
   );
 }
 

@@ -1,6 +1,5 @@
-import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Address, Hash, formatUnits } from 'viem';
+import { Address, Hash, PublicClient, formatUnits } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { platformHttp } from '~/core/network/platform';
@@ -20,9 +19,10 @@ import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/cus
 import { ChainId } from '~/core/types/chains';
 import type { GetTransactionByHashResponse as PlatformGetTransactionByHashResponse } from '~/core/types/gen/platform/transaction/transaction';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
+import { getErrorMessage } from '~/core/utils/errors';
 import { convertPlatformTransactionToApiResponse } from '~/core/utils/platform';
 import { parseTransaction } from '~/core/utils/transactions';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getViemClient } from '~/core/viem/clients';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
 
@@ -105,19 +105,21 @@ export const fetchTransaction = async ({
     if (localPendingTx) return localPendingTx;
 
     logger.error(new RainbowError('fetchTransaction: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     throw e; // log & rethrow
   }
 };
 
 async function guessTransactionType(
-  provider: Provider,
-  transaction: TransactionResponse,
+  client: PublicClient,
+  transaction: { to?: string | null },
 ) {
   if (!transaction.to) return 'deployment';
 
-  const code = await provider.getCode(transaction.to);
+  const code = await client.getCode({
+    address: transaction.to as `0x${string}`,
+  });
   if (code && code !== '0x') return 'contract_interaction';
 
   return 'send';
@@ -132,14 +134,16 @@ const fetchTransactionDataFromProvider = async ({
   hash: Hash;
   account: Address;
 }): Promise<RainbowTransaction> => {
-  const provider = getProvider({ chainId });
-  const transaction = await provider.getTransaction(hash);
+  const client = getViemClient({ chainId });
+  const transaction = await client.getTransaction({
+    hash: hash as `0x${string}`,
+  });
 
   if (!transaction)
     throw `getCustomChainTransaction: couldn't find transaction`;
 
   const decimals = 18; // assuming every chain uses 18 decimals
-  const value = formatUnits(transaction.value.toBigInt(), decimals);
+  const value = formatUnits(transaction.value, decimals);
 
   const direction =
     transaction.from === account ? ('out' as const) : ('in' as const);
@@ -147,27 +151,31 @@ const fetchTransactionDataFromProvider = async ({
   const baseTransaction = {
     hash: transaction.hash as Hash,
     nonce: transaction.nonce,
-    chainId: transaction.chainId,
+    chainId: chainId as ChainId,
     from: transaction.from as Address,
     to: transaction.to as Address,
-    data: transaction.data,
+    data: transaction.input,
     value,
     direction,
 
     feeType: !transaction.maxFeePerGas ? 'legacy' : 'eip-1559',
-    gasLimit: transaction.gasLimit.toString(),
+    gasLimit: transaction.gas.toString(),
     maxFeePerGas: transaction.maxFeePerGas?.toString(),
     maxPriorityFeePerGas: transaction.maxPriorityFeePerGas?.toString(),
     gasPrice: transaction.gasPrice?.toString(),
   } as const;
 
-  if (transaction.blockNumber !== undefined) {
+  if (transaction.blockNumber !== null) {
     const [receipt, block, type] = await Promise.all([
-      provider.getTransactionReceipt(transaction.hash),
-      provider.getBlock(transaction.blockNumber),
-      guessTransactionType(provider, transaction),
+      client.getTransactionReceipt({
+        hash: transaction.hash as `0x${string}`,
+      }),
+      client.getBlock({
+        blockNumber: transaction.blockNumber,
+      }),
+      guessTransactionType(client, transaction),
     ]);
-    const status = receipt.status === 1 ? 'confirmed' : 'failed';
+    const status = receipt.status === 'success' ? 'confirmed' : 'failed';
 
     return {
       ...baseTransaction,
@@ -175,19 +183,19 @@ const fetchTransactionDataFromProvider = async ({
       type,
       title: i18n.t(`transactions.${type}.${status}`),
 
-      blockNumber: transaction.blockNumber,
-      minedAt: transaction.timestamp!,
-      confirmations: transaction.confirmations,
+      blockNumber: Number(transaction.blockNumber),
+      minedAt: Number(block.timestamp),
+      confirmations: 1, // viem doesn't provide confirmations directly
 
       gasUsed: receipt.gasUsed.toString(),
 
       feeType: !block.baseFeePerGas ? 'legacy' : 'eip-1559',
-      fee: receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice).toString(),
+      fee: (receipt.cumulativeGasUsed * receipt.effectiveGasPrice).toString(),
       baseFee: block.baseFeePerGas?.toString(),
     };
   }
 
-  const type = await guessTransactionType(provider, transaction);
+  const type = await guessTransactionType(client, transaction);
 
   return {
     ...baseTransaction,

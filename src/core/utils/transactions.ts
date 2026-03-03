@@ -1,21 +1,21 @@
-import { BigNumber, FixedNumber } from '@ethersproject/bignumber';
-import {
-  Provider,
-  TransactionReceipt,
-  TransactionResponse,
-} from '@ethersproject/providers';
 import { isString } from 'lodash';
-import { Address, formatUnits, zeroAddress } from 'viem';
+import {
+  Address,
+  Hex,
+  PublicClient,
+  encodeFunctionData,
+  erc20Abi,
+  erc721Abi,
+  formatUnits,
+  parseAbi,
+  zeroAddress,
+} from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
 import { useNetworkStore } from '~/core/state/networks/networks';
 
 import { i18n } from '../languages';
-import {
-  ETH_ADDRESS,
-  SupportedCurrencyKey,
-  smartContractMethods,
-} from '../references';
+import { ETH_ADDRESS, SupportedCurrencyKey } from '../references';
 import {
   useCurrentCurrencyStore,
   useNonceStore,
@@ -34,126 +34,74 @@ import {
   isValidTransactionType,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
-import { getBatchedProvider } from '../viem/clientToProvider';
+import { getViemClient } from '../viem/clients';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
 import { formatNumber } from './formatNumber';
-import { convertStringToHex, ensureTxHashFormat } from './hex';
+import { divide } from './numbers';
 import { capitalize } from './strings';
 
-/**
- * @desc remove hex prefix
- * @param  {String} hex
- * @return {String}
- */
-const removeHexPrefix = (hex: string) => hex.toLowerCase().replace('0x', '');
-
-/**
- * @desc pad string to specific width and padding
- * @param  {String} n
- * @param  {Number} width
- * @param  {String} z
- * @return {String}
- */
-const padLeft = (n: string, width: number, z = '0') => {
-  const ns = n + '';
-  return ns.length >= width
-    ? ns
-    : new Array(width - ns.length + 1).join(z) + ns;
-};
-
-/**
- * @desc get ethereum contract call data string
- * @param  {String} func
- * @param  {Array}  arrVals
- * @return {String}
- */
-const getDataString = (func: string, arrVals: string[]) => {
-  let val = '';
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of
-  for (let i = 0; i < arrVals.length; i++) val += padLeft(arrVals[i], 64);
-  const data = func + val;
-  return data;
-};
-
-/**
- * @desc Generates a transaction data string for a token transfer.
- * @param value The value to transfer.
- * @param to The recipient address.
- * @return The data string for the transaction.
- */
-export const getDataForTokenTransfer = (value: string, to: string): string => {
-  const transferMethodHash = smartContractMethods.token_transfer.hash;
-  const data = getDataString(transferMethodHash, [
-    removeHexPrefix(to),
-    convertStringToHex(value),
-  ]);
-  return data;
-};
-
-enum TokenStandard {
-  ERC1155 = 'ERC1155',
-  ERC721 = 'ERC721',
-}
+const cryptoPunksAbi = parseAbi([
+  'function transferPunk(address to, uint256 punkIndex)',
+]);
+const erc1155Abi = parseAbi([
+  'function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)',
+]);
 
 const CRYPTO_KITTIES_NFT_ADDRESS = '0x06012c8cf97bead5deae237070f9587f8e7a266d';
 const CRYPTO_PUNKS_NFT_ADDRESS = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb';
 
-/**
- * @desc Returns a transaction data string for an NFT transfer.
- * @param from The sender's address.
- * @param to The recipient's address.
- * @param asset The asset to transfer.
- * @return The data string if the transfer can be attempted, otherwise undefined.
- */
+export const getDataForTokenTransfer = (value: bigint, to: Address): Hex =>
+  encodeFunctionData({
+    abi: erc20Abi,
+    functionName: 'transfer',
+    args: [to, value],
+  });
+
 export const getDataForNftTransfer = (
   from: string,
   to: string,
   asset: UniqueAsset,
 ): string | undefined => {
   if (!asset.id || !asset.asset_contract?.address) return;
-  const lowercasedContractAddress = asset.asset_contract.address.toLowerCase();
+  const contract = asset.asset_contract.address.toLowerCase();
   const standard = asset.asset_contract?.schema_name;
-  let data: string | undefined;
+
   if (
-    lowercasedContractAddress === CRYPTO_KITTIES_NFT_ADDRESS &&
+    contract === CRYPTO_KITTIES_NFT_ADDRESS &&
     asset.network === ChainName.mainnet
   ) {
-    const transferMethod = smartContractMethods.token_transfer;
-    data = getDataString(transferMethod.hash, [
-      removeHexPrefix(to),
-      convertStringToHex(asset.id),
-    ]);
-  } else if (
-    lowercasedContractAddress === CRYPTO_PUNKS_NFT_ADDRESS &&
-    asset.network === ChainName.mainnet
-  ) {
-    const transferMethod = smartContractMethods.punk_transfer;
-    data = getDataString(transferMethod.hash, [
-      removeHexPrefix(to),
-      convertStringToHex(asset.id),
-    ]);
-  } else if (standard === TokenStandard.ERC1155) {
-    const transferMethodHash =
-      smartContractMethods.erc1155_safe_transfer_from.hash;
-    data = getDataString(transferMethodHash, [
-      removeHexPrefix(from),
-      removeHexPrefix(to),
-      convertStringToHex(asset.id),
-      convertStringToHex('1'),
-      convertStringToHex('160'),
-      convertStringToHex('0'),
-    ]);
-  } else if (standard === TokenStandard.ERC721) {
-    const transferMethod = smartContractMethods.erc721_transfer_from;
-    data = getDataString(transferMethod.hash, [
-      removeHexPrefix(from),
-      removeHexPrefix(to),
-      convertStringToHex(asset.id),
-    ]);
+    return encodeFunctionData({
+      abi: erc20Abi,
+      functionName: 'transfer',
+      args: [to as Address, BigInt(asset.id)],
+    });
   }
-  return data;
+  if (
+    contract === CRYPTO_PUNKS_NFT_ADDRESS &&
+    asset.network === ChainName.mainnet
+  ) {
+    return encodeFunctionData({
+      abi: cryptoPunksAbi,
+      functionName: 'transferPunk',
+      args: [to as Address, BigInt(asset.id)],
+    });
+  }
+  if (standard === 'ERC1155') {
+    return encodeFunctionData({
+      abi: erc1155Abi,
+      functionName: 'safeTransferFrom',
+      args: [from as Address, to as Address, BigInt(asset.id), 1n, '0x'],
+    });
+  }
+  if (standard === 'ERC721') {
+    return encodeFunctionData({
+      abi: erc721Abi,
+      functionName: 'transferFrom',
+      args: [from as Address, to as Address, BigInt(asset.id)],
+    });
+  }
 };
 
 type ParseTransactionArgs = {
@@ -234,8 +182,6 @@ const getDescription = (
 ) => {
   if (asset?.type === 'nft') return getNftDescription(asset, type);
   if (type === 'cancel') return i18n.t('transactions.cancelled');
-  if (type === 'delegate' || type === 'revoke_delegation')
-    return i18n.t('transactions.delegate_description');
   if (type === 'approve' && !asset?.name && meta.contract_name)
     // this catches a backend bug, where they dont return the asset object inside the meta, which would lead to asset in this function to be null on approvals. In these cases, we can do a slightly better job than showing `meta.action` which is "Approval", instead we can show the contract name. The badge ontop of the description ("Approved") will make sure the user knows that they approved something, so goal of the description in this case is to let the user know what they approved.
     return meta.contract_name;
@@ -264,20 +210,15 @@ const parseFees = (
     type_label,
   } = fee.details || {};
 
-  const rollupFee = BigInt(
-    fee.details?.rollup_fee_details?.l1_fee || '0', // zero when it's not a rollup
-  );
-  const feeValue = FixedNumber.from(
+  const rollupFee = BigInt(fee.details?.rollup_fee_details?.l1_fee || '0');
+  const feeValue = Number(
     formatUnits(BigInt(fee.value) + rollupFee, nativeAssetDecimals),
   );
-  const feePrice = FixedNumber.fromString(
-    fee.price.toFixed(nativeAssetDecimals).toString(),
-    nativeAssetDecimals,
-  );
+  const feePrice = fee.price;
 
   return {
     fee: feeValue.toString(),
-    feeInNative: feeValue.mulUnsafe(feePrice).toString(),
+    feeInNative: (feeValue * feePrice).toString(),
     feeType: type_label,
     gasUsed: gas_used?.toString(),
     maxFeePerGas: max_base_fee?.toString(),
@@ -331,21 +272,17 @@ export function parseTransaction({
 
   const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
 
-  const value = FixedNumber.fromValue(
-    BigNumber.from(nativeAsset?.value || 0),
-    nativeAsset?.asset.decimals || 0,
+  const decimals = nativeAsset?.asset.decimals || 0;
+  const valueNum = Number(
+    formatUnits(BigInt(nativeAsset?.value || 0), decimals),
   );
 
   const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
 
-  const nativeAssetPrice = FixedNumber.fromString(
-    typeof nativeAsset?.price === 'number'
-      ? nativeAsset.price.toFixed(nativeAssetDecimals).toString()
-      : '0',
-    nativeAssetDecimals,
-  );
+  const nativeAssetPrice =
+    typeof nativeAsset?.price === 'number' ? nativeAsset.price : 0;
 
-  const valueInNative = value.mulUnsafe(nativeAssetPrice).toString();
+  const valueInNative = (valueNum * nativeAssetPrice).toString();
 
   const { feeInNative, ...fee } = parseFees(tx.fee, nativeAssetDecimals);
 
@@ -380,14 +317,14 @@ export function parseTransaction({
     to: addressTo,
     title: i18n.t(`transactions.${type}.${status}`),
     description,
-    hash: (ensureTxHashFormat(hash) ?? hash) as RainbowTransaction['hash'],
+    hash,
     chainId: +chainId,
     status,
     nonce,
     protocol,
     type,
     direction,
-    value: value.toString(),
+    value: valueNum.toString(),
     changes,
     asset,
     approvalAmount: meta.quantity,
@@ -427,8 +364,7 @@ const parseNewTransaction = (
       getDescription(asset, tx.type, changes, { action: methodName }),
     from: tx.from,
     changes,
-    hash: (ensureTxHashFormat(tx.hash) ??
-      tx.hash) as RainbowTransaction['hash'],
+    hash: tx.hash,
     chainId: tx.chainId,
     lastSubmittedTimestamp: Date.now(),
     nonce: tx.nonce,
@@ -442,56 +378,40 @@ const parseNewTransaction = (
   } satisfies RainbowTransaction;
 };
 
-const getTransactionReceipt = async ({
-  transactionResponse,
-  provider,
+export async function getTransactionReceiptStatus({
+  hash,
+  client,
 }: {
-  transactionResponse: TransactionResponse;
-  provider: Provider;
-}): Promise<TransactionReceipt | undefined> => {
+  hash: Hex;
+  client: PublicClient;
+}) {
   const receipt = await Promise.race([
     (async () => {
       try {
-        if (transactionResponse.wait) {
-          return await transactionResponse.wait();
-        } else {
-          return await provider.getTransactionReceipt(transactionResponse.hash);
-        }
-      } catch (e) {
-        /* empty */
-        return;
+        return await client.getTransactionReceipt({ hash });
+      } catch {
+        return undefined;
       }
     })(),
-    new Promise((resolve) => {
+    new Promise<undefined>((resolve) => {
       setTimeout(resolve, 1000);
     }),
   ]);
-  return receipt as TransactionReceipt | undefined;
-};
-
-export async function getTransactionReceiptStatus({
-  transactionResponse,
-  provider,
-}: {
-  transactionResponse: TransactionResponse;
-  provider: Provider;
-}) {
-  const receipt = await getTransactionReceipt({
-    transactionResponse,
-    provider,
-  });
 
   if (!receipt) return { status: 'pending' as const };
   return {
-    status: receipt.status === 1 ? ('confirmed' as const) : ('failed' as const),
+    status:
+      receipt.status === 'success'
+        ? ('confirmed' as const)
+        : ('failed' as const),
     title:
-      receipt.status === 1
+      receipt.status === 'success'
         ? i18n.t('transactions.send.confirmed')
         : i18n.t('transactions.send.failed'),
-    blockNumber: receipt?.blockNumber,
+    blockNumber: Number(receipt.blockNumber),
     minedAt: Math.floor(Date.now() / 1000),
-    confirmations: receipt?.confirmations,
-    gasUsed: receipt?.gasUsed.toString(),
+    confirmations: 1,
+    gasUsed: receipt.gasUsed.toString(),
   };
 }
 
@@ -505,16 +425,19 @@ export async function getNextNonce({
   const { getNonce } = useNonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || -1;
-  const provider = getBatchedProvider({ chainId });
+  const client = getViemClient({ chainId });
   const privateMempoolTimeout = useNetworkStore
     .getState()
     .getChainsPrivateMempoolTimeout()[chainId];
 
-  const pendingTxCountRequest = provider.getTransactionCount(
+  const pendingTxCountRequest = client.getTransactionCount({
     address,
-    'pending',
-  );
-  const latestTxCountRequest = provider.getTransactionCount(address, 'latest');
+    blockTag: 'pending',
+  });
+  const latestTxCountRequest = client.getTransactionCount({
+    address,
+    blockTag: 'latest',
+  });
   const [pendingTxCountFromPublicRpc, latestTxCountFromPublicRpc] =
     await Promise.all([pendingTxCountRequest, latestTxCountRequest]);
 
@@ -670,8 +593,6 @@ const TransactionOutTypes = [
   'bid',
   'speed_up',
   'revoke',
-  'revoke_delegation',
-  'delegate',
   'deployment',
   'contract_interaction',
 ] as const;
@@ -697,10 +618,7 @@ const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
   const amountOut = tokenOut?.balance.amount;
   if (!amountIn || !amountOut) return;
 
-  const fixedAmountIn = FixedNumber.fromString(amountIn);
-  const fixedAmountOut = FixedNumber.fromString(amountOut);
-
-  const rate = fixedAmountOut.divUnsafe(fixedAmountIn).toString();
+  const rate = divide(amountOut, amountIn);
   if (!rate) return;
 
   return `1 ${tokenIn.symbol} ≈ ${formatNumber(rate)} ${tokenOut.symbol}`;
@@ -760,7 +678,7 @@ export const getApprovalLabel = ({
   if (!approvalAmount || !asset) return;
   if (approvalAmount === 'UNLIMITED') return i18n.t('approvals.unlimited');
   if (type === 'revoke') return i18n.t('approvals.no_allowance');
-  return `${formatNumber(formatUnits(approvalAmount, asset.decimals))} ${
-    asset.symbol
-  }`;
+  return `${formatNumber(
+    formatUnits(BigInt(approvalAmount), asset.decimals),
+  )} ${asset.symbol}`;
 };

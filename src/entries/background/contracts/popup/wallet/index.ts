@@ -21,6 +21,7 @@ import { unlockContract } from './unlock';
 import { updatePasswordContract } from './updatePassword';
 import { verifyPasswordContract } from './verifyPassword';
 import { walletContract as getWalletContract } from './wallet';
+import { walletActionContract } from './walletAction';
 import { walletsContract } from './wallets';
 import { wipeContract } from './wipe';
 
@@ -50,4 +51,6 @@ export const walletContract = {
   shouldRevokeDelegation: shouldRevokeDelegationContract,
   personalSign: personalSignContract,
   testSandbox: testSandboxContract,
+  // Wallet actions from popup
+  walletAction: walletActionContract,
 };

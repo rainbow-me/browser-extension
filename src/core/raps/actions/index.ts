@@ -3,6 +3,5 @@ export {
   assetNeedsUnlocking,
   estimateApprove,
   executeApprove,
-  needsTokenApproval,
   unlock,
 } from './unlock';

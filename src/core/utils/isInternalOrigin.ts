@@ -1,5 +1,4 @@
-import { IMessageSender } from '@rainbow-me/provider';
-
+import { IMessageSender } from '~/core/provider/types';
 import { RainbowError, logger } from '~/logger';
 
 /**

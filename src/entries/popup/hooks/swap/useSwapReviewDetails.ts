@@ -1,11 +1,11 @@
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { useMemo } from 'react';
+import { formatUnits } from 'viem';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 import {
   convertRawAmountToBalance,
-  convertRawAmountToDecimalFormat,
   divide,
   handleSignificantDecimals,
   multiply,
@@ -89,13 +89,13 @@ export const useSwapReviewDetails = ({
   ]);
 
   const exchangeRate = useMemo(() => {
-    const convertedSellAmount = convertRawAmountToDecimalFormat(
-      quote.sellAmountDisplay?.toString(),
+    const convertedSellAmount = formatUnits(
+      BigInt(quote.sellAmountDisplay?.toString() || '0'),
       assetToSell.decimals,
     );
 
-    const convertedBuyAmount = convertRawAmountToDecimalFormat(
-      quote.buyAmountDisplay?.toString(),
+    const convertedBuyAmount = formatUnits(
+      BigInt(quote.buyAmountDisplay?.toString() || '0'),
       assetToBuy.decimals,
     );
 

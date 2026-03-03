@@ -1,12 +1,8 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import { formatUnits } from '@ethersproject/units';
-import { DelegationStatus, useDelegations } from '@rainbow-me/delegation';
 import { motion } from 'framer-motion';
 import { ReactNode, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { zeroAddress } from 'viem';
+import { formatUnits } from 'viem';
 
-import RainbowIcon from 'static/images/icon-16@2x.png';
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
@@ -78,25 +74,10 @@ import { CopyableValue, InfoRow } from '../TokenDetails/About';
 import { ActivityPill } from './ActivityPill';
 import { StatusPill } from './StatusPill';
 
-function ToFrom({
-  transaction,
-  toOverride,
-}: {
-  transaction: RainbowTransaction;
-  toOverride?: {
-    address: `0x${string}`;
-    chainId?: number;
-    contract?: { name: string; iconUrl?: string };
-  };
-}) {
+function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
   const { from, to, contract, direction } = transaction;
   const isFromAContract = !!contract && direction === 'in';
-  const displayTo = toOverride?.address ?? to;
-  const isToAContract = toOverride
-    ? !!toOverride.contract
-    : !!contract && direction === 'out';
-  const toContract =
-    toOverride?.contract ?? (isToAContract ? contract : undefined);
+  const isToAContract = !!contract && direction === 'out';
 
   return (
     <Stack space="24px">
@@ -110,15 +91,14 @@ function ToFrom({
           />
         }
       />
-      {displayTo && (
+      {to && (
         <InfoRow
           symbol="paperplane.fill"
           label={i18n.t('activity_details.to')}
           value={
             <AddressDisplay
-              address={displayTo}
-              chainId={toOverride?.chainId ?? transaction.chainId}
-              contract={toContract}
+              address={to}
+              contract={isToAContract ? contract : undefined}
             />
           }
         />
@@ -228,7 +208,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
     tx.baseFee ||
     (tx.maxFeePerGas &&
       tx.maxPriorityFeePerGas &&
-      BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString());
+      (BigInt(tx.maxFeePerGas) - BigInt(tx.maxPriorityFeePerGas)).toString());
 
   const fee = formatFee(tx);
 
@@ -249,7 +229,9 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
             <InfoRow
               symbol="barometer"
               label={i18n.t('activity_details.gas_price')}
-              value={`${formatNumber(formatUnits(tx.gasPrice, 'gwei'))} Gwei`}
+              value={`${formatNumber(
+                formatUnits(BigInt(tx.gasPrice), 9),
+              )} Gwei`}
             />
           )}
         </>
@@ -260,7 +242,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
             label={i18n.t('activity_details.base_fee')}
             value={
               baseFee ? (
-                `${formatNumber(formatUnits(baseFee, 'gwei'))} Gwei`
+                `${formatNumber(formatUnits(BigInt(baseFee), 9))} Gwei`
               ) : (
                 <InfoValueSkeleton />
               )
@@ -272,7 +254,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
             value={
               tx.maxPriorityFeePerGas ? (
                 `${formatNumber(
-                  formatUnits(tx.maxPriorityFeePerGas, 'gwei'),
+                  formatUnits(BigInt(tx.maxPriorityFeePerGas), 9),
                 )} Gwei`
               ) : (
                 <InfoValueSkeleton />
@@ -707,39 +689,6 @@ export function ActivityDetails() {
     [transaction],
   );
 
-  const delegations = useDelegations(currentAddress ?? zeroAddress);
-  const delegationToOverride = useMemo(() => {
-    if (
-      !transaction ||
-      (transaction.type !== 'delegate' &&
-        transaction.type !== 'revoke_delegation')
-    ) {
-      return undefined;
-    }
-    const delegation = delegations?.find(
-      (d) => d.chainId === transaction.chainId,
-    );
-    const delegationContract =
-      transaction.type === 'delegate'
-        ? delegation?.currentContract
-        : delegation?.revokeAddress ?? delegation?.currentContract;
-    if (!delegationContract) return undefined;
-    const isRainbowDelegation =
-      delegation?.delegationStatus === DelegationStatus.RAINBOW_DELEGATED;
-    const title = isRainbowDelegation
-      ? i18n.t('activity_details.smart_account')
-      : delegation?.currentContractName ??
-        i18n.t('activity_details.smart_account');
-    return {
-      address: delegationContract as `0x${string}`,
-      chainId: transaction.chainId,
-      contract: {
-        name: title,
-        iconUrl: isRainbowDelegation ? RainbowIcon : undefined,
-      },
-    };
-  }, [transaction, delegations]);
-
   const backToHome = () =>
     navigate(ROUTES.HOME, {
       state: { skipTransitionOnRoute: ROUTES.HOME, tab: 'activity' },
@@ -835,10 +784,7 @@ export function ActivityDetails() {
             padding="20px"
             gap="20px"
           >
-            <ToFrom
-              transaction={transaction}
-              toOverride={delegationToOverride}
-            />
+            <ToFrom transaction={transaction} />
             {additionalDetails && (
               <AdditionalDetails details={additionalDetails} />
             )}

@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
-import { Address } from 'viem';
+import { Address, formatUnits } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -25,7 +25,6 @@ import {
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
 } from '~/core/utils/nfts';
-import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
   AccentColorProvider,
@@ -501,8 +500,8 @@ const NFTPriceSection = ({
 }) => {
   const lastSaleDisplay = useMemo(() => {
     if (nft?.last_sale?.unit_price && nft?.last_sale?.payment_token?.decimals) {
-      return `${convertRawAmountToDecimalFormat(
-        nft.last_sale.unit_price,
+      return `${formatUnits(
+        BigInt(nft.last_sale.unit_price),
         nft.last_sale.payment_token.decimals,
       )} ${nft?.last_sale?.payment_token?.symbol || 'ETH'}`;
     }

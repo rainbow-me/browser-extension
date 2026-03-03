@@ -1,10 +1,10 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, memo, useState } from 'react';
 import { Address } from 'viem';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { ProviderRequestPayload } from '~/core/provider/types';
 import { useUserAssets } from '~/core/resources/assets';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
 import {
@@ -14,8 +14,8 @@ import {
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
+import { TransactionRequest } from '~/core/types/transactions';
 import { getChain } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { getFaucetsUrl } from '~/core/utils/faucets';

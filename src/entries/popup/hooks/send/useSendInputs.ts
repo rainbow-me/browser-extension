@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { parseUnits } from 'viem';
 
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
@@ -9,12 +10,7 @@ import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountFromNativeValue,
   convertAmountToBalanceDisplay,
-  convertAmountToRawAmount,
-  convertNumberToString,
   convertRawAmountToBalance,
-  lessThan,
-  minus,
-  multiply,
   toFixedDecimals,
 } from '~/core/utils/numbers';
 
@@ -23,7 +19,7 @@ export const useSendInputs = ({
   selectedGas,
 }: {
   asset: ParsedUserAsset | null;
-  selectedGas: GasFeeParams | GasFeeLegacyParams;
+  selectedGas: GasFeeParams | GasFeeLegacyParams | null;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const independentFieldRef = useRef<HTMLInputElement>(null);
@@ -40,11 +36,9 @@ export const useSendInputs = ({
         currentCurrency,
       );
 
-      const amount = convertNumberToString(
-        toFixedDecimals(
-          nativeDisplay?.amount,
-          supportedCurrencies[currentCurrency].decimals,
-        ),
+      const amount = toFixedDecimals(
+        nativeDisplay?.amount,
+        supportedCurrencies[currentCurrency].decimals,
       );
 
       return {
@@ -122,16 +116,14 @@ export const useSendInputs = ({
   }, [assetAmount, dependentAmountDisplay, independentField, setInputValue]);
 
   const rawMaxAssetBalanceAmount = useMemo(() => {
-    const assetBalanceAmount = convertAmountToRawAmount(
+    const assetBalanceAmount = parseUnits(
       asset?.balance?.amount || '0',
       asset?.decimals || 18,
     );
-    const rawAssetBalanceAmount =
-      asset?.isNativeAsset &&
-      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1))
-        : assetBalanceAmount;
-    return rawAssetBalanceAmount;
+    const gasFee = selectedGas?.gasFee?.amount ?? 0n;
+    return asset?.isNativeAsset && gasFee < assetBalanceAmount
+      ? assetBalanceAmount - gasFee
+      : assetBalanceAmount;
   }, [
     asset?.balance?.amount,
     asset?.decimals,
@@ -140,18 +132,15 @@ export const useSendInputs = ({
   ]);
 
   const setMaxAssetAmount = useCallback(() => {
-    const assetBalanceAmount = convertAmountToRawAmount(
+    const assetBalanceAmount = parseUnits(
       asset?.balance?.amount || '0',
       asset?.decimals || 18,
     );
+    const gasFee = selectedGas?.gasFee?.amount ?? 0n;
 
     const rawAssetBalanceAmount =
-      asset?.isNativeAsset &&
-      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? toFixedDecimals(
-            minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1)),
-            0,
-          )
+      asset?.isNativeAsset && gasFee < assetBalanceAmount
+        ? assetBalanceAmount - gasFee
         : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
@@ -161,15 +150,13 @@ export const useSendInputs = ({
     const newValue =
       independentField === 'asset'
         ? assetBalance?.amount
-        : convertNumberToString(
-            toFixedDecimals(
-              convertAmountAndPriceToNativeDisplay(
-                assetBalance?.amount,
-                asset?.price?.value || 0,
-                currentCurrency,
-              ).amount,
-              supportedCurrencies[currentCurrency].decimals,
-            ),
+        : toFixedDecimals(
+            convertAmountAndPriceToNativeDisplay(
+              assetBalance?.amount,
+              asset?.price?.value || 0,
+              currentCurrency,
+            ).amount,
+            supportedCurrencies[currentCurrency].decimals,
           );
 
     setIndependentAmount(newValue);

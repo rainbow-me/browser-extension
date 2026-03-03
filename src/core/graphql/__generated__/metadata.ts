@@ -12,10 +12,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Any: any;
-  Time: any;
-  TokenBridging: any;
-  TokenNetworks: any;
+  Any: unknown;
+  Time: string;
+  TokenBridging: unknown;
+  TokenNetworks: Record<string, { address: string; decimals: number }>;
 };
 
 export type Authorization = {
@@ -1491,7 +1491,7 @@ export type AboutTokenQueryVariables = Exact<{
 }>;
 
 
-export type AboutTokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', marketCap?: number | null, fullyDilutedValuation?: number | null, bridging: any, circulatingSupply?: number | null, totalSupply?: number | null, networks: any, volume1d?: number | null, description?: string | null, allTime: { __typename?: 'TokenAllTime', highValue?: number | null, lowValue?: number | null }, price: { __typename?: 'TokenPrice', value?: number | null }, links?: { __typename?: 'TokenLinks', homepage?: { __typename?: 'TokenLink', url: string } | null, twitter?: { __typename?: 'TokenLink', url: string } | null, facebook?: { __typename?: 'TokenLink', url: string } | null, reddit?: { __typename?: 'TokenLink', url: string } | null, telegram?: { __typename?: 'TokenLink', url: string } | null } | null } | null };
+export type AboutTokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', marketCap?: number | null, fullyDilutedValuation?: number | null, bridging: unknown, circulatingSupply?: number | null, totalSupply?: number | null, networks: Record<string, { address: string; decimals: number }>, volume1d?: number | null, description?: string | null, allTime: { __typename?: 'TokenAllTime', highValue?: number | null, lowValue?: number | null }, price: { __typename?: 'TokenPrice', value?: number | null }, links?: { __typename?: 'TokenLinks', homepage?: { __typename?: 'TokenLink', url: string } | null, twitter?: { __typename?: 'TokenLink', url: string } | null, facebook?: { __typename?: 'TokenLink', url: string } | null, reddit?: { __typename?: 'TokenLink', url: string } | null, telegram?: { __typename?: 'TokenLink', url: string } | null } | null } | null };
 
 export type PriceChartQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -1504,7 +1504,7 @@ export type PriceChartQueryVariables = Exact<{
 }>;
 
 
-export type PriceChartQuery = { __typename?: 'Query', token?: { __typename?: 'Token', priceCharts: { __typename?: 'TokenPriceCharts', day?: { __typename?: 'TokenPriceChart', points?: Array<Array<any | null> | null> | null } | null, hour?: { __typename?: 'TokenPriceChart', points?: Array<Array<any | null> | null> | null } | null, week?: { __typename?: 'TokenPriceChart', points?: Array<Array<any | null> | null> | null } | null, month?: { __typename?: 'TokenPriceChart', points?: Array<Array<any | null> | null> | null } | null, year?: { __typename?: 'TokenPriceChart', points?: Array<Array<any | null> | null> | null } | null } } | null };
+export type PriceChartQuery = { __typename?: 'Query', token?: { __typename?: 'Token', priceCharts: { __typename?: 'TokenPriceCharts', day?: { __typename?: 'TokenPriceChart', points?: Array<Array<unknown | null> | null> | null } | null, hour?: { __typename?: 'TokenPriceChart', points?: Array<Array<unknown | null> | null> | null } | null, week?: { __typename?: 'TokenPriceChart', points?: Array<Array<unknown | null> | null> | null } | null, month?: { __typename?: 'TokenPriceChart', points?: Array<Array<unknown | null> | null> | null } | null, year?: { __typename?: 'TokenPriceChart', points?: Array<Array<unknown | null> | null> | null } | null } } | null };
 
 export type DAppQueryVariables = Exact<{
   shortName: Scalars['String'];
@@ -1519,7 +1519,7 @@ export type AssetFragment = { __typename?: 'TransactionSimulationAsset', assetCo
 
 export type ChangeFragment = { __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } };
 
-export type TargetFragment = { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null };
+export type TargetFragment = { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null };
 
 export type SimulateTransactionsQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -1528,7 +1528,16 @@ export type SimulateTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type SimulateTransactionsQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, gas?: { __typename?: 'TransactionGasResult', estimate: string } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: any | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null, delegation?: { __typename?: 'TransactionSimulationDelegation', address: string, name: string, iconURL: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null> | null };
+export type SimulateTransactionsQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, gas?: { __typename?: 'TransactionGasResult', estimate: string } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: string | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null } | null> | null };
+
+export type SimulateTransactionsWithoutGasQueryVariables = Exact<{
+  chainId: Scalars['Int'];
+  transactions: Array<Transaction> | Transaction;
+  domain?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type SimulateTransactionsWithoutGasQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: string | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null } | null> | null };
 
 export type SimulateMessageQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -1539,7 +1548,16 @@ export type SimulateMessageQueryVariables = Exact<{
 }>;
 
 
-export type SimulateMessageQuery = { __typename?: 'Query', simulateMessage?: { __typename?: 'MessageResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: any | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null } | null };
+export type SimulateMessageQuery = { __typename?: 'Query', simulateMessage?: { __typename?: 'MessageResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: string | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: string | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null } | null };
+
+export type TokenMetadataQueryVariables = Exact<{
+  address: Scalars['String'];
+  chainId: Scalars['Int'];
+  currency?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type TokenMetadataQuery = { __typename?: 'Query', token?: { __typename?: 'Token', decimals: number, iconUrl?: string | null, name: string, networks: Record<string, { address: string; decimals: number }>, symbol: string, colors: { __typename?: 'TokenColors', primary: string, fallback?: string | null, shadow?: string | null }, price: { __typename?: 'TokenPrice', relativeChange24h?: number | null, value?: number | null } } | null };
 
 export type ExternalTokenQueryVariables = Exact<{
   address: Scalars['String'];
@@ -1548,7 +1566,7 @@ export type ExternalTokenQueryVariables = Exact<{
 }>;
 
 
-export type ExternalTokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', decimals: number, iconUrl?: string | null, name: string, networks: any, symbol: string, price: { __typename?: 'TokenPrice', relativeChange24h?: number | null, value?: number | null } } | null };
+export type ExternalTokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', decimals: number, iconUrl?: string | null, name: string, networks: Record<string, { address: string; decimals: number }>, symbol: string, price: { __typename?: 'TokenPrice', relativeChange24h?: number | null, value?: number | null } } | null };
 
 export const AssetFragmentDoc = gql`
     fragment asset on TransactionSimulationAsset {
@@ -1737,12 +1755,52 @@ export const SimulateTransactionsDocument = gql`
           ...target
         }
       }
-      delegation {
-        address
-        name
-        iconURL
-        created
-        sourceCodeStatus
+    }
+  }
+}
+    ${ChangeFragmentDoc}
+${AssetFragmentDoc}
+${TargetFragmentDoc}`;
+export const SimulateTransactionsWithoutGasDocument = gql`
+    query simulateTransactionsWithoutGas($chainId: Int!, $transactions: [Transaction!]!, $domain: String) {
+  simulateTransactions(
+    chainID: $chainId
+    transactions: $transactions
+    domain: $domain
+  ) {
+    scanning {
+      result
+      description
+    }
+    error {
+      message
+      type
+    }
+    simulation {
+      in {
+        ...change
+      }
+      out {
+        ...change
+      }
+      approvals {
+        asset {
+          ...asset
+        }
+        spender {
+          ...target
+        }
+        quantityAllowed
+        quantityAtRisk
+        expiration
+      }
+      meta {
+        transferTo {
+          ...target
+        }
+        to {
+          ...target
+        }
       }
     }
   }
@@ -1799,6 +1857,26 @@ export const SimulateMessageDocument = gql`
     ${ChangeFragmentDoc}
 ${AssetFragmentDoc}
 ${TargetFragmentDoc}`;
+export const TokenMetadataDocument = gql`
+    query tokenMetadata($address: String!, $chainId: Int!, $currency: String) {
+  token(address: $address, chainID: $chainId, currency: $currency) {
+    colors {
+      primary
+      fallback
+      shadow
+    }
+    decimals
+    iconUrl
+    name
+    networks
+    price {
+      relativeChange24h
+      value
+    }
+    symbol
+  }
+}
+    `;
 export const ExternalTokenDocument = gql`
     query externalToken($address: String!, $chainId: Int!, $currency: String) {
   token(address: $address, chainID: $chainId, currency: $currency) {
@@ -1838,8 +1916,14 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     simulateTransactions(variables: SimulateTransactionsQueryVariables, options?: C): Promise<SimulateTransactionsQuery> {
       return requester<SimulateTransactionsQuery, SimulateTransactionsQueryVariables>(SimulateTransactionsDocument, variables, options) as Promise<SimulateTransactionsQuery>;
     },
+    simulateTransactionsWithoutGas(variables: SimulateTransactionsWithoutGasQueryVariables, options?: C): Promise<SimulateTransactionsWithoutGasQuery> {
+      return requester<SimulateTransactionsWithoutGasQuery, SimulateTransactionsWithoutGasQueryVariables>(SimulateTransactionsWithoutGasDocument, variables, options) as Promise<SimulateTransactionsWithoutGasQuery>;
+    },
     simulateMessage(variables: SimulateMessageQueryVariables, options?: C): Promise<SimulateMessageQuery> {
       return requester<SimulateMessageQuery, SimulateMessageQueryVariables>(SimulateMessageDocument, variables, options) as Promise<SimulateMessageQuery>;
+    },
+    tokenMetadata(variables: TokenMetadataQueryVariables, options?: C): Promise<TokenMetadataQuery> {
+      return requester<TokenMetadataQuery, TokenMetadataQueryVariables>(TokenMetadataDocument, variables, options) as Promise<TokenMetadataQuery>;
     },
     externalToken(variables: ExternalTokenQueryVariables, options?: C): Promise<ExternalTokenQuery> {
       return requester<ExternalTokenQuery, ExternalTokenQueryVariables>(ExternalTokenDocument, variables, options) as Promise<ExternalTokenQuery>;

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { formatGwei } from 'viem';
 
 import {
   QueryConfig,
@@ -8,8 +9,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
-import { weiToGwei } from '~/core/utils/ethereum';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getViemClient } from '~/core/viem/clients';
 
 import { MeteorologyLegacyResponse } from './meteorology';
 
@@ -35,12 +35,12 @@ type ProviderGasQueryKey = ReturnType<typeof providerGasQueryKey>;
 async function providerGasQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof providerGasQueryKey>) {
-  const provider = getProvider({ chainId });
+  const client = getViemClient({ chainId });
 
-  const gasPrice = await provider.getGasPrice();
-  const gweiGasPrice = weiToGwei(gasPrice.toString());
+  const gasPrice = await client.getGasPrice();
+  const gweiGasPrice = formatGwei(gasPrice);
 
-  const parsedResponse = {
+  const providerGasData: MeteorologyLegacyResponse = {
     data: {
       legacy: {
         fastGasPrice: gweiGasPrice,
@@ -55,7 +55,6 @@ async function providerGasQueryFunction({
     },
   };
 
-  const providerGasData = parsedResponse as MeteorologyLegacyResponse;
   return providerGasData;
 }
 

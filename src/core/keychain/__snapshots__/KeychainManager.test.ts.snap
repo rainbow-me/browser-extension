@@ -60,10 +60,10 @@ exports[`[keychain/KeychainManager] :: should be able to export a private key fo
 }
 `;
 
-exports[`[keychain/KeychainManager] :: should be able to export the seed phrase for an HD wallet 1`] = `
+exports[`[keychain/KeychainManager] :: should be able to export a private key for signing 1`] = `
 {
   "local": {
-    "vault": "{"data":"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8ZtqtrQ1JpYWzhn03mN8uDaxIU=","iv":"AAECAwQFBgcICQoLDA0ODw==","salt":"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}",
+    "vault": "{"data":"SnoVv/vROdgXlYXUDSke8X1GjJ+ocTXKm/MXoWfwQueYEtE6hJRxxlZAa1+5CXl5EpLzJbmoKl8y3i/6zbpsjVEdMYtLofhs1nvS03+Ru6Tlt3NaUIOcMR1YvRx1B/dW4vqAa9g1lIv46Y3WscIUn1k0aOu004rzZ37ZoU7EQ4dhHq2D6g+oyzmmxwTypr1JYNoekEUnOY5QYOtzE57+V3Yld5A2+JSdUgWirW29bbLZpv5kkg9f+O4spIV3m+Uux397TbWyIyM8y8ad","iv":"AAECAwQFBgcICQoLDA0ODw==","salt":"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}",
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
@@ -72,10 +72,10 @@ exports[`[keychain/KeychainManager] :: should be able to export the seed phrase 
 }
 `;
 
-exports[`[keychain/KeychainManager] :: should be able to get the signer of a specific address 1`] = `
+exports[`[keychain/KeychainManager] :: should be able to export the seed phrase for an HD wallet 1`] = `
 {
   "local": {
-    "vault": "{"data":"SnoVv/vROdgXlYXUDSke8X1GjJ+ocTXKm/MXoWfwQueYEtE6hJRxxlZAa1+5CXl5EpLzJbmoKl8y3i/6zbpsjVEdMYtLofhs1nvS03+Ru6Tlt3NaUIOcMR1YvRx1B/dW4vqAa9g1lIv46Y3WscIUn1k0aOu004rzZ37ZoU7EQ4dhHq2D6g+oyzmmxwTypr1JYNoekEUnOY5QYOtzE57+V3Yld5A2+JSdUgWirW29bbLZpv5kkg9f+O4spIV3m+Uux397TbWyIyM8y8ad","iv":"AAECAwQFBgcICQoLDA0ODw==","salt":"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}",
+    "vault": "{"data":"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8ZtqtrQ1JpYWzhn03mN8uDaxIU=","iv":"AAECAwQFBgcICQoLDA0ODw==","salt":"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}",
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",

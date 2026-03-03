@@ -1,15 +1,12 @@
-import type { Signer } from '@ethersproject/abstract-signer';
-import type { BatchCall } from '@rainbow-me/delegation';
-import type { CrosschainQuote, Quote } from '@rainbow-me/swaps';
-import type { Address } from 'viem';
+import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import { Address, PublicClient, WalletClient } from 'viem';
 
-import type { ParsedAsset } from '../types/assets';
-import type { ChainId } from '../types/chains';
-import {
-  type TransactionGasParams,
-  type TransactionLegacyGasParams,
+import { ParsedAsset } from '../types/assets';
+import { ChainId } from '../types/chains';
+import type {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
 } from '../types/gas';
-import type { NewTransaction } from '../types/transactions';
 
 export enum SwapModalField {
   input = 'inputAmount',
@@ -28,7 +25,7 @@ export interface UnlockActionParameters {
   amount: string;
   assetToUnlock: ParsedAsset;
   contractAddress: Address;
-  chainId: number;
+  chainId: ChainId;
 }
 
 export type SwapMetadata = {
@@ -50,25 +47,26 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   sellAmount: string;
   buyAmount?: string;
   permit?: boolean;
-  chainId: number;
-  toChainId?: number;
+  chainId: ChainId;
+  toChainId?: ChainId;
   requiresApprove?: boolean;
   meta?: SwapMetadata;
   assetToSell: ParsedAsset;
   assetToBuy: ParsedAsset;
   nonce?: number;
-  gasParams?: TransactionGasParams | TransactionLegacyGasParams;
   quote: QuoteTypeMap[T];
   address?: Address;
+  serializedGasParams?: Record<string, string>;
+  gasParams?: TransactionGasParams | TransactionLegacyGasParams;
   atomic?: boolean;
 }
 
 export interface RapUnlockActionParameters {
   fromAddress: Address;
-  amount: string;
   assetToUnlock: ParsedAsset;
   contractAddress: Address;
-  chainId: number;
+  chainId: ChainId;
+  amount?: string;
 }
 
 export type RapActionParameters =
@@ -124,9 +122,10 @@ export interface RapActionResult {
 
 export interface ActionProps<T extends RapActionTypes> {
   baseNonce?: number;
+  client: PublicClient;
   index: number;
   parameters: RapActionParameterMap[T];
-  wallet: Signer;
+  wallet: WalletClient;
   currentRap: Rap;
 }
 
@@ -134,14 +133,3 @@ export interface WalletExecuteRapProps {
   rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
 }
-
-export interface PrepareActionProps<T extends RapActionTypes> {
-  parameters: RapActionParameterMap[T];
-  wallet: Signer;
-  chainId: ChainId;
-  quote: Quote | CrosschainQuote;
-}
-
-export type PrepareActionResult =
-  | { call: BatchCall | null }
-  | { call: BatchCall; transaction: Omit<NewTransaction, 'hash'> };

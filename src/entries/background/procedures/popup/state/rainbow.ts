@@ -1,9 +1,7 @@
 import { os } from '@orpc/server';
 import z from 'zod';
 
-import { initializeMessenger } from '~/core/messengers';
-
-const inpageMessenger = initializeMessenger({ connect: 'inpage' });
+import { sendSetDefaultProviderEvent } from '~/core/utils/inpageEvents';
 
 const SetDefaultProviderInputSchema = z.object({
   rainbowAsDefault: z.boolean(),
@@ -13,9 +11,7 @@ const SetDefaultProviderInputSchema = z.object({
 const setDefaultProviderHandler = os
   .input(SetDefaultProviderInputSchema)
   .handler(async ({ input: { rainbowAsDefault } }) => {
-    await inpageMessenger.send('rainbow_setDefaultProvider', {
-      rainbowAsDefault,
-    });
+    await sendSetDefaultProviderEvent(rainbowAsDefault);
   });
 
 export const rainbowRouter = {

@@ -1,19 +1,19 @@
-import { Wallet } from '@ethersproject/wallet';
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
   QuoteError,
   getQuote,
 } from '@rainbow-me/swaps';
+import { createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { updateViemClientsWrapper } from '~/core/viem';
-import { getProvider } from '~/core/viem/clientToProvider';
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
 
-import type { ActionProps } from '../references';
+import { ActionProps } from '../references';
 
 import { estimateSwapGasLimit, executeSwap } from './swap';
 
@@ -23,12 +23,8 @@ vi.mock('./swap', async () => {
 
   return {
     ...actual,
-    estimateSwapGasLimit: vi.fn().mockResolvedValue('600000'),
-    executeSwap: vi.fn().mockResolvedValue({
-      hash: '0x123456789abcdef',
-      wait: vi.fn().mockResolvedValue({}),
-      data: '0xdata',
-    }),
+    estimateSwapGasLimit: vi.fn().mockResolvedValue(600000n),
+    executeSwap: vi.fn().mockResolvedValue('0x123456789abcdef'),
   };
 });
 
@@ -60,17 +56,22 @@ test('[rap/swap] :: should estimate swap gas limit', async () => {
 });
 
 test('[rap/swap] :: should execute swap', async () => {
-  const provider = getProvider({ chainId: mainnet.id });
-  const wallet = new Wallet(TEST_PK_2, provider);
-  const swapTx = await executeSwap({
-    gasLimit: '600000',
+  const account = privateKeyToAccount(TEST_PK_2);
+  const wallet = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(),
+  });
+  const txHash = await executeSwap({
+    chainId: mainnet.id,
+    gasLimit: 600000n,
     gasParams: {
-      maxFeePerGas: '800000000000',
-      maxPriorityFeePerGas: '2000000000',
+      maxFeePerGas: BigInt('800000000000'),
+      maxPriorityFeePerGas: BigInt('2000000000'),
     },
     quote: quote as Quote,
     wallet,
   });
 
-  expect(swapTx?.hash).toBeDefined();
+  expect(txHash).toBeDefined();
 });

@@ -30,7 +30,8 @@ const parseTokenInfo = (token: AboutTokenQuery['token']) => {
     volume1d: format(token.volume1d),
     networks: Object.entries(token.networks).map(([chainId, network]) => ({
       chainId: +chainId as ChainId,
-      ...(network as { address: Address; decimals: number }),
+      address: network.address as Address,
+      decimals: network.decimals,
     })),
     description: token.description,
     links: token.links,

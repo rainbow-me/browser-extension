@@ -1,5 +1,5 @@
-import { formatUnits } from '@ethersproject/units';
 import { ReactNode } from 'react';
+import { formatUnits } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useAssets } from '~/core/resources/assets';
@@ -62,7 +62,7 @@ function SimulatedChangeRow({
   const changeAmount =
     quantity === 'UNLIMITED'
       ? Number.MAX_SAFE_INTEGER
-      : formatUnits(quantity, asset.decimals);
+      : formatUnits(BigInt(quantity), asset.decimals);
   const { data: additionalAssetData } = useAssets({
     assets: asset ? [{ address: asset.address, chainId: asset.chainId }] : [],
     currency: currentCurrency,

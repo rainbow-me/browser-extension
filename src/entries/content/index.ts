@@ -1,11 +1,17 @@
-import { initializeMessenger } from '~/core/messengers';
-import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
+/**
+ * Content script - bridges inpage ↔ background
+ *
+ * Sets up a relay that forwards portal messages between
+ * window.postMessage (inpage) and chrome.runtime (background).
+ */
+
+import { createRelayTransport } from 'viem-portal';
+
 // eslint-disable-next-line boundaries/element-types
 import { useIsDefaultWalletStore } from '~/core/state';
 require('../../core/utils/lockdown');
 
-// TODO: Remove state usage within the content script; this is vulnerable.
-
+// Firefox needs script tag injection
 const insertInpageScriptIfNeeded = () => {
   if (navigator.userAgent.toLowerCase().includes('firefox')) {
     const targetElement = document.head || document.documentElement;
@@ -19,12 +25,17 @@ const insertInpageScriptIfNeeded = () => {
 
 insertInpageScriptIfNeeded();
 
-setupBridgeMessengerRelay();
+// Set up the portal relay (window ↔ chrome.runtime)
+createRelayTransport();
 
-const inpageMessenger = initializeMessenger({ connect: 'inpage' });
-
+// Send default wallet preference to inpage
 setTimeout(() => {
-  inpageMessenger.send('rainbow_setDefaultProvider', {
-    rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
-  });
+  const isDefault = useIsDefaultWalletStore.getState().isDefaultWallet;
+  window.postMessage(
+    {
+      type: 'rainbow_setDefaultProvider',
+      data: { rainbowAsDefault: isDefault },
+    },
+    '*',
+  );
 }, 1);

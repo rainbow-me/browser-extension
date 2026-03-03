@@ -6,8 +6,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { Contract } from '@ethersproject/contracts';
-import { getDefaultProvider } from '@ethersproject/providers';
 import {
   Builder,
   By,
@@ -19,10 +17,26 @@ import {
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
-import { erc20Abi } from 'viem';
+import { Address, createPublicClient, erc20Abi, http } from 'viem';
 import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
+
+const ANVIL_RPC_URL = 'http://127.0.0.1:8545/1';
+
+/** Local Anvil fork chain config (chainId 1337 for mainnet fork) */
+const anvilChain = {
+  id: 1337,
+  name: 'Local',
+  nativeCurrency: { decimals: 18, name: 'Ether', symbol: 'ETH' },
+  rpcUrls: { default: { http: [ANVIL_RPC_URL] } },
+} as const;
+
+export const getAnvilClient = () =>
+  createPublicClient({
+    chain: anvilChain,
+    transport: http(ANVIL_RPC_URL),
+  });
 
 import {
   browser,
@@ -743,7 +757,9 @@ export async function navigateToSettingsPrivacy(
 
 export async function navigateToSettings(driver: WebDriver, rootURL: string) {
   await goToPopup(driver, rootURL, '#/home');
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
   await delayTime('medium');
 }
@@ -836,9 +852,13 @@ export async function connectToTestDapp(driver: WebDriver) {
 
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
-    const provider = getDefaultProvider('http://127.0.0.1:8545/1');
-    const testContract = new Contract(contract, erc20Abi, provider);
-    const balance = await testContract.balanceOf(addy);
+    const client = getAnvilClient();
+    const balance = await client.readContract({
+      address: contract as Address,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [addy as Address],
+    });
 
     return balance;
   } catch (error) {
@@ -848,13 +868,16 @@ export async function getOnchainBalance(addy: string, contract: string) {
 }
 
 export async function transactionStatus() {
-  const provider = getDefaultProvider('http://127.0.0.1:8545/1');
-  const blockData = await provider.getBlock('latest');
-  const txnReceipt = await provider.getTransactionReceipt(
-    blockData.transactions[0],
-  );
-  const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
-  return txnStatus;
+  const client = getAnvilClient();
+  const blockData = await client.getBlock({ blockTag: 'latest' });
+  const txHash = blockData.transactions?.[0];
+  if (!txHash || typeof txHash !== 'string') {
+    return 'failure';
+  }
+  const txnReceipt = await client.getTransactionReceipt({
+    hash: txHash as `0x${string}`,
+  });
+  return txnReceipt.status === 'success' ? 'success' : 'failure';
 }
 
 export const fillSeedPhrase = async (driver: WebDriver, seedPhrase: string) => {
@@ -1036,10 +1059,12 @@ export async function importWalletFlow(
 ) {
   if (secondaryWallet) {
     await goToPopup(driver, rootURL);
+    await delayTime('medium');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
       driver,
     });
+    await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',

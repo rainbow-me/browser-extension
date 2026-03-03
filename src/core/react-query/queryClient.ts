@@ -1,11 +1,32 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, QueryKey } from '@tanstack/react-query';
 import {
   PersistQueryClientOptions,
   persistQueryClientSave,
 } from '@tanstack/react-query-persist-client';
 
 import { LocalStorage } from '../storage';
+
+function isPlainObject(o: unknown): o is Record<string, unknown> {
+  if (!o || typeof o !== 'object') return false;
+  const proto = Object.getPrototypeOf(o);
+  return !proto || proto === Object.prototype;
+}
+
+function hashQueryKey(queryKey: QueryKey): string {
+  return JSON.stringify(queryKey, (_, val) => {
+    if (typeof val === 'bigint') return val.toString();
+    if (isPlainObject(val)) {
+      return Object.keys(val)
+        .sort()
+        .reduce<Record<string, unknown>>((result, key) => {
+          result[key] = val[key];
+          return result;
+        }, {});
+    }
+    return val;
+  });
+}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,6 +35,7 @@ export const queryClient = new QueryClient({
       networkMode: 'offlineFirst',
       refetchOnWindowFocus: false,
       retry: 0,
+      queryKeyHashFn: hashQueryKey,
     },
     mutations: {
       networkMode: 'offlineFirst',
@@ -28,6 +50,10 @@ const asyncStoragePersister = createAsyncStoragePersister({
     setItem: LocalStorage.set,
     removeItem: LocalStorage.remove,
   },
+  serialize: (data) =>
+    JSON.stringify(data, (_, val) =>
+      typeof val === 'bigint' ? val.toString() : val,
+    ),
 });
 
 function isOrpcQueryKey(queryKey: readonly unknown[]) {

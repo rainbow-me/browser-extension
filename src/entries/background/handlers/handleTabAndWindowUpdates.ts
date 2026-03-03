@@ -1,11 +1,9 @@
-import { initializeMessenger } from '~/core/messengers';
 import {
   useIsDefaultWalletStore,
   useNotificationWindowStore,
 } from '~/core/state';
 import { usePendingRequestStore } from '~/core/state/requests';
-
-const inpageMessenger = initializeMessenger({ connect: 'inpage' });
+import { sendSetDefaultProviderEvent } from '~/core/utils/inpageEvents';
 
 export const handleTabAndWindowUpdates = () => {
   // When a tab is removed, check if that was the last tab for that host
@@ -25,10 +23,10 @@ export const handleTabAndWindowUpdates = () => {
     clearPendingRequestsOnUpdate(tabId);
   });
 
-  chrome.tabs.onActivated.addListener(() => {
-    inpageMessenger.send('rainbow_setDefaultProvider', {
-      rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
-    });
+  chrome.tabs.onActivated.addListener(async () => {
+    await sendSetDefaultProviderEvent(
+      useIsDefaultWalletStore.getState().isDefaultWallet,
+    );
   });
 
   chrome.windows.onRemoved.addListener((id) => {

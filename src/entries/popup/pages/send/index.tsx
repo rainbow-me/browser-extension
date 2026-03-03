@@ -1,7 +1,3 @@
-import {
-  TransactionRequest,
-  TransactionResponse,
-} from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
 import {
   ChangeEvent,
@@ -12,7 +8,7 @@ import {
   useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Address, isAddress } from 'viem';
+import { Address, Hex, isAddress, parseUnits } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -35,19 +31,19 @@ import {
   ParsedUserAsset,
 } from '~/core/types/assets';
 import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
-import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
-} from '~/core/types/gas';
 import { UniqueAsset } from '~/core/types/nfts';
-import { NewTransaction, TxHash } from '~/core/types/transactions';
+import {
+  NewTransaction,
+  TransactionRequest,
+  TxHash,
+} from '~/core/types/transactions';
 import { parseUserAssetBalances } from '~/core/utils/assets';
 import { chainIdToUse } from '~/core/utils/chains';
+import { getErrorMessage } from '~/core/utils/errors';
 import {
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
 } from '~/core/utils/nfts';
-import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
   Box,
@@ -71,7 +67,7 @@ import {
 import { Navbar } from '../../components/Navbar/Navbar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
-import { isLedgerConnectionError } from '../../handlers/ledger';
+import { isConnectionError } from '../../handlers/hardwareWallet';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
 import { useSendAsset } from '../../hooks/send/useSendAsset';
 import { useSendInputs } from '../../hooks/send/useSendInputs';
@@ -119,9 +115,8 @@ export function Send() {
   const [urlSearchParams] = useSearchParams();
 
   const queryToAddress = urlSearchParams.get('to');
-  const validatedQueryToAddress = isAddress(queryToAddress as Address)
-    ? queryToAddress
-    : null;
+  const validatedQueryToAddress =
+    queryToAddress && isAddress(queryToAddress) ? queryToAddress : null;
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {
@@ -212,9 +207,9 @@ export function Send() {
   const transactionRequestForGas: TransactionRequest = useMemo(() => {
     if (nft) {
       return {
-        to: nft.asset_contract.address,
+        to: nft.asset_contract.address as Address,
         from: fromAddress,
-        data,
+        data: data as Hex,
       };
     }
     return {
@@ -222,7 +217,7 @@ export function Send() {
       from: fromAddress,
       value,
       chainId,
-      data,
+      data: data as Hex,
       ...maxAssetBalanceParams,
     };
   }, [
@@ -299,10 +294,10 @@ export function Send() {
   }, []);
 
   const buildPendingTransaction = useCallback(
-    (result: TransactionResponse) => {
+    (result: { hash: TxHash; nonce: number }) => {
       const rawAmount =
         asset && assetAmount
-          ? convertAmountToRawAmount(assetAmount, asset.decimals || 18)
+          ? parseUnits(assetAmount, asset.decimals || 18).toString()
           : '0';
 
       const changeAsset = nft
@@ -326,23 +321,30 @@ export function Send() {
               },
         ],
         asset: changeAsset,
-        data: result.data,
-        value: result.value.toString(),
+        data,
+        value: value?.toString() ?? '0',
         from: fromAddress,
         to: txToAddress,
-        hash: result.hash as TxHash,
+        hash: result.hash,
         chainId: activeChainId,
         status: 'pending',
         type: 'send',
         nonce: result.nonce,
-        gasPrice: (
-          selectedGas.transactionGasParams as TransactionLegacyGasParams
-        )?.gasPrice,
-        maxFeePerGas: (selectedGas.transactionGasParams as TransactionGasParams)
-          ?.maxFeePerGas,
-        maxPriorityFeePerGas: (
-          selectedGas.transactionGasParams as TransactionGasParams
-        )?.maxPriorityFeePerGas,
+        gasPrice:
+          selectedGas?.transactionGasParams &&
+          'gasPrice' in selectedGas.transactionGasParams
+            ? selectedGas.transactionGasParams.gasPrice.toString()
+            : undefined,
+        maxFeePerGas:
+          selectedGas?.transactionGasParams &&
+          'maxFeePerGas' in selectedGas.transactionGasParams
+            ? selectedGas.transactionGasParams.maxFeePerGas.toString()
+            : undefined,
+        maxPriorityFeePerGas:
+          selectedGas?.transactionGasParams &&
+          'maxPriorityFeePerGas' in selectedGas.transactionGasParams
+            ? selectedGas.transactionGasParams.maxPriorityFeePerGas.toString()
+            : undefined,
       } as NewTransaction;
     },
     [
@@ -351,10 +353,12 @@ export function Send() {
       assetAmount,
       buildNftAssetObject,
       currentCurrency,
+      data,
       fromAddress,
       nft,
-      selectedGas.transactionGasParams,
+      selectedGas?.transactionGasParams,
       txToAddress,
+      value,
     ],
   );
 
@@ -375,7 +379,7 @@ export function Send() {
             to: txToAddress,
             value,
             chainId: activeChainId,
-            data,
+            data: data as Hex,
           });
           if (result && asset) {
             const transaction: NewTransaction = buildPendingTransaction(result);
@@ -407,9 +411,9 @@ export function Send() {
           resetSendValues();
           const result = await sendTransaction({
             from: fromAddress,
-            to: nft.asset_contract.address,
+            to: nft.asset_contract.address as Address,
             chainId: activeChainId,
-            data,
+            data: data as Hex,
           });
           if (result && nft) {
             const transaction: NewTransaction = buildPendingTransaction(result);
@@ -434,16 +438,16 @@ export function Send() {
           }
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
-        if (!isLedgerConnectionError(e)) {
-          const extractedError = (e as Error).message.split('[')[0];
+      } catch (e) {
+        if (!isConnectionError(e)) {
+          const extractedError = getErrorMessage(e).split('[')[0];
           triggerAlert({
             text: i18n.t('errors.sending_transaction'),
             description: extractedError,
           });
         }
         logger.error(new RainbowError('send: error executing send'), {
-          message: (e as Error)?.message,
+          message: getErrorMessage(e),
         });
       } finally {
         setWaitingForDevice(false);
