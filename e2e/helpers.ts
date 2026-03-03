@@ -22,6 +22,22 @@ import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
+const ANVIL_RPC_URL = 'http://127.0.0.1:8545/1';
+
+/** Local Anvil fork chain config (chainId 1337 for mainnet fork) */
+const anvilChain = {
+  id: 1337,
+  name: 'Local',
+  nativeCurrency: { decimals: 18, name: 'Ether', symbol: 'ETH' },
+  rpcUrls: { default: { http: [ANVIL_RPC_URL] } },
+} as const;
+
+export const getAnvilClient = () =>
+  createPublicClient({
+    chain: anvilChain,
+    transport: http(ANVIL_RPC_URL),
+  });
+
 import {
   browser,
   browserBinaryPath,
@@ -834,9 +850,7 @@ export async function connectToTestDapp(driver: WebDriver) {
 
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
-    const client = createPublicClient({
-      transport: http('http://127.0.0.1:8545/1'),
-    });
+    const client = getAnvilClient();
     const balance = await client.readContract({
       address: contract as Address,
       abi: erc20Abi,
@@ -852,15 +866,16 @@ export async function getOnchainBalance(addy: string, contract: string) {
 }
 
 export async function transactionStatus() {
-  const client = createPublicClient({
-    transport: http('http://127.0.0.1:8545/1'),
-  });
+  const client = getAnvilClient();
   const blockData = await client.getBlock({ blockTag: 'latest' });
+  const txHash = blockData.transactions?.[0];
+  if (!txHash || typeof txHash !== 'string') {
+    return 'failure';
+  }
   const txnReceipt = await client.getTransactionReceipt({
-    hash: blockData.transactions[0] as `0x${string}`,
+    hash: txHash as `0x${string}`,
   });
-  const txnStatus = txnReceipt.status === 'success' ? 'success' : 'failure';
-  return txnStatus;
+  return txnReceipt.status === 'success' ? 'success' : 'failure';
 }
 
 export const fillSeedPhrase = async (driver: WebDriver, seedPhrase: string) => {

@@ -281,6 +281,7 @@ it('should be able to select token on send flow', async () => {
     id: 'token-input-asset-eth_1',
     driver,
   });
+  await delayTime('very-long'); // wait for token selection and amount field to render
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });

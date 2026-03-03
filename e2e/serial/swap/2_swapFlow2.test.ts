@@ -1,6 +1,6 @@
 import { ChainId } from '@rainbow-me/swaps';
 import { Key, WebDriver } from 'selenium-webdriver';
-import { Address, createPublicClient, erc20Abi, http } from 'viem';
+import { Address, erc20Abi } from 'viem';
 import {
   afterAll,
   afterEach,
@@ -21,6 +21,7 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
+  getAnvilClient,
   getExtensionIdByName,
   getRootUrl,
   getTextFromText,
@@ -163,9 +164,7 @@ describe('Swap Flow 2', () => {
   // - Gas estimation for atomic unlock+swap
   // - Balance changes after atomic token swap execution
   it.todo('should be able to execute unlock and swap', async () => {
-    const client = createPublicClient({
-      transport: http('http://127.0.0.1:8545/1'),
-    });
+    const client = getAnvilClient();
     await client.getChainId();
     await delayTime('short');
     await delayTime('long');
