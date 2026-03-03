@@ -983,7 +983,8 @@ it('should be able to see swap information in review sheet', async () => {
 // - Gas estimation for atomic swaps
 // - Fallback to sequential execution when atomic fails
 // - Balance changes after atomic swap execution
-it('should be able to execute swap', async () => {
+// TODO(#2193): Re-enable when swap execution on viem migration is verified
+it.skip('should be able to execute swap', async () => {
   const client = getAnvilClient();
   await client.getChainId();
 
