@@ -757,7 +757,9 @@ export async function navigateToSettingsPrivacy(
 
 export async function navigateToSettings(driver: WebDriver, rootURL: string) {
   await goToPopup(driver, rootURL, '#/home');
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
   await delayTime('medium');
 }

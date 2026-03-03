@@ -14,6 +14,7 @@ import {
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
+  navigateToSettings,
   querySelector,
   shortenAddress,
   takeScreenshotOnFailure,
@@ -81,8 +82,7 @@ it.skip('should be able to go to setings', async () => {
 });
 
 it('should be able to connect to hardhat and go to send flow', async () => {
-  await goToPopup(driver, rootURL, '#/home');
-  await delayTime('medium');
+  await navigateToSettings(driver, rootURL);
   const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
