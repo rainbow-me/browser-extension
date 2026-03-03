@@ -28,7 +28,8 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe.runIf(browser !== 'firefox')(
+// Skip in CI: requires physical Trezor hardware
+describe.runIf(browser !== 'firefox' && !process.env.CI)(
   'Import wallet with a Trezor hw wallet',
   () => {
     beforeAll(async () => {

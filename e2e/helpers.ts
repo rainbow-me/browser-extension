@@ -1057,10 +1057,12 @@ export async function importWalletFlow(
 ) {
   if (secondaryWallet) {
     await goToPopup(driver, rootURL);
+    await delayTime('medium');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
       driver,
     });
+    await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
