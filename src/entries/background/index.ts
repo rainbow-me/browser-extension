@@ -5,11 +5,12 @@ import { setupDelegationClient } from '~/core/resources/delegations/setup';
 import { initializeSentry } from '~/core/sentry';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 
+import { createPortalHostConfig } from './handlers/createPortalHostConfig';
 import { handleAutoLock } from './handlers/handleAutoLock';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleOpenExtensionShortcut } from './handlers/handleOpenExtensionShortcut';
+import { handlePortalHost } from './handlers/handlePortalHost';
 import { handlePrefetchDappMetadata } from './handlers/handlePrefetchMetadata';
-import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
 import { handleWallets } from './handlers/handleWallets';
@@ -30,7 +31,7 @@ startPopupRouter();
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 handleInstallExtension();
-handleProviderRequest({ inpageMessenger });
+handlePortalHost(createPortalHostConfig(inpageMessenger));
 handleTabAndWindowUpdates();
 handlePrefetchDappMetadata();
 handleSetupInpage();

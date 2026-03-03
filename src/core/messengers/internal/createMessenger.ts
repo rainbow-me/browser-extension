@@ -1,4 +1,4 @@
-import { IMessageSender } from '@rainbow-me/provider';
+import type { IMessageSender } from '~/core/provider/types';
 
 export type CallbackOptions = {
   /** The sender of the message. */

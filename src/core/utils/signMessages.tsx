@@ -1,5 +1,6 @@
 import { Address, getAddress, isAddress, isHex } from 'viem';
 
+import type { ProviderRequestPayload } from '~/core/provider/types';
 import {
   PersonalSignMessage,
   SigningMessage,
@@ -7,7 +8,6 @@ import {
 } from '~/core/types/messageSigning';
 import { RainbowError, logger } from '~/logger';
 
-import { ProviderRequestPayload } from '../transports/providerRequestTransport';
 import { RPCMethod } from '../types/rpcMethods';
 
 import { sanitizeTypedData } from './ethereum';

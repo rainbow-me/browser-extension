@@ -3,9 +3,9 @@ import { Chain } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import type { ProviderRequestPayload } from '~/core/provider/types';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
 

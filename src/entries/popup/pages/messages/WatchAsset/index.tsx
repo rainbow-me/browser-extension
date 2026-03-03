@@ -3,11 +3,11 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import type { ProviderRequestPayload } from '~/core/provider/types';
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
