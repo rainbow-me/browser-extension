@@ -1,5 +1,10 @@
 import { Wallet } from '@ethersproject/wallet';
-import { Quote, QuoteError, getQuote } from '@rainbow-me/swaps';
+import {
+  type Quote,
+  type QuoteError,
+  SwapType,
+  getQuote,
+} from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -23,11 +28,11 @@ import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
 
 let swapGasLimit = 0;
 
-let needsUnlockQuote: Quote | QuoteError | null;
-let doesntNeedUnlockQuote: Quote | QuoteError | null;
-let ethToEnsQuote: Quote | QuoteError | null;
-let unwrapEthQuote: Quote | QuoteError | null;
-let wrapEthQuote: Quote | QuoteError | null;
+let needsUnlockQuote: Quote;
+let doesntNeedUnlockQuote: Quote;
+let ethToEnsQuote: Quote;
+let unwrapEthQuote: Quote;
+let wrapEthQuote: Quote;
 
 const SELECTED_GAS = {
   display: '73 - 86 Gwei',
@@ -49,6 +54,24 @@ const SELECTED_GAS = {
     maxFeePerGas: '0xba43b74000',
   },
 };
+
+function withSwapType(quote: Quote, swapType: Quote['swapType']): Quote {
+  return { ...quote, swapType };
+}
+
+function requireQuote(quote: Quote | QuoteError | null, label: string): Quote {
+  if (!quote) {
+    throw new Error(`[rap/unlockAndSwap.test] ${label} quote missing`);
+  }
+
+  if ('error' in quote) {
+    throw new Error(
+      `[rap/unlockAndSwap.test] ${label} quote error: ${quote.message}`,
+    );
+  }
+
+  return quote;
+}
 
 vi.mock('@rainbow-me/delegation', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;
@@ -90,68 +113,83 @@ beforeAll(async () => {
   useConnectedToHardhatStore.setState({ connectedToHardhat: true });
   updateViemClientsWrapper([mainnet]);
   await delay(3000);
-  doesntNeedUnlockQuote = await getQuote({
-    chainId: 1,
-    fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ETH_MAINNET_ASSET.address,
-    buyTokenAddress: USDC_MAINNET_ASSET.address,
-    sellAmount: '1000000000000000000',
-    slippage: 5,
-    destReceiver: TEST_ADDRESS_2,
-    toChainId: 1,
-    currency: 'USD',
-  });
-  ethToEnsQuote = await getQuote({
-    chainId: 1,
-    fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ETH_MAINNET_ASSET.address,
-    buyTokenAddress: ENS_MAINNET_ASSET.address,
-    sellAmount: '1000000000000000000',
-    slippage: 5,
-    destReceiver: TEST_ADDRESS_2,
-    toChainId: 1,
-    currency: 'USD',
-  });
-  needsUnlockQuote = await getQuote({
-    chainId: 1,
-    fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ENS_MAINNET_ASSET.address,
-    buyTokenAddress: USDC_MAINNET_ASSET.address,
-    sellAmount: '1000000000000000000',
-    slippage: 5,
-    destReceiver: TEST_ADDRESS_2,
-    toChainId: 1,
-    currency: 'USD',
-  });
-  wrapEthQuote = await getQuote({
-    chainId: 1,
-    fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ETH_MAINNET_ASSET.address,
-    buyTokenAddress: WETH_MAINNET_ASSET.address,
-    sellAmount: '1000000000000000000',
-    slippage: 5,
-    destReceiver: TEST_ADDRESS_2,
-    toChainId: 1,
-    currency: 'USD',
-  });
-  unwrapEthQuote = await getQuote({
-    chainId: 1,
-    fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: WETH_MAINNET_ASSET.address,
-    buyTokenAddress: ETH_MAINNET_ASSET.address,
-    sellAmount: '100000000000000000',
-    slippage: 5,
-    destReceiver: TEST_ADDRESS_2,
-    toChainId: 1,
-    currency: 'USD',
-  });
+  doesntNeedUnlockQuote = requireQuote(
+    await getQuote({
+      chainId: 1,
+      fromAddress: TEST_ADDRESS_2,
+      sellTokenAddress: ETH_MAINNET_ASSET.address,
+      buyTokenAddress: USDC_MAINNET_ASSET.address,
+      sellAmount: '1000000000000000000',
+      slippage: 5,
+      destReceiver: TEST_ADDRESS_2,
+      toChainId: 1,
+      currency: 'USD',
+    }),
+    'doesntNeedUnlockQuote',
+  );
+  ethToEnsQuote = requireQuote(
+    await getQuote({
+      chainId: 1,
+      fromAddress: TEST_ADDRESS_2,
+      sellTokenAddress: ETH_MAINNET_ASSET.address,
+      buyTokenAddress: ENS_MAINNET_ASSET.address,
+      sellAmount: '1000000000000000000',
+      slippage: 5,
+      destReceiver: TEST_ADDRESS_2,
+      toChainId: 1,
+      currency: 'USD',
+    }),
+    'ethToEnsQuote',
+  );
+  needsUnlockQuote = requireQuote(
+    await getQuote({
+      chainId: 1,
+      fromAddress: TEST_ADDRESS_2,
+      sellTokenAddress: ENS_MAINNET_ASSET.address,
+      buyTokenAddress: USDC_MAINNET_ASSET.address,
+      sellAmount: '1000000000000000000',
+      slippage: 5,
+      destReceiver: TEST_ADDRESS_2,
+      toChainId: 1,
+      currency: 'USD',
+    }),
+    'needsUnlockQuote',
+  );
+  wrapEthQuote = requireQuote(
+    await getQuote({
+      chainId: 1,
+      fromAddress: TEST_ADDRESS_2,
+      sellTokenAddress: ETH_MAINNET_ASSET.address,
+      buyTokenAddress: WETH_MAINNET_ASSET.address,
+      sellAmount: '1000000000000000000',
+      slippage: 5,
+      destReceiver: TEST_ADDRESS_2,
+      toChainId: 1,
+      currency: 'USD',
+    }),
+    'wrapEthQuote',
+  );
+  unwrapEthQuote = requireQuote(
+    await getQuote({
+      chainId: 1,
+      fromAddress: TEST_ADDRESS_2,
+      sellTokenAddress: WETH_MAINNET_ASSET.address,
+      buyTokenAddress: ETH_MAINNET_ASSET.address,
+      sellAmount: '100000000000000000',
+      slippage: 5,
+      destReceiver: TEST_ADDRESS_2,
+      toChainId: 1,
+      currency: 'USD',
+    }),
+    'unwrapEthQuote',
+  );
 }, 20_000);
 
 test.todo(
   '[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock',
   async () => {
     const gasLimit = await estimateUnlockAndSwap({
-      quote: doesntNeedUnlockQuote as Quote,
+      quote: doesntNeedUnlockQuote,
       chainId: 1,
       assetToSell: ETH_MAINNET_ASSET,
       sellAmount: '1000000000000000000',
@@ -166,7 +204,7 @@ test.todo(
   '[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock',
   async () => {
     const gasLimit = await estimateUnlockAndSwap({
-      quote: needsUnlockQuote as Quote,
+      quote: needsUnlockQuote,
       chainId: 1,
       assetToSell: ENS_MAINNET_ASSET,
       sellAmount: '1000000000000000000',
@@ -179,7 +217,7 @@ test.todo(
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async () => {
   const rap = await createUnlockAndSwapRap({
-    quote: doesntNeedUnlockQuote as Quote,
+    quote: doesntNeedUnlockQuote,
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ETH_MAINNET_ASSET,
@@ -192,7 +230,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execu
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
-    quote: doesntNeedUnlockQuote as Quote,
+    quote: doesntNeedUnlockQuote,
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ETH_MAINNET_ASSET,
@@ -203,7 +241,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execu
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () => {
   const rap = await createUnlockAndSwapRap({
-    quote: needsUnlockQuote as Quote,
+    quote: needsUnlockQuote,
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ENS_MAINNET_ASSET,
@@ -220,7 +258,7 @@ test('[rap/unlockAndSwap] :: create swap rap and execute it', async () => {
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
-    quote: ethToEnsQuote as Quote,
+    quote: ethToEnsQuote,
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ETH_MAINNET_ASSET,
@@ -237,7 +275,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock and execute 
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
-    quote: needsUnlockQuote as Quote,
+    quote: needsUnlockQuote,
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ENS_MAINNET_ASSET,
@@ -254,7 +292,7 @@ test('[rap/unlockAndSwap] :: create unlock and wrap eth rap with unlock and exec
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
-    quote: wrapEthQuote as Quote,
+    quote: withSwapType(wrapEthQuote, SwapType.wrap),
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ETH_MAINNET_ASSET,
@@ -263,9 +301,57 @@ test('[rap/unlockAndSwap] :: create unlock and wrap eth rap with unlock and exec
   expect(swap.nonce).toBeDefined();
 });
 
+test('[rap/unlockAndSwap] :: unwrap bypasses target checks even with allowance fields', async () => {
+  const rap = await createUnlockAndSwapRap({
+    quote: {
+      ...withSwapType(unwrapEthQuote, SwapType.unwrap),
+      allowanceNeeded: true,
+      allowanceTarget: TEST_ADDRESS_2,
+    },
+    chainId: 1,
+    sellAmount: '100000000000000000',
+    assetToSell: WETH_MAINNET_ASSET,
+    assetToBuy: ETH_MAINNET_ASSET,
+  });
+
+  expect(rap.actions).toHaveLength(1);
+});
+
+test('[rap/unlockAndSwap] :: wrap bypasses target checks even with allowance fields', async () => {
+  const rap = await createUnlockAndSwapRap({
+    quote: {
+      ...withSwapType(wrapEthQuote, SwapType.wrap),
+      allowanceNeeded: true,
+      allowanceTarget: TEST_ADDRESS_2,
+    },
+    chainId: 1,
+    sellAmount: '1000000000000000000',
+    assetToSell: ETH_MAINNET_ASSET,
+    assetToBuy: WETH_MAINNET_ASSET,
+  });
+
+  expect(rap.actions).toHaveLength(1);
+});
+
+test('[rap/unlockAndSwap] :: standard ERC20 swaps still enforce target allowlist', async () => {
+  await expect(
+    createUnlockAndSwapRap({
+      quote: {
+        ...needsUnlockQuote,
+        allowanceNeeded: true,
+        allowanceTarget: TEST_ADDRESS_2,
+      },
+      chainId: 1,
+      sellAmount: '1000000000000000000',
+      assetToSell: ENS_MAINNET_ASSET,
+      assetToBuy: USDC_MAINNET_ASSET,
+    }),
+  ).rejects.toThrow('Target contract is not allowed');
+});
+
 test('[rap/unlockAndSwap] :: create unwrap eth rap', async () => {
   const rap = await createUnlockAndSwapRap({
-    quote: unwrapEthQuote as Quote,
+    quote: withSwapType(unwrapEthQuote, SwapType.unwrap),
     chainId: 1,
     sellAmount: '100000000000000000',
     assetToSell: WETH_MAINNET_ASSET,
@@ -282,7 +368,7 @@ test('[rap/unlockAndSwap] :: create unwrap weth rap and execute it', async () =>
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
-    quote: unwrapEthQuote as Quote,
+    quote: withSwapType(unwrapEthQuote, SwapType.unwrap),
     chainId: 1,
     sellAmount: '100000000000000000',
     assetToSell: WETH_MAINNET_ASSET,
