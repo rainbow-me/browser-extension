@@ -21,7 +21,10 @@ import {
   useBatchStore,
   useNotificationWindowStore,
 } from '~/core/state';
-import { validateBatchKeyParams } from '~/core/state/batches/validation';
+import {
+  validateAndNormalizeBatchRecord,
+  validateBatchKeyParams,
+} from '~/core/state/batches/validation';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { SessionStorage } from '~/core/storage';
@@ -437,6 +440,12 @@ export const handleProviderRequest = ({
         return Promise.resolve(undefined);
       }
       return Promise.resolve(useBatchStore.getState().getBatchByKey(params));
+    },
+    setBatch: (record) => {
+      const validated = validateAndNormalizeBatchRecord(record);
+      if (validated) {
+        useBatchStore.getState().setBatch(validated);
+      }
     },
     onSwitchEthereumChainSupported: ({
       proposedChain,
