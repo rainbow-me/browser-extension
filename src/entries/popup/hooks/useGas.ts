@@ -10,6 +10,7 @@ import { isLegacyMeteorologyFeeData } from '~/core/resources/gas/classification'
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
+import { estimateTransactionsGasLimit } from '~/core/resources/transactions/simulation';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
@@ -365,27 +366,72 @@ const useGas = ({
   };
 };
 
+const toSimulationTransaction = (
+  tx: TransactionRequest,
+): { from: string; to: string; value: string; data: string } => ({
+  from: tx.from?.toString() ?? '',
+  to: tx.to?.toString() ?? '',
+  value: tx.value?.toString() ?? '0',
+  data: tx.data?.toString() ?? '0x',
+});
+
+/**
+ * Gas estimation for one or more transactions.
+ * Single tx: uses provider estimateGas. Batch: sums gas from simulation API.
+ */
 export const useTransactionGas = ({
   chainId,
   address,
   defaultSpeed,
-  transactionRequest,
+  transactionRequests,
 }: {
   chainId: ChainId;
   address?: Address;
   defaultSpeed?: GasSpeed;
-  transactionRequest: TransactionRequest;
+  transactionRequests: TransactionRequest[];
 }) => {
-  const { data: estimatedGasLimit } = useEstimateGasLimit({
-    chainId,
-    transactionRequest: useDebounce(transactionRequest, 500),
+  const debouncedRequests = useDebounce(transactionRequests, 500);
+  const isSingle = (debouncedRequests?.length ?? 0) <= 1;
+
+  const { data: singleGasLimit } = useEstimateGasLimit(
+    {
+      chainId,
+      transactionRequest: debouncedRequests?.[0] ?? {},
+    },
+    { enabled: !!chainId && isSingle && !!debouncedRequests?.length },
+  );
+
+  const { data: batchGasLimit } = useQuery({
+    queryKey: [
+      'estimateBatchGasLimit',
+      chainId,
+      address,
+      debouncedRequests
+        ?.map(
+          (r) =>
+            `${r.from ?? ''}-${r.to}-${r.value?.toString() ?? '0'}-${r.data}`,
+        )
+        .join(','),
+    ],
+    queryFn: async () => {
+      if (!debouncedRequests?.length || isSingle) return undefined;
+      const steps = debouncedRequests.map((tx, i) => ({
+        transaction: toSimulationTransaction(tx),
+        label: `Call ${i + 1}`,
+      }));
+      return estimateTransactionsGasLimit({ chainId, steps });
+    },
+    enabled: !!chainId && !isSingle && !!debouncedRequests?.length,
   });
+
+  const estimatedGasLimit = isSingle ? singleGasLimit : batchGasLimit;
+
   return useGas({
     chainId,
     address,
     defaultSpeed,
-    estimatedGasLimit,
-    transactionRequest,
+    estimatedGasLimit: estimatedGasLimit ?? undefined,
+    transactionRequest: debouncedRequests?.[0] ?? null,
     enabled: true,
   });
 };
