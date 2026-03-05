@@ -5,7 +5,7 @@ import { addressSchema } from '~/core/schemas/address';
 import { hexSchema } from '~/core/schemas/hex';
 
 const revokeDelegationRequestSchema = z.object({
-  chainId: z.number(),
+  chainId: z.coerce.number(),
   userAddress: addressSchema,
   transactionOptions: z.object({
     maxFeePerGas: hexSchema,
