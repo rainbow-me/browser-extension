@@ -9,11 +9,13 @@ import {
   usePendingTransactionsStore,
   useStaleBalancesStore,
 } from '~/core/state';
+import { updateBatchesForTx } from '~/core/state/batches/updateBatchStatus';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { getSupportedChains, useSupportedChains } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { logger } from '~/logger';
 
 export const useTransactionListForPendingTxs = () => {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -127,8 +129,26 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     });
   }
 
-  // Remove confirmed transactions, keep the rest as-is
+  // Sync batch status for confirmed transactions, then remove from pending
   if (newlyConfirmedTransactions.length > 0) {
+    newlyConfirmedTransactions.forEach((tx) => {
+      if (tx.hash && tx.chainId) {
+        updateBatchesForTx(tx.hash, tx.chainId)
+          .then((batchCount) => {
+            if (batchCount > 0) {
+              logger.info(
+                `Batch status updated for tx ${tx.hash} (chain ${tx.chainId}): ${batchCount} batch(es) synced`,
+              );
+            } else {
+              logger.debug(
+                `No batch matched tx ${tx.hash} on chain ${tx.chainId}`,
+              );
+            }
+          })
+          .catch(() => undefined);
+      }
+    });
+
     removePendingTransactionsForAddress({
       address: currentAddress,
       transactionsToRemove: newlyConfirmedTransactions.map((tx) => ({

@@ -11,6 +11,7 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { updateBatchesForTx } from '~/core/state/batches/updateBatchStatus';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
@@ -80,10 +81,7 @@ export const useWatchPendingTransactions = ({
         transactionResponse,
         provider,
       });
-      return {
-        ...tx,
-        ...transactionStatus,
-      };
+      return { ...tx, ...transactionStatus };
     },
     [],
   );
@@ -97,10 +95,7 @@ export const useWatchPendingTransactions = ({
         currency: currentCurrency,
       });
 
-      return {
-        ...tx,
-        ...transaction,
-      };
+      return { ...tx, ...transaction };
     },
     [address, currentCurrency],
   );
@@ -282,6 +277,24 @@ export const useWatchPendingTransactions = ({
             (tx) => tx.hash === hash && tx.chainId === chainId,
           ),
       );
+
+    minedTransactions.forEach((tx) => {
+      if (tx.hash && tx.chainId) {
+        updateBatchesForTx(tx.hash, tx.chainId)
+          .then((batchCount) => {
+            if (batchCount > 0) {
+              logger.info(
+                `Batch status updated for tx ${tx.hash} (chain ${tx.chainId}): ${batchCount} batch(es) synced`,
+              );
+            } else {
+              logger.debug(
+                `No batch matched tx ${tx.hash} on chain ${tx.chainId}`,
+              );
+            }
+          })
+          .catch(() => undefined);
+      }
+    });
 
     const transactionsToRemove = minedTransactions.filter((tx) =>
       isCustomChain(tx.chainId) ? true : isTxInCache(tx.hash, tx.chainId),

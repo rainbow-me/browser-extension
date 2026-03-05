@@ -767,7 +767,11 @@ export function Send() {
                       <TransactionFee
                         disableShortcuts={contactSaveAction.show}
                         chainId={chainId}
-                        transactionRequest={transactionRequestForGas}
+                        transactionRequests={
+                          transactionRequestForGas
+                            ? [transactionRequestForGas]
+                            : []
+                        }
                         accentColor={assetAccentColor}
                       />
                     </Row>
