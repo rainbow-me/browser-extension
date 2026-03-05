@@ -634,13 +634,15 @@ export const RevokeDelegationPage = () => {
               <TransactionFee
                 chainId={currentDelegation.chainId}
                 address={revokeAddress}
-                transactionRequest={{
-                  to: revokeAddress,
-                  from: revokeAddress,
-                  chainId: currentDelegation.chainId,
-                  data: '0x',
-                  value: '0x0',
-                }}
+                transactionRequests={[
+                  {
+                    to: revokeAddress,
+                    from: revokeAddress,
+                    chainId: currentDelegation.chainId,
+                    data: '0x',
+                    value: '0x0',
+                  },
+                ]}
               />
             </Row>
             <Row>

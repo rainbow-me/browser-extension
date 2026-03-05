@@ -5,6 +5,7 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { updateBatchesForTx } from '~/core/state/batches/updateBatchStatus';
 import { isPendingTxTimedOut } from '~/core/state/networks/timing';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
@@ -161,6 +162,19 @@ export async function watchPendingTransactions(
         chainId: minedTransaction.chainId,
         transaction: minedTransaction,
       });
+    }
+
+    // Batch status updates
+    if (minedTransaction.hash && minedTransaction.chainId) {
+      updateBatchesForTx(minedTransaction.hash, minedTransaction.chainId)
+        .then((batchCount) => {
+          if (batchCount > 0) {
+            logger.info(
+              `Batch status updated for tx ${minedTransaction.hash} (chain ${minedTransaction.chainId}): ${batchCount} batch(es) synced`,
+            );
+          }
+        })
+        .catch(() => undefined);
     }
   }
 }

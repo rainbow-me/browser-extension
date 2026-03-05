@@ -71,7 +71,7 @@ function SimulatedChangeRow({
   const assetPrice = assetDataWithPrice?.price?.value;
   return (
     <Inline
-      wrap={true}
+      wrap={false}
       space="12px"
       alignHorizontal="justify"
       alignVertical="center"
@@ -82,8 +82,8 @@ function SimulatedChangeRow({
           {label}
         </Text>
         {quantity !== 'UNLIMITED' && !!assetPrice ? (
-          <Box marginLeft={'-4px'}>
-            <TextOverflow size="12pt" weight="bold" color="labelSecondary">
+          <Box marginLeft={'-4px'} style={{ flexShrink: 0 }}>
+            <Text size="12pt" weight="bold" color="labelSecondary">
               {
                 convertRawAmountToNativeDisplay(
                   quantity,
@@ -92,33 +92,45 @@ function SimulatedChangeRow({
                   currentCurrency,
                 )?.display
               }
-            </TextOverflow>
+            </Text>
           </Box>
         ) : null}
       </Inline>
-      <Inline wrap={false} space="6px" alignVertical="center">
-        {asset?.type === 'nft' ? (
-          <NFTIcon asset={asset} size={16} />
-        ) : (
-          <CoinIcon
-            asset={asset}
-            size={14}
-            badgeSize={8}
-            badgePositionBottom={1.5}
-            badgePositionLeft={-4}
-          />
-        )}
-        <Inline wrap={false} space="4px" alignVertical="center">
-          <TextOverflow size="14pt" weight="bold" color={color}>
-            {quantity === 'UNLIMITED' || +changeAmount > 999e12 // say unlimited if more than 999T
-              ? i18n.t('approvals.unlimited')
-              : formatNumber(changeAmount)}{' '}
-          </TextOverflow>
-          <Text size="14pt" weight="bold" color={color}>
-            {asset.symbol}
-          </Text>
+      <Box style={{ minWidth: 0 }}>
+        <Inline wrap={false} space="6px" alignVertical="center">
+          {asset?.type === 'nft' ? (
+            <NFTIcon asset={asset} size={16} />
+          ) : (
+            <CoinIcon
+              asset={asset}
+              size={14}
+              badgeSize={8}
+              badgePositionBottom={1.5}
+              badgePositionLeft={-4}
+            />
+          )}
+          <Inline wrap={false} space="4px" alignVertical="center">
+            <Box
+              as="span"
+              style={{ minWidth: 0 }}
+              title={
+                quantity === 'UNLIMITED' || +changeAmount > 999e12
+                  ? i18n.t('approvals.unlimited')
+                  : `${changeAmount} ${asset.symbol}`
+              }
+            >
+              <TextOverflow size="14pt" weight="bold" color={color}>
+                {quantity === 'UNLIMITED' || +changeAmount > 999e12 // say unlimited if more than 999T
+                  ? i18n.t('approvals.unlimited')
+                  : formatNumber(changeAmount)}{' '}
+              </TextOverflow>
+            </Box>
+            <Text size="14pt" weight="bold" color={color}>
+              {asset.symbol}
+            </Text>
+          </Inline>
         </Inline>
-      </Inline>
+      </Box>
     </Inline>
   );
 }
