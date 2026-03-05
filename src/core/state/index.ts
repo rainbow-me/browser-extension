@@ -1,4 +1,11 @@
 export { useAppSessionsStore } from './appSessions';
+export {
+  useBatchStore,
+  BatchStatus,
+  serializeBatchKey,
+  type BatchRecord,
+  type BatchStatusValue,
+} from './batches';
 export { useHomePromptsQueueStore } from './homePromptsQueue';
 
 export {
