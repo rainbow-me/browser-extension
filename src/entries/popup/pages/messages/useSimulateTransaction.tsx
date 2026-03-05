@@ -16,6 +16,7 @@ import {
   simulateTransactions,
 } from '~/core/resources/transactions/simulation';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { simulateCalls } from '~/core/transactions/batchSimulation';
 import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { parseAsset } from '~/core/utils/assets';
@@ -162,6 +163,55 @@ export const useSimulateTransaction = ({
       const results = await simulateTransactions({
         chainId,
         transactions: [{ ...transaction, to: transaction.to || '' }],
+        domain,
+      });
+
+      if (!results[0]) throw 'UNSUPPORTED';
+
+      return parseSimulation(results[0], chainId);
+    },
+    staleTime: 60 * 1000, // 1 min
+  });
+};
+
+/** Batch call input for wallet_sendCalls simulation */
+export type BatchCallInput = {
+  to?: `0x${string}`;
+  data?: `0x${string}`;
+  value?: `0x${string}`;
+};
+
+/**
+ * Simulate a batch of calls (wallet_sendCalls) using prepareBatchedTransaction + metadata API.
+ */
+export const useSimulateBatch = ({
+  from,
+  calls,
+  chainId,
+  domain,
+}: {
+  from: Address;
+  calls: BatchCallInput[];
+  chainId: ChainId;
+  domain: string;
+}) => {
+  return useQuery<TransactionSimulation, SimulationError>({
+    queryKey: createQueryKey('simulateBatch', {
+      from,
+      calls,
+      chainId,
+      domain,
+    }),
+    enabled:
+      !!chainId &&
+      !!from &&
+      calls.length > 0 &&
+      calls.some((c) => c.data || c.value),
+    queryFn: async () => {
+      const results = await simulateCalls({
+        from,
+        calls,
+        chainId,
         domain,
       });
 

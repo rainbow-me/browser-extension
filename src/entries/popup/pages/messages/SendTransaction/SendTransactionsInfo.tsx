@@ -58,12 +58,15 @@ import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import { useHasEnoughGas } from '../useHasEnoughGas';
 import {
+  BatchCallInput,
   SimulationError,
   TransactionSimulation,
+  useSimulateBatch,
   useSimulateTransaction,
 } from '../useSimulateTransaction';
 
 import {
+  getSendCallsParams,
   getTransactionRequestFromRequest,
   isWalletSendCallsRequest,
 } from './normalizeRequest';
@@ -347,24 +350,32 @@ function TransactionInfo({
   dappMetadata,
   expanded,
   onExpand,
+  sendCallsParams,
 }: {
   request: TransactionRequest;
   dappUrl: string;
   dappMetadata: DappMetadata | null;
   expanded: boolean;
   onExpand: VoidFunction;
+  sendCallsParams?: {
+    from?: `0x${string}`;
+    calls: BatchCallInput[];
+    chainId: `0x${string}`;
+  } | null;
 }) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const chainId = activeSession?.chainId || ChainId.mainnet;
+  const chainId =
+    (sendCallsParams?.chainId && Number(sendCallsParams.chainId)) ||
+    activeSession?.chainId ||
+    ChainId.mainnet;
+  const fromAddress =
+    (sendCallsParams?.from as Address) ||
+    (request?.from as Address) ||
+    activeSession?.address;
 
   const txData = request?.data?.toString() || '';
 
-  const {
-    data: simulation,
-    status,
-    error,
-    isRefetching,
-  } = useSimulateTransaction({
+  const singleTxSimulation = useSimulateTransaction({
     chainId,
     transaction: {
       from: request.from || '',
@@ -374,6 +385,21 @@ function TransactionInfo({
     },
     domain: dappUrl,
   });
+
+  const batchSimulation = useSimulateBatch({
+    from: fromAddress as Address,
+    calls: sendCallsParams?.calls ?? [],
+    chainId,
+    domain: dappUrl,
+  });
+
+  const isBatch = !!sendCallsParams?.calls?.length;
+  const {
+    data: simulation,
+    status,
+    error,
+    isRefetching,
+  } = isBatch ? batchSimulation : singleTxSimulation;
 
   const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
 
@@ -710,6 +736,9 @@ export function SendTransactionInfo({
           dappUrl={dappUrl}
           expanded={expanded}
           onExpand={() => setExpanded((e) => !e)}
+          sendCallsParams={
+            isBatch ? getSendCallsParams(request) ?? undefined : undefined
+          }
         />
       ) : null}
     </Box>
