@@ -1,5 +1,11 @@
 import {
+  getDelegations,
+  supportsDelegation,
+  willDelegate,
+} from '@rainbow-me/delegation';
+import {
   AddEthereumChainProposedChain,
+  createProviderError,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from '@rainbow-me/provider';
 import { Chain, UserRejectedRequestError } from 'viem';
@@ -9,6 +15,7 @@ import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
+import { getDelegationAvailable } from '~/core/resources/delegations/featureStatus';
 import { useAppSessionsStore, useNotificationWindowStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePendingRequestStore } from '~/core/state/requests';
@@ -375,6 +382,50 @@ export const handleProviderRequest = ({
         proposedChainId,
         host,
       });
+    },
+    getCapabilities: async ({ address, chainIds }) => {
+      if (!getDelegationAvailable(address)) {
+        throw createProviderError(
+          'METHOD_NOT_SUPPORTED',
+          'Smart wallet is disabled for this wallet',
+        );
+      }
+
+      // Pre-warm delegation cache: getDelegations fetches WalletStatus (all chains
+      // in one request). Both getDelegationStatus and getChainDelegationStatus
+      // share the same cache keyed by { address }, so subsequent
+      // supportsDelegation/willDelegate calls hit cache. Without this, each chain
+      // would trigger a separate NetworkStatus request.
+      await getDelegations({ address });
+
+      const results = await Promise.all(
+        chainIds.map(async (chainId) => {
+          try {
+            const { supported } = await supportsDelegation({
+              address,
+              chainId,
+            });
+            if (!supported) {
+              throw new Error('Delegation not supported');
+            }
+            const { willDelegate: needsAuth } = await willDelegate({
+              address,
+              chainId,
+            });
+            return [
+              chainId,
+              {
+                atomic: {
+                  status: needsAuth ? 'ready' : 'supported',
+                },
+              },
+            ] as const;
+          } catch {
+            return [chainId, { atomic: { status: 'unsupported' } }] as const;
+          }
+        }),
+      );
+      return Object.fromEntries(results);
     },
     onSwitchEthereumChainSupported: ({
       proposedChain,
