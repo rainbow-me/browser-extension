@@ -166,6 +166,7 @@
     "react-router-dom": "6.4.2",
     "react-switch": "7.0.0",
     "viem": "2.40.3",
+    "viem-hw": "0.1.2",
     "zod": "4.0.14",
     "zustand": "4.5.4"
   },
@@ -249,6 +250,7 @@
   },
   "resolutions": {
     "viem": "2.40.3",
+    "viem-hw/viem": "2.40.3",
     "@rainbow-me/delegation/viem": "2.40.3",
     "@rainbow-me/swaps/viem": "2.40.3",
     "@rainbow-me/provider/viem": "2.40.3",
@@ -360,7 +362,12 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "esbuild-register>esbuild": false,
-      "firebase>@firebase/util": false
+      "firebase>@firebase/util": false,
+      "viem-hw>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>bigint-buffer": false,
+      "viem-hw>@trezor/connect>@trezor/protobuf>protobufjs": false,
+      "viem-hw>@trezor/connect>@trezor/transport>usb": false,
+      "viem-hw>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
+      "viem-hw>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false
     }
   },
   "packageManager": "yarn@4.2.2"
