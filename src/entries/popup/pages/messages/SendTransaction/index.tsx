@@ -34,6 +34,11 @@ import { AccountSigningWith } from '../AccountSigningWith';
 
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
+import {
+  getSendCallsParams,
+  getTransactionRequestFromRequest,
+  isWalletSendCallsRequest,
+} from './normalizeRequest';
 
 interface ApproveRequestProps {
   approveRequest: (payload: unknown) => void;
@@ -72,9 +77,26 @@ export function SendTransaction({
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
+
+    if (isWalletSendCallsRequest(request)) {
+      const sendParams = getSendCallsParams(request);
+      if (!sendParams) return;
+      setLoading(true);
+      try {
+        approveRequest({ id: sendParams.id });
+      } catch (e) {
+        logger.error(new RainbowError('send: batch approval error'), {
+          message: (e as Error)?.message,
+        });
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     setLoading(true);
     try {
-      const txRequest = request?.params?.[0] as TransactionRequest;
+      const txRequest = getTransactionRequestFromRequest(request);
       if (!txRequest) return;
       const { type, vendor } = await wallet.getWallet(selectedWallet);
 
@@ -150,7 +172,7 @@ export function SendTransaction({
       setLoading(false);
     }
   }, [
-    request?.params,
+    request,
     selectedWallet,
     activeSession,
     connectedToHardhat,
@@ -251,7 +273,9 @@ export function SendTransaction({
           }}
           chainId={activeSession?.chainId || ChainId.mainnet}
           address={activeSession?.address}
-          transactionRequest={request?.params?.[0] as TransactionRequest}
+          transactionRequest={
+            getTransactionRequestFromRequest(request) as TransactionRequest
+          }
           plainTriggerBorder
         />
         <SendTransactionActions

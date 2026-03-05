@@ -63,6 +63,11 @@ import {
   useSimulateTransaction,
 } from '../useSimulateTransaction';
 
+import {
+  getTransactionRequestFromRequest,
+  isWalletSendCallsRequest,
+} from './normalizeRequest';
+
 interface SendTransactionProps {
   request: ProviderRequestPayload;
   onRejectRequest: ({
@@ -621,7 +626,8 @@ export function SendTransactionInfo({
 
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
-  const txRequest = request?.params?.[0] as TransactionRequest;
+  const txRequest = getTransactionRequestFromRequest(request);
+  const isBatch = isWalletSendCallsRequest(request);
 
   const [expanded, setExpanded] = useState(false);
 
@@ -668,6 +674,17 @@ export function SendTransactionInfo({
                 >
                   {isScamDapp
                     ? i18n.t('approve_request.dangerous_request')
+                    : isBatch
+                    ? i18n.t('approve_request.batch_request_title', {
+                        count:
+                          (request?.params?.[0] as { calls?: unknown[] })?.calls
+                            ?.length ?? 0,
+                        chainId:
+                          Number(
+                            (request?.params?.[0] as { chainId?: string })
+                              ?.chainId,
+                          ) ?? '?',
+                      })
                     : i18n.t('approve_request.transaction_request')}
                 </Text>
               </Stack>
