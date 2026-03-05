@@ -1,4 +1,9 @@
 import {
+  getDelegations,
+  supportsDelegation,
+  willDelegate,
+} from '@rainbow-me/delegation';
+import {
   AddEthereumChainProposedChain,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from '@rainbow-me/provider';
@@ -238,9 +243,17 @@ export const handleProviderRequest = ({
 }) =>
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
-    isSupportedChain: (chainId: number) =>
-      !!useNetworkStore.getState().getBackendSupportedChain(chainId) ||
-      isCustomChain(chainId),
+    getSupportedChainIds: () => {
+      const { getAllChains, getBackendSupportedChain } =
+        useNetworkStore.getState();
+      const allChains = getAllChains(true);
+      return Object.keys(allChains)
+        .map(Number)
+        .filter(
+          (chainId) =>
+            !!getBackendSupportedChain(chainId) || isCustomChain(chainId),
+        );
+    },
     getActiveSession: ({ host }: { host: string }) =>
       useAppSessionsStore.getState().getActiveSession({ host }),
     removeAppSession: ({ host }: { host: string }) => {
@@ -367,6 +380,34 @@ export const handleProviderRequest = ({
         proposedChainId,
         host,
       });
+    },
+    getAtomicCapability: async ({ address, chainIds }) => {
+      // Pre-warm delegation cache: getDelegations fetches WalletStatus (all chains
+      // in one request). Both getDelegationStatus and getChainDelegationStatus
+      // share the same cache keyed by { address }, so subsequent
+      // supportsDelegation/willDelegate calls hit cache. Without this, each chain
+      // would trigger a separate NetworkStatus request.
+      await getDelegations({ address });
+
+      const results = await Promise.all(
+        chainIds.map(async (chainId) => {
+          const { supported } = await supportsDelegation({ address, chainId });
+          if (!supported) {
+            return [chainId, { status: 'unsupported' as const }] as const;
+          }
+          const { willDelegate: needsAuth } = await willDelegate({
+            address,
+            chainId,
+          });
+          return [
+            chainId,
+            {
+              status: needsAuth ? ('ready' as const) : ('supported' as const),
+            },
+          ] as const;
+        }),
+      );
+      return Object.fromEntries(results);
     },
     onSwitchEthereumChainSupported: ({
       proposedChain,
