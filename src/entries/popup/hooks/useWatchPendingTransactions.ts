@@ -110,7 +110,7 @@ export const useWatchPendingTransactions = ({
       let updatedTransaction: RainbowTransaction | null = { ...tx };
       try {
         if (tx.chainId && tx.hash && address) {
-          if (isCustomChain(tx.chainId)) {
+          if (!supportedTransactionsChainIds.includes(tx.chainId)) {
             updatedTransaction =
               await processCustomNetworkTransaction(updatedTransaction);
           } else {
@@ -152,6 +152,7 @@ export const useWatchPendingTransactions = ({
       processCustomNetworkTransaction,
       processSupportedNetworkTransaction,
       refreshAssets,
+      supportedTransactionsChainIds,
     ],
   );
 
@@ -201,7 +202,7 @@ export const useWatchPendingTransactions = ({
           },
         });
       }
-      if (isCustomChain(minedTransaction.chainId)) {
+      if (!supportedTransactionsChainIds.includes(minedTransaction.chainId)) {
         addCustomNetworkTransactions({
           address,
           chainId: minedTransaction.chainId,
