@@ -96,6 +96,37 @@ const openWindowForTabId = async (tabId: string) => {
   }
 };
 
+const ACTIVITY_DETAILS_PATH = (chainId: number, txHash: string) =>
+  `/home/activity-details/${chainId}/${txHash}`;
+
+const openWindowForActivityDetails = async (
+  chainId: number,
+  txHash: string,
+  tabId: string,
+) => {
+  const { setNotificationWindow } = useNotificationWindowStore.getState();
+  const currentWindow = await chrome.windows.getCurrent();
+  const url =
+    chrome.runtime.getURL('popup.html') +
+    (tabId ? `?tabId=${tabId}` : '') +
+    `#${ACTIVITY_DETAILS_PATH(chainId, txHash)}`;
+  const window = await chrome.windows.create({
+    url,
+    type: 'popup',
+    height:
+      POPUP_DIMENSIONS.height + getPopupTitleBarHeight(navigator.userAgent),
+    width: POPUP_DIMENSIONS.width,
+    left:
+      (currentWindow.left || 0) +
+      (currentWindow.width || POPUP_DIMENSIONS.width) -
+      POPUP_DIMENSIONS.width,
+    top: currentWindow.top || 0,
+  });
+  if (tabId) {
+    setNotificationWindow(tabId, window);
+  }
+};
+
 /**
  * Uses extensionMessenger to send messages to popup for the user to approve or reject
  * @param {PendingRequest} request
@@ -446,6 +477,9 @@ export const handleProviderRequest = ({
       if (validated) {
         useBatchStore.getState().setBatch(validated);
       }
+    },
+    showCallsStatus: async ({ chainId, txHash, tabId }) => {
+      await openWindowForActivityDetails(chainId, txHash, tabId);
     },
     onSwitchEthereumChainSupported: ({
       proposedChain,
