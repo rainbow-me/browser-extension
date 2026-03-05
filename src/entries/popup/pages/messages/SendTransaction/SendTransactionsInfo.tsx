@@ -686,15 +686,15 @@ export function SendTransactionInfo({
             onRejectRequest={onRejectRequest}
           />
         )
-      ) : (
+      ) : txRequest ? (
         <TransactionInfo
-          request={txRequest}
+          request={txRequest as TransactionRequest}
           dappMetadata={dappMetadata}
           dappUrl={dappUrl}
           expanded={expanded}
           onExpand={() => setExpanded((e) => !e)}
         />
-      )}
+      ) : null}
     </Box>
   );
 }
