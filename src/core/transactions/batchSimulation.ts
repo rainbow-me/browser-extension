@@ -1,5 +1,5 @@
 import { prepareBatchedTransaction } from '@rainbow-me/delegation';
-import { Address, Hex } from 'viem';
+import { type Address, type Hex, getAddress } from 'viem';
 
 import { Transaction } from '~/core/graphql/__generated__/metadata';
 import { simulateTransactions } from '~/core/resources/transactions/simulation';
@@ -12,13 +12,26 @@ export type BatchCallInput = {
   value?: `0x${string}`;
 };
 
+/** Zero address used when EIP-5792 call omits `to`. */
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as Address;
+
+/**
+ * Ensure string is valid Hex (0x-prefixed). EIP-5792 allows optional fields;
+ * we default to '0x' for data and '0x0' for value.
+ */
+const ensureHex = (
+  val: string | undefined,
+  fallback: `0x${string}` = '0x',
+): Hex => (val && val.startsWith('0x') ? (val as Hex) : (fallback as Hex));
+
 /**
  * Map EIP-5792 call format to delegation BatchCall format.
+ * Uses getAddress for Address validation; ensureHex for Hex fields.
  */
 const toBatchCall = (call: BatchCallInput) => ({
-  to: (call.to || '0x0') as Address,
-  data: (call.data || '0x') as Hex,
-  value: (call.value || '0x0') as Hex,
+  to: getAddress(call.to ?? ZERO_ADDRESS),
+  data: ensureHex(call.data),
+  value: ensureHex(call.value, '0x0'),
 });
 
 /**

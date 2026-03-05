@@ -14,6 +14,7 @@ import {
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { BatchCallInput } from '~/core/transactions/batchSimulation';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { getChain } from '~/core/utils/chains';
@@ -58,7 +59,6 @@ import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import { useHasEnoughGas } from '../useHasEnoughGas';
 import {
-  BatchCallInput,
   SimulationError,
   TransactionSimulation,
   useSimulateBatch,

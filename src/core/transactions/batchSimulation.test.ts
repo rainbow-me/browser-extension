@@ -31,7 +31,13 @@ describe('batchSimulation', () => {
   it('simulateCalls returns simulation results', async () => {
     const results = await simulateCalls({
       from: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      calls: [{ to: '0xabc', data: '0x', value: '0x0' }],
+      calls: [
+        {
+          to: '0xabcdef123456789012345678901234567890abcd',
+          data: '0x',
+          value: '0x0',
+        },
+      ],
       chainId: 1,
     });
     expect(results).toHaveLength(1);
@@ -41,7 +47,12 @@ describe('batchSimulation', () => {
   it('estimateGasForCalls returns gas estimate', async () => {
     const estimate = await estimateGasForCalls({
       from: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      calls: [{ to: '0xabc', data: '0x' }],
+      calls: [
+        {
+          to: '0xabcdef123456789012345678901234567890abcd',
+          data: '0x',
+        },
+      ],
       chainId: 1,
     });
     expect(estimate).toBe('21000');

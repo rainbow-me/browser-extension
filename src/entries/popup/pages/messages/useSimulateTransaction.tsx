@@ -16,7 +16,10 @@ import {
   simulateTransactions,
 } from '~/core/resources/transactions/simulation';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { simulateCalls } from '~/core/transactions/batchSimulation';
+import {
+  BatchCallInput,
+  simulateCalls,
+} from '~/core/transactions/batchSimulation';
 import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { parseAsset } from '~/core/utils/assets';
@@ -172,13 +175,6 @@ export const useSimulateTransaction = ({
     },
     staleTime: 60 * 1000, // 1 min
   });
-};
-
-/** Batch call input for wallet_sendCalls simulation */
-export type BatchCallInput = {
-  to?: `0x${string}`;
-  data?: `0x${string}`;
-  value?: `0x${string}`;
 };
 
 /**
