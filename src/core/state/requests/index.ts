@@ -4,7 +4,26 @@ import mitt from 'mitt';
 import { onlyBackground } from '~/core/utils/onlyBackground';
 
 import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
+import { TxHash } from '../../types/transactions';
 import { createExtensionStoreOptions } from '../_internal';
+
+/**
+ * Type-safe payloads for approvePendingRequest, discriminated by method.
+ * - eth_sendTransaction: TxHash
+ * - wallet_sendCalls: { id: batchId }
+ * - wallet_addEthereumChain, wallet_watchAsset: boolean | null
+ * - eth_requestAccounts: { address: Address; chainId: number }
+ * - SignMessage: string (signature) | null
+ * - etc.: object
+ */
+export type ApproveRequestPayload =
+  | TxHash
+  | { id: `0x${string}` }
+  | { address: string; chainId: number }
+  | boolean
+  | string
+  | null
+  | object;
 
 type Responses =
   | { status: 'APPROVED'; payload: unknown }
@@ -18,7 +37,7 @@ type Events = {
 export interface PendingRequestsStore {
   pendingRequests: ProviderRequestPayload[];
   addPendingRequest: (request: ProviderRequestPayload) => void;
-  approvePendingRequest: (id: number, payload: unknown) => void;
+  approvePendingRequest: (id: number, payload?: unknown) => void;
   rejectPendingRequest: (id: number) => void;
   waitForPendingRequest: (id: number) => Promise<Responses>;
 }

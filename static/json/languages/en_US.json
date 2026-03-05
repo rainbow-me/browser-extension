@@ -1296,7 +1296,8 @@
     "buy_and_try_again": "Buy some gas funds and try again",
     "buy_gas": "Buy %{token}",
     "get_testnet_gas": "Get free testnet %{token}",
-    "batch_request_title": "Batch request: %{count} calls on chain %{chainId}"
+    "batch_request_title": "Batch request: %{count} calls on chain %{chainId}",
+    "batch_hardware_wallet_unsupported": "Batch transactions require a software wallet. Hardware wallets are not supported for EIP-5792 batch execution."
   },
   "add_chain": {
     "name": "Name",

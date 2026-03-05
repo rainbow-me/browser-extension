@@ -3,7 +3,10 @@ import React, { useCallback, useEffect } from 'react';
 
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
-import { usePendingRequestStore } from '~/core/state/requests';
+import {
+  type ApproveRequestPayload,
+  usePendingRequestStore,
+} from '~/core/state/requests';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
@@ -102,7 +105,7 @@ export const ApproveAppRequest = () => {
   );
 
   const approveRequest = useCallback(
-    async (payload?: unknown) => {
+    async (payload?: ApproveRequestPayload) => {
       if (!pendingRequest) return;
       // Await the ORPC call so the background removes the request from
       // pendingRequests BEFORE the popup window is closed. Without this,

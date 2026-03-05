@@ -28,7 +28,7 @@ const ensureHex = (
  * Map EIP-5792 call format to delegation BatchCall format.
  * Uses getAddress for Address validation; ensureHex for Hex fields.
  */
-const toBatchCall = (call: BatchCallInput) => ({
+export const toBatchCall = (call: BatchCallInput) => ({
   to: getAddress(call.to ?? ZERO_ADDRESS),
   data: ensureHex(call.data),
   value: ensureHex(call.value, '0x0'),

@@ -1,4 +1,4 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { executeBatchedTransaction } from '@rainbow-me/delegation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address, getAddress } from 'viem';
 
@@ -8,18 +8,27 @@ import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useGasStore } from '~/core/state';
+import { useBatchStore, useGasStore, useNonceStore } from '~/core/state';
+import { BatchStatus } from '~/core/state/batches';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import { type ApproveRequestPayload } from '~/core/state/requests';
+import { toBatchCall } from '~/core/transactions/batchSimulation';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
+import { getViemClient } from '~/core/viem/clients';
+import { getViemWalletClient } from '~/core/viem/walletClient';
 import { Bleed, Box, Separator, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
@@ -41,7 +50,7 @@ import {
 } from './normalizeRequest';
 
 interface ApproveRequestProps {
-  approveRequest: (payload: unknown) => void;
+  approveRequest: (payload?: ApproveRequestPayload) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
@@ -80,13 +89,133 @@ export function SendTransaction({
 
     if (isWalletSendCallsRequest(request)) {
       const sendParams = getSendCallsParams(request);
-      if (!sendParams) return;
+      if (!sendParams?.calls?.length) return;
+
+      const from = getAddress(sendParams.from || activeSession.address);
+      const chainId = chainIdToUse(
+        connectedToHardhat,
+        connectedToHardhatOp,
+        Number(sendParams.chainId) || activeSession.chainId,
+      );
+      const app = new URL(request?.meta?.sender?.url || '').host || '';
+
+      const walletClient = await getViemWalletClient({
+        address: from,
+        chainId,
+      });
+      if (!walletClient) {
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: i18n.t(
+            'approve_request.batch_hardware_wallet_unsupported',
+          ),
+        });
+        return;
+      }
+
+      const publicClient = getViemClient({ chainId });
+      const nonce =
+        useNonceStore.getState().getNonce({ address: from, chainId })
+          ?.currentNonce ??
+        (await publicClient.getTransactionCount({
+          address: from,
+          blockTag: 'pending',
+        }));
+
+      const gasParams = selectedGas.transactionGasParams as
+        | TransactionGasParams
+        | TransactionLegacyGasParams;
+      const maxFeePerGas =
+        'maxFeePerGas' in gasParams && gasParams.maxFeePerGas
+          ? BigInt(gasParams.maxFeePerGas)
+          : 'gasPrice' in gasParams && gasParams.gasPrice
+          ? BigInt(gasParams.gasPrice)
+          : BigInt(0);
+      const maxPriorityFeePerGas =
+        'maxPriorityFeePerGas' in gasParams && gasParams.maxPriorityFeePerGas
+          ? BigInt(gasParams.maxPriorityFeePerGas)
+          : 'gasPrice' in gasParams && gasParams.gasPrice
+          ? BigInt(gasParams.gasPrice)
+          : BigInt(0);
+
       setLoading(true);
       try {
-        approveRequest({ id: sendParams.id });
-      } catch (e) {
-        logger.error(new RainbowError('send: batch approval error'), {
-          message: (e as Error)?.message,
+        const calls = sendParams.calls.map(toBatchCall);
+        const result = await executeBatchedTransaction({
+          calls,
+          walletClient,
+          publicClient,
+          chainId,
+          transactionOptions: {
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+            gasLimit: null,
+          },
+          nonce,
+        });
+
+        if (!result.hash) {
+          throw new Error('Transaction failed - no hash returned');
+        }
+
+        const { setBatch } = useBatchStore.getState();
+        const batchId = sendParams.id;
+        if (!batchId) {
+          throw new Error('Missing batch id');
+        }
+        setBatch({
+          id: batchId,
+          sender: from,
+          app,
+          chainId,
+          status: BatchStatus.Pending,
+          atomic: !!sendParams.atomicRequired,
+          txHashes: [result.hash],
+        });
+
+        const transaction: NewTransaction = {
+          from,
+          to: sendParams.calls[0]?.to || (from as Address),
+          value: '0',
+          data: sendParams.calls[0]?.data || '0x',
+          hash: result.hash as TxHash,
+          chainId,
+          nonce,
+          status: 'pending',
+          type: 'send',
+          batch: true,
+          delegation: result.type === 'eip7702',
+        };
+
+        addNewTransaction({
+          address: from,
+          chainId,
+          transaction,
+        });
+        approveRequest({ id: batchId });
+
+        analytics.track(
+          event.dappPromptSendTransactionApproved,
+          {
+            chainId,
+            dappURL: dappMetadata?.url || '',
+            dappDomain: dappMetadata?.appHost || '',
+            dappName: dappMetadata?.appName,
+            hardwareWallet: false,
+            hardwareWalletVendor: undefined,
+          },
+          await getWalletContext(activeSession?.address),
+        );
+      } catch (e: unknown) {
+        const err = e instanceof Error ? e : new Error(String(e));
+        showLedgerDisconnectedAlertIfNeeded(err);
+        logger.error(new RainbowError('send: batch execution error'), {
+          message: err.message,
+        });
+        const extractedError = err.message.split('[')[0];
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: extractedError,
         });
       } finally {
         setLoading(false);
@@ -137,7 +266,7 @@ export function SendTransaction({
           chainId: txData.chainId,
           transaction,
         });
-        approveRequest(result.hash);
+        approveRequest(result.hash as TxHash);
         setWaitingForDevice(false);
 
         analytics.track(
@@ -153,16 +282,14 @@ export function SendTransaction({
           await getWalletContext(activeSession?.address),
         );
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      showLedgerDisconnectedAlertIfNeeded(e);
+    } catch (e: unknown) {
+      const err = e instanceof Error ? e : new Error(String(e));
+      showLedgerDisconnectedAlertIfNeeded(err);
       logger.error(
         new RainbowError('send: error executing send dapp approval'),
-        {
-          message: (e as Error)?.message,
-        },
+        { message: err.message },
       );
-      const extractedError = (e as Error).message.split('[')[0];
+      const extractedError = err.message.split('[')[0];
       triggerAlert({
         text: i18n.t('errors.sending_transaction'),
         description: extractedError,
@@ -222,6 +349,11 @@ export function SendTransaction({
     return signingWithDevice;
   }, [allWallets, selectedWallet]);
 
+  const txRequest = useMemo(
+    () => getTransactionRequestFromRequest(request),
+    [request],
+  );
+
   useEffect(() => {
     if (!featureFlags.full_watching_wallets && isWatchingWallet) {
       triggerAlert({
@@ -263,21 +395,21 @@ export function SendTransaction({
           <AccountSigningWith session={activeSession} />
         </Bleed>
         <Separator color="separatorTertiary" />
-        <TransactionFee
-          analyticsEvents={{
-            customGasClicked: event.dappPromptSendTransactionCustomGasClicked,
-            transactionSpeedSwitched:
-              event.dappPromptSendTransactionSpeedSwitched,
-            transactionSpeedClicked:
-              event.dappPromptSendTransactionSpeedClicked,
-          }}
-          chainId={activeSession?.chainId || ChainId.mainnet}
-          address={activeSession?.address}
-          transactionRequest={
-            getTransactionRequestFromRequest(request) as TransactionRequest
-          }
-          plainTriggerBorder
-        />
+        {txRequest && (
+          <TransactionFee
+            analyticsEvents={{
+              customGasClicked: event.dappPromptSendTransactionCustomGasClicked,
+              transactionSpeedSwitched:
+                event.dappPromptSendTransactionSpeedSwitched,
+              transactionSpeedClicked:
+                event.dappPromptSendTransactionSpeedClicked,
+            }}
+            chainId={activeSession?.chainId || ChainId.mainnet}
+            address={activeSession?.address}
+            transactionRequest={txRequest}
+            plainTriggerBorder
+          />
+        )}
         <SendTransactionActions
           session={activeSession}
           waitingForDevice={waitingForDevice}

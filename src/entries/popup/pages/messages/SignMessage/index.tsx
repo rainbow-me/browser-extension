@@ -6,6 +6,7 @@ import { getWalletContext } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { type ApproveRequestPayload } from '~/core/state/requests';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import {
   isPersonalSignMessage,
@@ -29,7 +30,7 @@ import { SignMessageActions } from './SignMessageActions';
 import { SignMessageInfo } from './SignMessageInfo';
 
 interface ApproveRequestProps {
-  approveRequest: (payload: unknown) => void;
+  approveRequest: (payload?: ApproveRequestPayload) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
