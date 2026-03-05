@@ -3,12 +3,12 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { Address } from 'viem';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { usePromos } from '~/core/state/quickPromo/usePromos';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -186,6 +186,7 @@ const AccountItemWithMenu = ({
 
 export function WalletSwitcher() {
   const { isFirefox } = useBrowser();
+  const hwWalletsEnabled = useRemoteConfigStore((s) => s.hw_wallets_enabled);
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<
     AddressAndType | undefined
@@ -429,7 +430,7 @@ export function WalletSwitcher() {
             {i18n.t('wallet_switcher.add_another_wallet')}
           </Button>
         </Link>
-        {config.hw_wallets_enabled && !isFirefox && (
+        {hwWalletsEnabled && !isFirefox && (
           <Link to={ROUTES.HW_CHOOSE}>
             <Button
               color="fillSecondary"

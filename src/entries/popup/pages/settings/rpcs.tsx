@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'viem';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
@@ -13,6 +12,7 @@ import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/deve
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { transformBackendNetworkToChain } from '~/core/state/networks/utils';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { TransformedChain } from '~/core/types/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import {
@@ -60,6 +60,7 @@ const isDefaultRPC = (
 
 export function SettingsNetworksRPCs() {
   const { currentAddress } = useCurrentAddressStore();
+  const customRpcEnabled = useRemoteConfigStore((s) => s.custom_rpc_enabled);
   const { currentCurrency } = useCurrentCurrencyStore();
   const { currentTheme } = useCurrentThemeStore();
   const {
@@ -345,8 +346,7 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-        {config.custom_rpc_enabled &&
-        (activeChain?.name || supportedChain?.name) ? (
+        {customRpcEnabled && (activeChain?.name || supportedChain?.name) ? (
           <>
             <Menu>
               <MenuItem
@@ -381,7 +381,7 @@ export function SettingsNetworksRPCs() {
           </>
         ) : null}
 
-        {config.custom_rpc_enabled && customNetworkAssetsForChain.length ? (
+        {customRpcEnabled && customNetworkAssetsForChain.length ? (
           <Menu>
             <MenuItem.Description
               color="labelSecondary"
@@ -451,7 +451,7 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-        {config.custom_rpc_enabled && (
+        {customRpcEnabled && (
           <>
             <Menu>
               <MenuItem

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
-import remoteConfig from '~/core/firebase/remoteConfig';
 import { addysHttp } from '~/core/network/addys';
 import {
   QueryConfig,
@@ -12,6 +11,7 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { AssetApiResponse } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { TxHash } from '~/core/types/transactions';
@@ -140,7 +140,8 @@ export function useApprovals(
   > = {},
 ) {
   const { enabled: queryEnabled, ...restConfig } = config;
-  const enabled = remoteConfig.approvals_enabled && (queryEnabled ?? true);
+  const approvalsEnabled = useRemoteConfigStore((s) => s.approvals_enabled);
+  const enabled = approvalsEnabled && (queryEnabled ?? true);
 
   return useQuery({
     queryKey: approvalsQueryKey({ address, chainIds, currency }),
