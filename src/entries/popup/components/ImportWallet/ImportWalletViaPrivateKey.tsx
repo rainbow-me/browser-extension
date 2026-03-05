@@ -1,3 +1,4 @@
+import { ORPCError } from '@orpc/client';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
@@ -20,6 +21,7 @@ import {
   Text,
   textStyles,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import {
   accentSelectionStyle,
   placeholderStyle,
@@ -37,6 +39,7 @@ import {
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { triggerToast } from '../Toast/Toast';
 
 const ImportWalletViaPrivateKey = () => {
   const navigate = useRainbowNavigate();
@@ -119,28 +122,48 @@ const ImportWalletViaPrivateKey = () => {
           const address = (await wallet.importWithSecret(
             secrets[0],
           )) as Address;
+
+          // New wallet imported successfully
           setCurrentAddress(address);
-          setIsAddingWallets(false);
+
+          analytics.track('wallet.added', {
+            type: KeychainType.KeyPairKeychain,
+          });
+
+          removeImportWalletSecrets();
 
           // workaround for a deeper issue where the keychain status
           // didn't yet updated or synced in the same tick
+          // Keep isAddingWallets true until navigation completes to prevent duplicate imports
           setTimeout(() => {
             if (onboarding)
               navigate(ROUTES.CREATE_PASSWORD, {
                 state: { backTo: ROUTES.WELCOME },
               });
             else navigate(ROUTES.HOME);
+            // Navigation will unmount component, but clear state for safety
+            setIsAddingWallets(false);
           }, 1);
-
-          analytics.track('wallet.added', {
-            type: KeychainType.ReadOnlyKeychain,
-          });
-
-          setIsAddingWallets(false);
-          removeImportWalletSecrets();
           return;
         } catch (e) {
-          //
+          setIsAddingWallets(false);
+          if (e instanceof ORPCError && e.code === 'DUPLICATE_ACCOUNT') {
+            const duplicateAddress = e.data?.address as Address | undefined;
+            if (duplicateAddress) {
+              setCurrentAddress(duplicateAddress);
+              triggerToast({
+                title: i18n.t(
+                  'import_wallet_via_private_key.duplicate_private_key',
+                ),
+              });
+              navigate(ROUTES.HOME);
+              removeImportWalletSecrets();
+              return;
+            }
+          }
+          triggerAlert({
+            text: i18n.t('import_wallet_via_private_key.import_error'),
+          });
         }
       }
     }

@@ -1092,7 +1092,9 @@
     "title": "Import Your Wallet",
     "explanation": "Enter your 64-character Private Key from Rainbow or any Ethereum wallet.",
     "placeholder": "Paste your Private Key from another wallet",
-    "import_wallet": "Import wallet"
+    "import_wallet": "Import wallet",
+    "duplicate_private_key": "This private key is already imported",
+    "import_error": "Failed to import wallet. Please try again."
   },
   "import_or_connect": {
     "title": "Restore or Connect",
