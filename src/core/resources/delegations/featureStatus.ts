@@ -36,6 +36,11 @@ export function getAtomicSwapsEnabled(): boolean {
   return resolveFlag(local, config.atomic_swaps_enabled ?? false);
 }
 
+/** Sync: remote config only. Background only. */
+export function getEip5792Enabled(): boolean {
+  return config.eip5792_enabled ?? false;
+}
+
 /**
  * Sync: feature flag + SDK user opt-out. Background only.
  * Use when you need "can this address use delegation?" without async supportsDelegation.
