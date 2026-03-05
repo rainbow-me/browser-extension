@@ -1,6 +1,9 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
-import { PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
+import {
+  PersistQueryClientOptions,
+  persistQueryClientSave,
+} from '@tanstack/react-query-persist-client';
 
 import { LocalStorage } from '../storage';
 
@@ -47,4 +50,19 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
       );
     },
   },
+};
+
+/**
+ * Persists the current query cache using the configured persistence options.
+ * Call this after `setQueryData` to schedule a save without waiting for the
+ * next cache subscription event.
+ * This still uses the persister's throttle window (default 1s).
+ */
+export const persistQueryCache = async () => {
+  await persistQueryClientSave({
+    queryClient,
+    persister: persistOptions.persister,
+    buster: persistOptions.buster,
+    dehydrateOptions: persistOptions.dehydrateOptions,
+  });
 };

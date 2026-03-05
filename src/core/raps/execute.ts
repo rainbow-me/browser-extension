@@ -6,7 +6,7 @@ import {
   executeBatchedTransaction,
   supportsDelegation,
 } from '@rainbow-me/delegation';
-import { type SignedAuthorizationList, UserRejectedRequestError } from 'viem';
+import { UserRejectedRequestError } from 'viem';
 
 import {
   getAtomicSwapsEnabled,
@@ -331,14 +331,6 @@ export const walletExecuteRap = async (
                 result.transaction.gas?.toString(),
             };
 
-            if (
-              result.type === 'eip7702' &&
-              isSignedAuthorizationList(result.transaction.authorizationList)
-            ) {
-              transaction.authorizationList =
-                result.transaction.authorizationList;
-            }
-
             addNewTransaction({
               address: quote.from,
               chainId,
@@ -492,35 +484,6 @@ function toError(error: unknown): Error {
   } catch {
     return new Error(String(error));
   }
-}
-
-function isSignedAuthorizationList(
-  value: unknown,
-): value is SignedAuthorizationList {
-  if (!Array.isArray(value)) return false;
-
-  return value.every((authorization) => {
-    if (!isObject(authorization)) return false;
-
-    const address = Reflect.get(authorization, 'address');
-    const chainId = Reflect.get(authorization, 'chainId');
-    const nonce = Reflect.get(authorization, 'nonce');
-    const r = Reflect.get(authorization, 'r');
-    const s = Reflect.get(authorization, 's');
-    const v = Reflect.get(authorization, 'v');
-    const yParity = Reflect.get(authorization, 'yParity');
-
-    if (!isHexString(address)) return false;
-    if (typeof chainId !== 'number') return false;
-    if (typeof nonce !== 'number') return false;
-    if (!isHexString(r) || !isHexString(s)) return false;
-
-    return typeof v === 'bigint' || typeof yParity === 'number';
-  });
-}
-
-function isHexString(value: unknown): value is `0x${string}` {
-  return typeof value === 'string' && value.startsWith('0x');
 }
 
 function isObject(value: unknown): value is object {

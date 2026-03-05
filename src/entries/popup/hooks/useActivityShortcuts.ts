@@ -7,7 +7,10 @@ import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { truncateAddress } from '~/core/utils/address';
 import { goToNewTab } from '~/core/utils/tabs';
-import { getTransactionBlockExplorer } from '~/core/utils/transactions';
+import {
+  getTransactionBlockExplorer,
+  isType4Transaction,
+} from '~/core/utils/transactions';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { triggerToast } from '../components/Toast/Toast';
@@ -55,7 +58,11 @@ export function useActivityShortcuts() {
           });
           setCurrentHomeSheet('cancel');
         }
-        if (e.key === shortcuts.activity.SPEED_UP_TRANSACTION.key) {
+        if (
+          e.key === shortcuts.activity.SPEED_UP_TRANSACTION.key &&
+          selectedTransaction &&
+          !isType4Transaction(selectedTransaction)
+        ) {
           trackShortcut({
             key: shortcuts.activity.SPEED_UP_TRANSACTION.display,
             type: 'activity.speedUpTransaction',

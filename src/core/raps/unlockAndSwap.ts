@@ -1,4 +1,8 @@
-import { isAllowedTargetContract } from '@rainbow-me/swaps';
+import {
+  ETH_ADDRESS,
+  SwapType,
+  isAllowedTargetContract,
+} from '@rainbow-me/swaps';
 
 import { add } from '../utils/numbers';
 
@@ -16,14 +20,30 @@ import {
 } from './references';
 import { getQuoteAllowanceTargetAddress } from './validation';
 
+function resolveAllowanceTargetAddress(
+  quote: RapSwapActionParameters<'swap'>['quote'],
+) {
+  if (isWrappedNativeSwap(quote)) return null;
+  if (isNativeSellToken(quote.sellTokenAddress)) return null;
+  return getQuoteAllowanceTargetAddress(quote);
+}
+
+function isWrappedNativeSwap(
+  quote: RapSwapActionParameters<'swap'>['quote'],
+): boolean {
+  return quote.swapType === SwapType.wrap || quote.swapType === SwapType.unwrap;
+}
+
+function isNativeSellToken(sellTokenAddress: string): boolean {
+  return sellTokenAddress.toLowerCase() === ETH_ADDRESS.toLowerCase();
+}
+
 export const estimateUnlockAndSwap = async (
   swapParameters: RapSwapActionParameters<'swap'>,
 ) => {
   const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
-  const allowanceTargetAddress = quote.allowanceNeeded
-    ? getQuoteAllowanceTargetAddress(quote)
-    : null;
+  const allowanceTargetAddress = resolveAllowanceTargetAddress(quote);
 
   let gasLimits: (string | number)[] = [];
   let requiresApprove = false;
@@ -86,9 +106,7 @@ export const createUnlockAndSwapRap = async (
   const { sellAmount, quote, chainId, assetToSell, assetToBuy } =
     swapParameters;
 
-  const allowanceTargetAddress = quote.allowanceNeeded
-    ? getQuoteAllowanceTargetAddress(quote)
-    : null;
+  const allowanceTargetAddress = resolveAllowanceTargetAddress(quote);
 
   let requiresApprove = false;
 

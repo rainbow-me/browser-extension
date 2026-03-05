@@ -1584,7 +1584,6 @@
     "revoke_approval": "Revocar Aprobación",
     "estimating_fee": "Calculando comisión…",
     "tx_confirmed_or_not_found": "Es posible que la transacción ya haya sido confirmada o que no se haya encontrado",
-    "eip7702_auth_list_unavailable": "No se puede acelerar esta transacción: los datos de delegación no están disponibles. Inténtalo de nuevo más tarde o usa un RPC diferente.",
     "speed_up_failed": {
       "title": "Aceleración fallida",
       "description": "Los intentos de acelerar una transacción pueden fallar durante la congestión de la red, aumentos del límite de gas, o cuando se confirma primero la transacción original"

@@ -8,7 +8,10 @@ import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
-import { getTransactionBlockExplorer } from '~/core/utils/transactions';
+import {
+  getTransactionBlockExplorer,
+  isType4Transaction,
+} from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { ROUTES } from '~/entries/popup/urls';
@@ -97,13 +100,15 @@ export function ActivityContextMenu({
       <ContextMenuContent>
         {transaction?.status === 'pending' && (
           <>
-            <ContextMenuItem
-              symbolLeft="🚀"
-              onSelect={onSpeedUp}
-              shortcut={shortcuts.activity.SPEED_UP_TRANSACTION.display}
-            >
-              {i18n.t('speed_up_and_cancel.speed_up')}
-            </ContextMenuItem>
+            {!isType4Transaction(transaction) && (
+              <ContextMenuItem
+                symbolLeft="🚀"
+                onSelect={onSpeedUp}
+                shortcut={shortcuts.activity.SPEED_UP_TRANSACTION.display}
+              >
+                {i18n.t('speed_up_and_cancel.speed_up')}
+              </ContextMenuItem>
+            )}
 
             <ContextMenuItem
               symbolLeft="☠️"

@@ -609,6 +609,12 @@ export function updateTransaction({
   }
 }
 
+export const isType4Transaction = (tx: {
+  delegation?: boolean;
+  type?: string;
+}): boolean =>
+  !!tx.delegation || tx.type === 'revoke_delegation' || tx.type === 'delegate';
+
 export function getTransactionBlockExplorer({
   hash,
   chainId,

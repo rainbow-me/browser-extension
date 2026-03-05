@@ -1584,7 +1584,6 @@
     "revoke_approval": "Cabut Persetujuan",
     "estimating_fee": "Mengestimasi biaya…",
     "tx_confirmed_or_not_found": "Transaksi mungkin sudah dikonfirmasi atau tidak dapat ditemukan",
-    "eip7702_auth_list_unavailable": "Tidak dapat mempercepat transaksi ini: data delegasi tidak tersedia. Coba lagi nanti atau gunakan RPC yang berbeda.",
     "speed_up_failed": {
       "title": "Percepatan gagal",
       "description": "Usaha untuk mempercepat transaksi dapat gagal selama kemacetan jaringan, peningkatan batas gas, atau ketika transaksi asli dikonfirmasi lebih dahulu"

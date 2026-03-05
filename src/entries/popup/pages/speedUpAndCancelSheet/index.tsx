@@ -1,7 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
-import { type SignedAuthorizationList, isAddress, isHex } from 'viem';
+import { isAddress, isHex } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
@@ -79,14 +79,7 @@ function resolveReplacementTransactionFields(replaceTx: {
 }
 
 function hasIncompleteStoredData(tx: PendingTransaction): boolean {
-  const missingEssentialData =
-    tx.data === '0x' || !tx.gasLimit || !hasValidNonce(tx.nonce);
-
-  const isEip7702 =
-    tx.delegation || tx.type === 'revoke_delegation' || tx.type === 'delegate';
-  const needsAuthListFromChain = isEip7702 && !tx.authorizationList?.length;
-
-  return missingEssentialData || needsAuthListFromChain;
+  return tx.data === '0x' || !tx.gasLimit || !hasValidNonce(tx.nonce);
 }
 
 /** Fields from chain needed to build speed up/cancel replacement tx */
@@ -101,14 +94,9 @@ type FetchedTxForReplacement = Pick<
   | 'maxPriorityFeePerGas'
   | 'from'
   | 'chainId'
-> & {
-  /** True when EIP-7702 (type 4) - required for speed up replacement */
-  delegation?: boolean;
-  /** EIP-7702 authorization list - from chain when stored tx lacked it (fallback) */
-  authorizationList?: SignedAuthorizationList;
-};
+>;
 
-/** Fallback: fetches tx from chain when stored data is incomplete (e.g. external tx, or legacy tx without authorizationList). */
+/** Fallback: fetches tx from chain when stored data is incomplete (e.g. external tx). */
 async function fetchPendingTransaction(
   hash: string,
   chainId: number,
@@ -133,14 +121,6 @@ async function fetchPendingTransaction(
     maxFeePerGas: tx.maxFeePerGas?.toString(),
     maxPriorityFeePerGas: tx.maxPriorityFeePerGas?.toString(),
   };
-
-  if (tx.type === 'eip7702') {
-    return {
-      ...base,
-      delegation: true,
-      authorizationList: tx.authorizationList,
-    };
-  }
 
   return base;
 }
@@ -205,17 +185,7 @@ const speedUpTransaction = async (
     throw new Error(i18n.t('speed_up_and_cancel.tx_confirmed_or_not_found'));
   }
 
-  const {
-    data,
-    chainId,
-    from,
-    to,
-    nonce,
-    gasLimit,
-    value,
-    delegation,
-    authorizationList,
-  } = transaction;
+  const { data, chainId, from, to, nonce, gasLimit, value } = transaction;
   return {
     data,
     chainId,
@@ -225,8 +195,6 @@ const speedUpTransaction = async (
     gasLimit,
     value: toHex(value || '0'),
     ...gasParams,
-    ...(delegation && { type: 4 }),
-    ...(authorizationList?.length && { authorizationList }),
   };
 };
 
@@ -285,16 +253,6 @@ export function SpeedUpAndCancelSheet({
         );
       }
 
-      // EIP-7702 speed up requires authorizationList - fail early with clear message if missing
-      const isEip7702 =
-        resolvedTx.delegation ||
-        resolvedTx.type === 'revoke_delegation' ||
-        resolvedTx.type === 'delegate';
-      if (!cancel && isEip7702 && !resolvedTx.authorizationList?.length) {
-        throw new Error(
-          i18n.t('speed_up_and_cancel.eip7702_auth_list_unavailable'),
-        );
-      }
       return (cancel ? cancelTransaction : speedUpTransaction)(
         resolvedTx,
         selectedGasParams,
