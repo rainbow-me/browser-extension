@@ -14,7 +14,12 @@ import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
-import { useAppSessionsStore, useNotificationWindowStore } from '~/core/state';
+import {
+  useAppSessionsStore,
+  useBatchStore,
+  useNotificationWindowStore,
+} from '~/core/state';
+import { validateBatchKeyParams } from '~/core/state/batches/validation';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { SessionStorage } from '~/core/storage';
@@ -408,6 +413,12 @@ export const handleProviderRequest = ({
         }),
       );
       return Object.fromEntries(results);
+    },
+    getBatchByKey: (params) => {
+      if (!validateBatchKeyParams(params)) {
+        return Promise.resolve(undefined);
+      }
+      return Promise.resolve(useBatchStore.getState().getBatchByKey(params));
     },
     onSwitchEthereumChainSupported: ({
       proposedChain,
