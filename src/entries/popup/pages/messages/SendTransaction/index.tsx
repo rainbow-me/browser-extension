@@ -75,6 +75,7 @@ export function SendTransaction({
     setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
+      if (!txRequest) return;
       const { type, vendor } = await wallet.getWallet(selectedWallet);
 
       // Change the label while we wait for confirmation
@@ -149,9 +150,9 @@ export function SendTransaction({
       setLoading(false);
     }
   }, [
+    request?.params,
     selectedWallet,
     activeSession,
-    request?.params,
     connectedToHardhat,
     connectedToHardhatOp,
     asset,

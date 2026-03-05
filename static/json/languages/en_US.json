@@ -1295,7 +1295,8 @@
     "bridge_and_try_again": "Bridge some gas funds and try again",
     "buy_and_try_again": "Buy some gas funds and try again",
     "buy_gas": "Buy %{token}",
-    "get_testnet_gas": "Get free testnet %{token}"
+    "get_testnet_gas": "Get free testnet %{token}",
+    "batch_request_title": "Batch request: %{count} calls on chain %{chainId}"
   },
   "add_chain": {
     "name": "Name",
