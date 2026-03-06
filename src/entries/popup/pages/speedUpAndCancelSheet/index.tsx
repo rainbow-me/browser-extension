@@ -393,7 +393,9 @@ export function SpeedUpAndCancelSheet({
                     <TransactionFee
                       chainId={transaction.chainId}
                       defaultSpeed={GasSpeed.URGENT}
-                      transactionRequest={transactionRequest}
+                      transactionRequests={
+                        transactionRequest ? [transactionRequest] : []
+                      }
                     />
                   )}
                 </Box>
