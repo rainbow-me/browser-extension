@@ -30,7 +30,7 @@ describe('create through orpc', () => {
   });
 
   it('should create a new wallet while password exists', async () => {
-    await setVaultPassword('test', 'test');
+    await setVaultPassword('', 'test');
     // createHandler expects an object with context, but for this test, we can pass an empty object
     const result = await call(
       createHandler,
