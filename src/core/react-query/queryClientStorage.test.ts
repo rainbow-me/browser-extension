@@ -35,41 +35,44 @@ test('toStructuredCloneable returns clone of plain object', () => {
   expect(result).not.toBe(input);
 });
 
-test('toStructuredCloneable strips Promise values', () => {
-  const input = {
-    ...mockPersistedClient,
-    clientState: {
-      ...mockPersistedClient.clientState,
-      extra: Promise.resolve(1),
-    },
-  } as unknown as PersistedClient;
-  const result = toStructuredCloneable(input);
-  expect(result.clientState).not.toHaveProperty('extra');
-});
+const nonCloneableValues = [
+  { name: 'Function', value: () => undefined },
+  { name: 'Promise', value: Promise.resolve(1) },
+  { name: 'Symbol', value: Symbol('test') },
+] as const;
 
-test('toStructuredCloneable strips Function values', () => {
-  const input = {
-    ...mockPersistedClient,
-    clientState: {
-      ...mockPersistedClient.clientState,
-      fn: () => undefined,
-    },
-  } as unknown as PersistedClient;
-  const result = toStructuredCloneable(input);
-  expect(result.clientState).not.toHaveProperty('fn');
-});
+test.each(nonCloneableValues)(
+  'toStructuredCloneable strips $name as object property',
+  ({ value }) => {
+    const input = {
+      ...mockPersistedClient,
+      clientState: {
+        ...mockPersistedClient.clientState,
+        extra: value,
+      },
+    } as unknown as PersistedClient;
+    const result = toStructuredCloneable(input);
+    expect(result.clientState).not.toHaveProperty('extra');
+  },
+);
 
-test('toStructuredCloneable strips Symbol values', () => {
-  const input = {
-    ...mockPersistedClient,
-    clientState: {
-      ...mockPersistedClient.clientState,
-      sym: Symbol('test'),
-    },
-  } as unknown as PersistedClient;
-  const result = toStructuredCloneable(input);
-  expect(result.clientState).not.toHaveProperty('sym');
-});
+test.each(nonCloneableValues)(
+  'toStructuredCloneable strips $name as array element',
+  ({ value }) => {
+    const input = {
+      ...mockPersistedClient,
+      clientState: {
+        mutations: [],
+        queries: [value, mockPersistedClient.clientState.queries[0]],
+      },
+    } as unknown as PersistedClient;
+    const result = toStructuredCloneable(input);
+    expect(result.clientState.queries[0]).toBeNull();
+    expect(result.clientState.queries[1]).toEqual(
+      mockPersistedClient.clientState.queries[0],
+    );
+  },
+);
 
 test('toStructuredCloneable strips nested non-cloneable in arrays', () => {
   const input = {
@@ -90,6 +93,85 @@ test('toStructuredCloneable strips nested non-cloneable in arrays', () => {
   } as unknown as PersistedClient;
   const result = toStructuredCloneable(input);
   expect(result.clientState.queries[0].state.data).toEqual({});
+});
+
+test.each(nonCloneableValues)(
+  'IndexedDB persist+restore succeeds with $name as object property',
+  async ({ value }) => {
+    const client = {
+      ...mockPersistedClient,
+      clientState: {
+        ...mockPersistedClient.clientState,
+        extra: value,
+      },
+    } as unknown as PersistedClient;
+    queryClientPersister.persistClient(client);
+    await new Promise<void>((r) => {
+      setTimeout(r, 700);
+    });
+
+    const result = await queryClientPersister.restoreClient();
+    expect(result).toBeDefined();
+    expect(result?.clientState).not.toHaveProperty('extra');
+    expect(result?.buster).toBe(mockPersistedClient.buster);
+    expect(result?.clientState.queries).toEqual(
+      mockPersistedClient.clientState.queries,
+    );
+  },
+);
+
+test.each(nonCloneableValues)(
+  'IndexedDB persist+restore succeeds with $name as array element',
+  async ({ value }) => {
+    const client = {
+      ...mockPersistedClient,
+      clientState: {
+        mutations: [],
+        queries: [value, mockPersistedClient.clientState.queries[0]],
+      },
+    } as unknown as PersistedClient;
+    queryClientPersister.persistClient(client);
+    await new Promise<void>((r) => {
+      setTimeout(r, 700);
+    });
+
+    const result = await queryClientPersister.restoreClient();
+    expect(result).toBeDefined();
+    expect(result?.clientState.queries[0]).toBeNull();
+    expect(result?.clientState.queries[1]).toEqual(
+      mockPersistedClient.clientState.queries[0],
+    );
+  },
+);
+
+test('IndexedDB persist+restore succeeds with multiple non-cloneable types', async () => {
+  const client = {
+    ...mockPersistedClient,
+    clientState: {
+      mutations: [Promise.resolve() as unknown as object],
+      queries: [
+        Symbol('x'),
+        {
+          queryKey: ['test'],
+          queryHash: '["test"]',
+          state: {
+            data: { fn: () => undefined, sym: Symbol('y') },
+            dataUpdatedAt: 0,
+          },
+        },
+      ],
+    },
+  } as unknown as PersistedClient;
+  queryClientPersister.persistClient(client);
+  await new Promise<void>((r) => {
+    setTimeout(r, 700);
+  });
+
+  const result = await queryClientPersister.restoreClient();
+  expect(result).toBeDefined();
+  expect(result?.clientState.mutations).toEqual([null]);
+  expect(result?.clientState.queries[0]).toBeNull();
+  expect(result?.clientState.queries[1].state.data).toEqual({});
 });
 
 test('restoreClient returns undefined when empty', async () => {

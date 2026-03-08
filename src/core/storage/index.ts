@@ -58,9 +58,9 @@ export const SessionStorage = {
   async clear() {
     await chrome?.storage?.session?.clear();
   },
-  async set(key: string, value: unknown) {
+  async setMultiple(items: Record<string, unknown>) {
     try {
-      await chrome?.storage?.session?.set({ [key]: value });
+      await chrome?.storage?.session?.set(items);
     } catch (e) {
       // This is where the quota error should show up
       const chromeError = chrome.runtime.lastError?.message;
@@ -89,6 +89,9 @@ export const SessionStorage = {
         message: (e as Error)?.message,
       });
     }
+  },
+  async set(key: string, value: unknown) {
+    return SessionStorage.setMultiple({ [key]: value });
   },
   async get(key: string) {
     const result = await chrome?.storage?.session?.get(key);

@@ -1,4 +1,10 @@
 import { Wallet } from '@ethersproject/wallet';
+import {
+  type KeyDerivationOptions,
+  decryptWithDetail,
+  encryptWithDetail,
+  isVaultUpdated,
+} from '@metamask/browser-passworder';
 import { isAddress, isHex } from 'viem';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -9,6 +15,16 @@ import { KeychainType } from '../types/keychainTypes';
 
 import type { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
+
+const LEGACY_10K_PARAMS: KeyDerivationOptions = {
+  algorithm: 'PBKDF2',
+  params: { iterations: 10_000 },
+};
+
+const RAINBOW_600K_PARAMS: KeyDerivationOptions = {
+  algorithm: 'PBKDF2',
+  params: { iterations: 600_000 },
+};
 
 vi.stubGlobal('crypto', {
   // deterministic bytes
@@ -254,6 +270,36 @@ test('[keychain/KeychainManager] :: should be able to unlock the vault', async (
 
   // Snapshot test: storage state after unlocking vault
   await expectStorageSnapshot();
+});
+
+test('[keychain/KeychainManager] :: should migrate legacy 10k iteration vault to 600k on unlock', async () => {
+  await keychainManager.lock(); // clear session
+
+  // replace existing 600k-iteration vault with 10k-iteration vault
+  const currentVault = keychainManager.state.vault;
+  const { vault: decryptedVault } = await decryptWithDetail(
+    password,
+    currentVault,
+  );
+  const { vault: legacyVault } = await encryptWithDetail(
+    password,
+    decryptedVault,
+    undefined,
+    LEGACY_10K_PARAMS,
+  );
+  expect(isVaultUpdated(legacyVault, RAINBOW_600K_PARAMS)).toBe(false);
+  // eslint-disable-next-line require-atomic-updates -- Intentionally inject legacy vault to simulate migration scenario
+  keychainManager.state.vault = legacyVault;
+
+  await keychainManager.unlock(password);
+
+  // after unlock, the vault should be updated to 600k iterations
+  expect(isVaultUpdated(keychainManager.state.vault, RAINBOW_600K_PARAMS)).toBe(
+    true,
+  );
+  expect(keychainManager.state.keychains.length).toBe(1);
+  const accounts = await keychainManager.getAccounts();
+  expect(accounts.length).toBeGreaterThanOrEqual(1);
 });
 
 test('[keychain/KeychainManager] :: should be able to autodiscover accounts when importing a seed phrase', async () => {

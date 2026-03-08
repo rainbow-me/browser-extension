@@ -28,10 +28,10 @@ export function toStructuredCloneable(
 
 function stripNonCloneable<T>(val: T): T {
   if (val === null) return val;
+  if (typeof val === 'function' || val instanceof Promise)
+    return undefined as T;
   if (typeof val !== 'object')
     return (typeof val === 'symbol' ? undefined : val) as T;
-  if (val instanceof Promise || typeof val === 'function')
-    return undefined as T;
   if (Array.isArray(val)) {
     return val.map((x) => stripNonCloneable(x) ?? null) as T;
   }
