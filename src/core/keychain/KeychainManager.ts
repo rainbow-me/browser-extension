@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+/* eslint-disable sort-imports */
 import {
   decrypt,
   decryptWithDetail,
@@ -6,6 +7,9 @@ import {
   encryptWithDetail,
   encryptWithKey,
   importKey,
+  isVaultUpdated,
+  type KeyDerivationOptions,
+  updateVault,
 } from '@metamask/browser-passworder';
 import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
@@ -30,6 +34,13 @@ import {
   ReadOnlyKeychain,
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
+
+// Target PBKDF2 iteration count (OWASP minimum recommended: 600,000)
+// MetaMask uses 900,000 as default, we use 600,000 for better UX while secure
+const RAINBOW_DERIVATION_PARAMS: KeyDerivationOptions = {
+  algorithm: 'PBKDF2',
+  params: { iterations: 600_000 },
+};
 
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -192,9 +203,12 @@ class KeychainManager {
           // hasKeychains is automatically maintained by setKeychains setter
           if (pwd) {
             // Generate a new encryption key every time we save and have a password
+            // Use stronger PBKDF2 params (600k iterations) for new encryptions
             const encryptionResult = await encryptWithDetail(
               privates.get(this).password as string,
               serializedKeychains,
+              undefined, // let library generate salt
+              RAINBOW_DERIVATION_PARAMS, // Use 600k iterations
             );
             result.vault = encryptionResult.vault;
             result.exportedKeyString = encryptionResult.exportedKeyString;
@@ -551,6 +565,30 @@ class KeychainManager {
       exportedKeyString,
       salt,
     } = await decryptWithDetail(password, this.state.vault);
+
+    // Check if vault needs migration to stronger encryption
+    // This handles legacy vaults encrypted with 10,000 iterations (v4.1.0)
+    if (!isVaultUpdated(this.state.vault, RAINBOW_DERIVATION_PARAMS)) {
+      logger.info('Migrating vault to stronger encryption (600k iterations)');
+      try {
+        const upgradedVault = await updateVault(
+          this.state.vault,
+          password,
+          RAINBOW_DERIVATION_PARAMS,
+        );
+        // Persist the upgraded vault
+        await privates.get(this)._setVaultInStorage(upgradedVault);
+        this.state.vault = upgradedVault;
+        logger.info('Vault migration completed successfully');
+      } catch (migrationError) {
+        // Log but don't fail unlock - original vault still works
+        logger.error(
+          new RainbowError('Vault migration failed, using original vault', {
+            cause: migrationError,
+          }),
+        );
+      }
+    }
 
     await privates.get(this).setEncryptionKey(exportedKeyString);
     await privates.get(this).setSalt(salt);
