@@ -3961,7 +3961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^6.0.0":
+"@metamask/browser-passworder@npm:6.0.0":
   version: 6.0.0
   resolution: "@metamask/browser-passworder@npm:6.0.0"
   dependencies:
@@ -9523,7 +9523,7 @@ __metadata:
     "@lavamoat/preinstall-always-fail": "npm:2.0.0"
     "@ledgerhq/hw-app-eth": "npm:6.45.4"
     "@ledgerhq/hw-transport-webhid": "npm:6.30.0"
-    "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/browser-passworder": "npm:6.0.0"
     "@metamask/eth-sig-util": "npm:7.0.1"
     "@orpc/client": "npm:1.8.6"
     "@orpc/contract": "npm:1.8.6"

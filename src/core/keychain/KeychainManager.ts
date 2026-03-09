@@ -565,6 +565,7 @@ class KeychainManager {
 
     // Check if vault needs migration to stronger encryption
     // This handles legacy vaults encrypted with 10,000 iterations (v4.1.0)
+    let migrationSucceeded = false;
     if (!isVaultUpdated(this.state.vault, RAINBOW_DERIVATION_PARAMS)) {
       logger.info('Migrating vault to stronger encryption (600k iterations)');
       try {
@@ -579,6 +580,7 @@ class KeychainManager {
         const migrated = await decryptWithDetail(password, upgradedVault);
         exportedKeyString = migrated.exportedKeyString;
         salt = migrated.salt;
+        migrationSucceeded = true;
         logger.info('Vault migration completed successfully');
       } catch (migrationError) {
         // Log but don't fail unlock - original vault still works
@@ -600,7 +602,11 @@ class KeychainManager {
         return privates.get(this).restoreKeychain(serializedKeychain);
       }),
     );
-    await privates.get(this).persist();
+    // Skip persist() after successful migration — vault is already persisted
+    // calling persist() would redundantly re-encrypt (~100–500ms).
+    if (!migrationSucceeded) {
+      await privates.get(this).persist();
+    }
   }
 
   async getAccounts() {
