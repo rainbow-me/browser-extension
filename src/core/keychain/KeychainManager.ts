@@ -8,7 +8,7 @@ import {
   encryptWithKey,
   importKey,
   isVaultUpdated,
-  updateVault,
+  updateVaultWithDetail,
 } from '@metamask/browser-passworder';
 import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
@@ -33,6 +33,19 @@ import {
   ReadOnlyKeychain,
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
+
+/** Extracts salt from an encrypted vault string. Vault format matches EncryptionResult. */
+function getSaltFromVault(vault: string): string {
+  const parsed: unknown = JSON.parse(vault);
+  const salt =
+    typeof parsed === 'object' && parsed !== null && 'salt' in parsed
+      ? parsed.salt
+      : undefined;
+  if (typeof salt === 'string') {
+    return salt;
+  }
+  throw new Error('Invalid vault: missing or invalid salt');
+}
 
 // Target PBKDF2 iteration count (OWASP minimum recommended: 600,000)
 // MetaMask uses 900,000 as default, we use 600,000 for better UX while secure
@@ -211,10 +224,7 @@ class KeychainManager {
             );
             result.vault = encryptionResult.vault;
             result.exportedKeyString = encryptionResult.exportedKeyString;
-            const vaultObj = JSON.parse(encryptionResult.vault) as Awaited<
-              ReturnType<typeof decryptWithDetail>
-            >;
-            result.salt = vaultObj.salt;
+            result.salt = getSaltFromVault(encryptionResult.vault);
           } else if (encryptionKey && salt) {
             const key = await importKey(encryptionKey);
             const vaultObj = await encryptWithKey(key, serializedKeychains);
@@ -569,17 +579,15 @@ class KeychainManager {
     if (!isVaultUpdated(this.state.vault, RAINBOW_DERIVATION_PARAMS)) {
       logger.info('Migrating vault to stronger encryption (600k iterations)');
       try {
-        const upgradedVault = await updateVault(
-          this.state.vault,
+        const upgraded = await updateVaultWithDetail(
+          { vault: this.state.vault, exportedKeyString },
           password,
           RAINBOW_DERIVATION_PARAMS,
         );
-        // Persist the upgraded vault
-        await privates.get(this)._setVaultInStorage(upgradedVault);
-        this.state.vault = upgradedVault;
-        const migrated = await decryptWithDetail(password, upgradedVault);
-        exportedKeyString = migrated.exportedKeyString;
-        salt = migrated.salt;
+        exportedKeyString = upgraded.exportedKeyString;
+        salt = getSaltFromVault(upgraded.vault);
+        await privates.get(this)._setVaultInStorage(upgraded.vault);
+        this.state.vault = upgraded.vault;
         migrationSucceeded = true;
         logger.info('Vault migration completed successfully');
       } catch (migrationError) {
