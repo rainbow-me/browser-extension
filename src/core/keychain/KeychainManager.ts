@@ -559,11 +559,9 @@ class KeychainManager {
       throw new Error('Nothing to unlock');
     }
 
-    const {
-      vault: decryptedVault,
-      exportedKeyString,
-      salt,
-    } = await decryptWithDetail(password, this.state.vault);
+    const result = await decryptWithDetail(password, this.state.vault);
+    const { vault: decryptedVault } = result;
+    let { exportedKeyString, salt } = result;
 
     // Check if vault needs migration to stronger encryption
     // This handles legacy vaults encrypted with 10,000 iterations (v4.1.0)
@@ -578,6 +576,9 @@ class KeychainManager {
         // Persist the upgraded vault
         await privates.get(this)._setVaultInStorage(upgradedVault);
         this.state.vault = upgradedVault;
+        const migrated = await decryptWithDetail(password, upgradedVault);
+        exportedKeyString = migrated.exportedKeyString;
+        salt = migrated.salt;
         logger.info('Vault migration completed successfully');
       } catch (migrationError) {
         // Log but don't fail unlock - original vault still works
