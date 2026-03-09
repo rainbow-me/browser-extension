@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable sort-imports */
 import {
+  type KeyDerivationOptions,
   decrypt,
   decryptWithDetail,
   decryptWithKey,
@@ -8,7 +8,6 @@ import {
   encryptWithKey,
   importKey,
   isVaultUpdated,
-  type KeyDerivationOptions,
   updateVault,
 } from '@metamask/browser-passworder';
 import * as Sentry from '@sentry/react';
@@ -208,7 +207,7 @@ class KeychainManager {
               privates.get(this).password as string,
               serializedKeychains,
               undefined, // let library generate salt
-              RAINBOW_DERIVATION_PARAMS, // Use 600k iterations
+              RAINBOW_DERIVATION_PARAMS,
             );
             result.vault = encryptionResult.vault;
             result.exportedKeyString = encryptionResult.exportedKeyString;
