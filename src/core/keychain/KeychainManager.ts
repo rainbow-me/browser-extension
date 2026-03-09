@@ -494,7 +494,7 @@ class KeychainManager {
 
   async exportAccount(address: Address, password: string) {
     const keychain = await this.getKeychain(address);
-    if (!this.verifyPassword(password)) {
+    if (!(await this.verifyPassword(password))) {
       throw new Error('Wrong password');
     }
     return await keychain.exportAccount(address);
@@ -502,7 +502,7 @@ class KeychainManager {
 
   async exportKeychain(address: Address, password: string) {
     const keychain = await this.getKeychain(address);
-    if (!this.verifyPassword(password)) {
+    if (!(await this.verifyPassword(password))) {
       throw new Error('Wrong password');
     }
     return await keychain.exportKeychain();
