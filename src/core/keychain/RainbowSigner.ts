@@ -8,7 +8,7 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Provider } from '@ethersproject/providers';
-import { Address, ByteArray, Hex, bytesToHex, hexToBytes } from 'viem';
+import { Address, ByteArray, Hex, bytesToHex, hexToBytes, isHex } from 'viem';
 import { signMessage as viemSignMessage } from 'viem/accounts';
 
 import { defineReadOnly } from '../utils/define';
@@ -41,8 +41,16 @@ export class RainbowSigner extends Signer {
     const messageToSign =
       typeof message === 'string' ? message : bytesToHex(message as Uint8Array);
 
+    // If the message is a hex string, treat it as raw bytes (matching MetaMask behavior).
+    // This is critical for personal_sign where dapps send hex-encoded byte arrays
+    // (e.g., 32-byte Safe transaction hashes). Without this, viem would UTF-8 encode
+    // the hex characters, producing a different EIP-191 hash.
+    const messageFormat = isHex(messageToSign)
+      ? { raw: messageToSign }
+      : messageToSign;
+
     return await viemSignMessage({
-      message: messageToSign,
+      message: messageFormat,
       privateKey: this.privateKey,
     });
   }
