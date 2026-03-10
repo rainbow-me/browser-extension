@@ -11,6 +11,7 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
 import { persistOptions, queryClient } from '~/core/react-query';
+import { evictExpiredEntries } from '~/core/resources/search/tokenSearchCache';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -74,6 +75,9 @@ export function App() {
     // Report analytics events on popup open
     analytics.track(event.popupOpened);
     setTimeout(() => flushQueuedEvents(), 1000);
+
+    // Evict expired token search cache entries (fire-and-forget)
+    void evictExpiredEntries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

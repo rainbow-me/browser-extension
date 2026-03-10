@@ -1,7 +1,9 @@
-import { useQueries, useQuery } from '@tanstack/react-query';
-import qs from 'qs';
+/**
+ * React Query adapter for TokenSearch. Delegates to tokenSearchService.
+ * Service owns cache + HTTP; this layer adds RQ subscription, dedup, loading states.
+ */
+import { useQuery } from '@tanstack/react-query';
 
-import { tokenSearchHttp } from '~/core/network/tokenSearch';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -10,48 +12,26 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
+
 import {
-  SearchAsset,
-  TokenSearchAssetKey,
-  TokenSearchListId,
-  TokenSearchThreshold,
-} from '~/core/types/search';
-
-import { parseTokenSearch } from './parseTokenSearch';
-
-// ///////////////////////////////////////////////
-// Query Types
-
-type TokenSearchArgs = {
-  chainId: ChainId;
-  fromChainId?: ChainId | '';
-  list: TokenSearchListId;
-  query: string;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type TokenSearchAllNetworksArgs = {
-  keys: TokenSearchAssetKey[];
-  list: TokenSearchListId;
-  threshold: TokenSearchThreshold;
-  query: string;
-};
+  type TokenSearchArgs,
+  searchTokenSearch,
+  searchTokenSearchAllNetworks,
+} from './tokenSearchService';
 
 // ///////////////////////////////////////////////
 // Query Key
 
-export const tokenSearchQueryKey = ({
-  chainId,
-  fromChainId,
-  list,
-  query,
-}: TokenSearchArgs) =>
-  createQueryKey(
-    'TokenSearch',
-    { chainId, fromChainId, list, query },
-    { persisterVersion: 2 },
+export const tokenSearchQueryKey = (args: TokenSearchArgs) =>
+  createQueryKey('TokenSearch', args, { persisterVersion: 2 });
+
+/** Used by queryClient to exclude TokenSearch from main RQ persist (1–3.5 MB each). */
+export function isTokenSearchQueryKey(queryKey: readonly unknown[]): boolean {
+  return (
+    queryKey[1] === 'TokenSearch' || queryKey[0] === 'TokenSearchAllNetworks'
   );
+}
 
 type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 
@@ -59,28 +39,9 @@ type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 // Query Function
 
 export async function tokenSearchQueryFunction({
-  queryKey: [{ chainId, fromChainId, list, query }],
-}: QueryFunctionArgs<typeof tokenSearchQueryKey>) {
-  const queryParams: {
-    list: TokenSearchListId;
-    query?: string;
-    fromChainId?: number;
-  } = {
-    list,
-    query,
-  };
-  if (fromChainId) {
-    queryParams.fromChainId = fromChainId;
-  }
-  const url = `/${chainId}/?${qs.stringify(queryParams)}`;
-  try {
-    const tokenSearch = await tokenSearchHttp.get<{ data: SearchAsset[] }>(url);
-    return tokenSearch.data.data.map((asset) =>
-      parseTokenSearch(asset, chainId),
-    );
-  } catch (e) {
-    return [];
-  }
+  queryKey: [args],
+}: QueryFunctionArgs<typeof tokenSearchQueryKey>): Promise<SearchAsset[]> {
+  return searchTokenSearch(args);
 }
 
 type TokenSearchResult = QueryFunctionResult<typeof tokenSearchQueryFunction>;
@@ -89,7 +50,7 @@ type TokenSearchResult = QueryFunctionResult<typeof tokenSearchQueryFunction>;
 // Query Fetcher
 
 export async function fetchTokenSearch(
-  { chainId, fromChainId, list, query }: TokenSearchArgs,
+  args: TokenSearchArgs,
   config: QueryConfig<
     TokenSearchResult,
     Error,
@@ -97,13 +58,8 @@ export async function fetchTokenSearch(
     TokenSearchQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery({
-    queryKey: tokenSearchQueryKey({
-      chainId,
-      fromChainId,
-      list,
-      query,
-    }),
+  return queryClient.fetchQuery({
+    queryKey: tokenSearchQueryKey(args),
     queryFn: tokenSearchQueryFunction,
     ...config,
   });
@@ -113,7 +69,7 @@ export async function fetchTokenSearch(
 // Query Hook
 
 export function useTokenSearch(
-  { chainId, fromChainId, list, query }: TokenSearchArgs,
+  args: TokenSearchArgs,
   config: QueryConfig<
     TokenSearchResult,
     Error,
@@ -122,46 +78,56 @@ export function useTokenSearch(
   > = {},
 ) {
   return useQuery({
-    queryKey: tokenSearchQueryKey({
-      chainId,
-      fromChainId,
-      list,
-      query,
-    }),
+    queryKey: tokenSearchQueryKey(args),
     queryFn: tokenSearchQueryFunction,
     ...config,
   });
 }
 
 // ///////////////////////////////////////////////
-// Query Hook
+// All Networks
+
+const tokenSearchAllNetworksQueryKey = ({
+  list,
+  query,
+}: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>) =>
+  ['TokenSearchAllNetworks', { list, query }] as const;
+
+type TokenSearchAllNetworksQueryKey = readonly [
+  ...ReturnType<typeof tokenSearchAllNetworksQueryKey>,
+  number[],
+];
 
 export function useTokenSearchAllNetworks(
-  { list, query }: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>,
-  config: QueryConfig<
-    TokenSearchResult,
-    Error,
-    TokenSearchResult,
-    TokenSearchQueryKey
+  args: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>,
+  config: Omit<
+    QueryConfig<
+      SearchAsset[],
+      Error,
+      SearchAsset[],
+      TokenSearchAllNetworksQueryKey
+    >,
+    'queryKey' | 'queryFn'
   > = {},
 ) {
-  const backendSupportedChains = useNetworkStore((state) =>
+  const chainIds = useNetworkStore((state) =>
     state.getBackendSupportedChainIds(),
   );
 
-  const queries = useQueries({
-    queries: backendSupportedChains.map((chainId) => {
-      return {
-        queryKey: tokenSearchQueryKey({ chainId, list, query }),
-        queryFn: tokenSearchQueryFunction,
-        refetchOnWindowFocus: false,
-        ...config,
-      };
-    }),
+  const { data, isFetching } = useQuery<
+    SearchAsset[],
+    Error,
+    SearchAsset[],
+    TokenSearchAllNetworksQueryKey
+  >({
+    queryKey: [...tokenSearchAllNetworksQueryKey(args), chainIds],
+    queryFn: () => searchTokenSearchAllNetworks(args, chainIds),
+    refetchOnWindowFocus: false,
+    ...config,
   });
 
   return {
-    data: queries.map(({ data: assets }) => assets || []).flat(),
-    isFetching: queries.some(({ isFetching }) => isFetching),
+    data: data ?? [],
+    isFetching,
   };
 }
