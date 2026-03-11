@@ -48,7 +48,7 @@ export const setVaultPassword = async (
   password: string,
   newPassword: string,
 ) => {
-  if (!verifyPassword(password)) {
+  if (!(await verifyPassword(password))) {
     throw new Error('Invalid password');
   }
   return keychainManager.setPassword(newPassword);
