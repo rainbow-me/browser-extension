@@ -41,7 +41,7 @@ const privates = new WeakMap<
     hdPath: SupportedHDPath;
     getWalletForAddress(address: Address): TWallet | undefined;
     deriveWallet(index: number): RainbowHDKey;
-    addAccount(index: number): TWallet;
+    addAccount(index: number): Promise<TWallet>;
   }
 >();
 
@@ -80,23 +80,25 @@ export class HdKeychain implements IKeychain {
         return derivedWallet;
       },
 
-      addAccount: (index: number): TWallet => {
+      addAccount: async (index: number): Promise<TWallet> => {
         const _privates = privates.get(this)!;
         const derivedWallet = _privates.deriveWallet(index);
 
-        // if account already exists in a another keychain, remove it
-        keychainManager.state.keychains.forEach(async (keychain) => {
-          const keychainAccounts = await keychain.getAccounts();
-          if (keychainAccounts.includes(derivedWallet.address)) {
-            keychain.removeAccount(derivedWallet.address);
-            if (
-              keychain.type == KeychainType.ReadOnlyKeychain ||
-              keychain.type == KeychainType.KeyPairKeychain
-            ) {
-              keychainManager.removeKeychain(keychain);
+        // if account already exists in another keychain, remove it
+        await Promise.allSettled(
+          keychainManager.state.keychains.map(async (keychain) => {
+            const keychainAccounts = await keychain.getAccounts();
+            if (keychainAccounts.includes(derivedWallet.address)) {
+              await keychain.removeAccount(derivedWallet.address);
+              if (
+                keychain.type == KeychainType.ReadOnlyKeychain ||
+                keychain.type == KeychainType.KeyPairKeychain
+              ) {
+                await keychainManager.removeKeychain(keychain);
+              }
             }
-          }
-        });
+          }),
+        );
 
         if (!derivedWallet.privateKey) throw new Error('No private key');
 
@@ -154,15 +156,14 @@ export class HdKeychain implements IKeychain {
       const { accountsEnabled } = await autoDiscoverAccounts({
         deriveWallet: _privates.deriveWallet,
       });
+      // eslint-disable-next-line require-atomic-updates -- autoDiscoverAccounts doesn't touch _privates
       _privates.accountsEnabled = accountsEnabled;
     }
 
-    for (let i = 0; i < _privates.accountsEnabled; i++) {
-      // Do not re-add deleted accounts
-      if (!opts?.accountsDeleted?.includes(i)) {
-        _privates.addAccount(i);
-      }
-    }
+    const indicesToAdd = [...Array(_privates.accountsEnabled).keys()].filter(
+      (i) => !opts?.accountsDeleted?.includes(i),
+    );
+    await Promise.allSettled(indicesToAdd.map((i) => _privates.addAccount(i)));
   }
 
   async addNewAccount(): Promise<Array<Wallet>> {
@@ -182,19 +183,19 @@ export class HdKeychain implements IKeychain {
       return this.addNewAccount();
     }
 
-    _privates.addAccount(nextIndex);
+    await _privates.addAccount(nextIndex);
     _privates.accountsEnabled += 1;
 
     return _privates.wallets.map(({ wallet }) => wallet);
   }
 
-  addAccountAtIndex(index: number): Promise<Address> {
+  async addAccountAtIndex(index: number): Promise<Address> {
     const _privates = privates.get(this)!;
 
     if (_privates.wallets.some((w) => w.index === index))
       throw new Error('Account already exists');
 
-    const newAccount = _privates.addAccount(index);
+    const newAccount = await _privates.addAccount(index);
     _privates.accountsEnabled += 1;
 
     // maybe we are re-adding a previously deleted account, so remove it from the deleted list
@@ -202,7 +203,7 @@ export class HdKeychain implements IKeychain {
       (i) => i !== index,
     );
 
-    return Promise.resolve(newAccount.address as Address);
+    return newAccount.address;
   }
 
   getAccounts(): Promise<Array<Address>> {

@@ -376,18 +376,20 @@ class KeychainManager {
       currentAccounts.includes(acc),
     );
 
-    for (const account of conflictingAccounts) {
-      const wallet = await this.getWallet(account);
-      // the incoming is not readOnly, so if the conflicting is, remove it to leave the one with higher privilages
-      // if the incoming is a hd wallet that derives an account in which the pk is already in the vault, remove this pk to leave the hd as the main
-      if (
-        wallet.type === KeychainType.ReadOnlyKeychain ||
-        (incomingKeychain.type === KeychainType.HdKeychain &&
-          wallet.type === KeychainType.KeyPairKeychain)
-      ) {
-        this.removeAccount(account);
-      }
-    }
+    await Promise.allSettled(
+      conflictingAccounts.map(async (account) => {
+        const wallet = await this.getWallet(account);
+        // the incoming is not readOnly, so if the conflicting is, remove it to leave the one with higher privilages
+        // if the incoming is a hd wallet that derives an account in which the pk is already in the vault, remove this pk to leave the hd as the main
+        const shouldRemove =
+          wallet.type === KeychainType.ReadOnlyKeychain ||
+          (incomingKeychain.type === KeychainType.HdKeychain &&
+            wallet.type === KeychainType.KeyPairKeychain);
+        if (shouldRemove) {
+          await this.removeAccount(account);
+        }
+      }),
+    );
   }
 
   async checkForDuplicateInKeychain(keychain: Keychain) {
@@ -517,7 +519,7 @@ class KeychainManager {
     address: Address,
     hdPath?: string,
   ) {
-    selectedKeychain.addAccountAtIndex(index, address, hdPath);
+    await selectedKeychain.addAccountAtIndex(index, address, hdPath);
     await privates.get(this).persist();
     return address;
   }
