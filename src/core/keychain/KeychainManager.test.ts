@@ -103,7 +103,8 @@ beforeAll(async () => {
 test('[keychain/KeychainManager] :: should be able to create an HD wallet', async () => {
   await keychainManager.addNewKeychain();
   // introduce password, without this the vault will not be persisted
-  await keychainManager.setPassword('test');
+  password = 'test';
+  await keychainManager.setPassword(password);
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
   expect(isAddress(accounts[0])).toBe(true);
