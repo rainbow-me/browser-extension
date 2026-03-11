@@ -8,7 +8,6 @@ import {
   encryptWithKey,
   importKey,
   isVaultUpdated,
-  updateVaultWithDetail,
 } from '@metamask/browser-passworder';
 import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
@@ -34,21 +33,7 @@ import {
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
 
-/** Extracts salt from an encrypted vault string. Vault format matches EncryptionResult. */
-function getSaltFromVault(vault: string): string {
-  const parsed: unknown = JSON.parse(vault);
-  const salt =
-    typeof parsed === 'object' && parsed !== null && 'salt' in parsed
-      ? parsed.salt
-      : undefined;
-  if (typeof salt === 'string') {
-    return salt;
-  }
-  throw new Error('Invalid vault: missing or invalid salt');
-}
-
-// Target PBKDF2 iteration count (OWASP minimum recommended: 600,000)
-// MetaMask uses 900,000 as default, we use 600,000 for better UX while secure
+// Target PBKDF2 iteration count — matches OWASP minimum and MetaMask's production config
 const RAINBOW_DERIVATION_PARAMS: KeyDerivationOptions = {
   algorithm: 'PBKDF2',
   params: { iterations: 600_000 },
@@ -222,9 +207,12 @@ class KeychainManager {
               undefined, // let library generate salt
               RAINBOW_DERIVATION_PARAMS,
             );
+            const vaultObj = JSON.parse(encryptionResult.vault) as Awaited<
+              ReturnType<typeof decryptWithDetail>
+            >;
             result.vault = encryptionResult.vault;
             result.exportedKeyString = encryptionResult.exportedKeyString;
-            result.salt = getSaltFromVault(encryptionResult.vault);
+            result.salt = vaultObj.salt;
           } else if (encryptionKey && salt) {
             const key = await importKey(encryptionKey);
             const vaultObj = await encryptWithKey(key, serializedKeychains);
@@ -569,40 +557,12 @@ class KeychainManager {
       throw new Error('Nothing to unlock');
     }
 
-    const result = await decryptWithDetail(password, this.state.vault);
-    const { vault: decryptedVault } = result;
-    let { exportedKeyString, salt } = result;
+    const {
+      vault: decryptedVault,
+      exportedKeyString,
+      salt,
+    } = await decryptWithDetail(password, this.state.vault);
 
-    // Check if vault needs migration to stronger encryption
-    // This handles legacy vaults encrypted with 10,000 iterations (v4.1.0)
-    let migrationSucceeded = false;
-    if (!isVaultUpdated(this.state.vault, RAINBOW_DERIVATION_PARAMS)) {
-      logger.info('Migrating vault to stronger encryption (600k iterations)');
-      try {
-        const upgraded = await updateVaultWithDetail(
-          { vault: this.state.vault, exportedKeyString },
-          password,
-          RAINBOW_DERIVATION_PARAMS,
-        );
-        const newSalt = getSaltFromVault(upgraded.vault);
-        await privates.get(this)._setVaultInStorage(upgraded.vault);
-        this.state.vault = upgraded.vault;
-        exportedKeyString = upgraded.exportedKeyString;
-        salt = newSalt;
-        migrationSucceeded = true;
-        logger.info('Vault migration completed successfully');
-      } catch (migrationError) {
-        // Log but don't fail unlock - original vault still works
-        logger.error(
-          new RainbowError('Vault migration failed, using original vault', {
-            cause: migrationError,
-          }),
-        );
-      }
-    }
-
-    await privates.get(this).setEncryptionKey(exportedKeyString);
-    await privates.get(this).setSalt(salt);
     privates.get(this).password = password;
     this.state.isUnlocked = true;
 
@@ -611,9 +571,13 @@ class KeychainManager {
         return privates.get(this).restoreKeychain(serializedKeychain);
       }),
     );
-    // Skip persist() after successful migration — vault is already persisted
-    // calling persist() would redundantly re-encrypt (~100–500ms).
-    if (!migrationSucceeded) {
+
+    if (isVaultUpdated(this.state.vault, RAINBOW_DERIVATION_PARAMS)) {
+      // Vault already uses 600k iterations — cache existing key/salt for rehydration
+      await privates.get(this).setEncryptionKey(exportedKeyString);
+      await privates.get(this).setSalt(salt);
+    } else {
+      // Legacy vault (10k iterations) — re-encrypt with 600k via persist()
       await privates.get(this).persist();
     }
   }
