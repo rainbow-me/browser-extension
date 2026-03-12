@@ -33,6 +33,11 @@ import { ExecuteRapResponse } from '~/core/types/transactions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex, toHexOrUndefined } from '~/core/utils/hex';
+import {
+  createInsufficientFundsError,
+  isInsufficientFundsError,
+} from '~/core/utils/insufficientFunds';
+import { add as addNumbers, greaterThan, multiply } from '~/core/utils/numbers';
 import { getNextNonce } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -101,6 +106,11 @@ export const sendTransaction = async (
     provider,
   });
 
+  // Validate gas estimation succeeded
+  if (!gasLimit) {
+    throw new Error('Unable to estimate gas for this transaction');
+  }
+
   const nonce =
     transactionRequest.nonce ??
     (await getNextNonce({
@@ -121,9 +131,31 @@ export const sendTransaction = async (
       (selectedGas.transactionGasParams as TransactionLegacyGasParams).gasPrice,
   };
 
+  // Calculate total gas cost
+  const gasFeeAmount = transactionGasParams.maxFeePerGas
+    ? multiply(
+        gasLimit,
+        addNumbers(
+          transactionGasParams.maxFeePerGas.toString(),
+          (transactionGasParams.maxPriorityFeePerGas || '0').toString(),
+        ),
+      )
+    : multiply(gasLimit, (transactionGasParams.gasPrice || '0').toString());
+
+  // Validate balance before sending
+  const balance = await provider.getBalance(transactionRequest.from as Address);
+  const transactionValue = transactionRequest.value
+    ? BigNumber.from(transactionRequest.value).toString()
+    : '0';
+  const totalRequired = addNumbers(transactionValue, gasFeeAmount);
+
+  if (greaterThan(totalRequired, balance.toString())) {
+    throw createInsufficientFundsError();
+  }
+
   const params = {
     ...transactionRequest,
-    gasLimit: toHex(gasLimit || '0'),
+    gasLimit: toHex(gasLimit),
     value:
       transactionRequest?.value === undefined
         ? undefined
@@ -152,43 +184,51 @@ export const sendTransaction = async (
   const { type, vendor } = walletInfo;
 
   // Check the type of account it is
-  if (type === 'HardwareWalletKeychain') {
-    switch (vendor) {
-      case 'Ledger':
-        return sendTransactionFromLedger(params);
-      case 'Trezor':
-        return sendTransactionFromTrezor(params);
-      default:
-        throw new Error('Unsupported hardware wallet');
+  try {
+    if (type === 'HardwareWalletKeychain') {
+      switch (vendor) {
+        case 'Ledger':
+          return sendTransactionFromLedger(params);
+        case 'Trezor':
+          return sendTransactionFromTrezor(params);
+        default:
+          throw new Error('Unsupported hardware wallet');
+      }
+    } else {
+      const transaction = await popupClient.wallet.sendTransaction(params);
+
+      const transactionResponse: TransactionResponse = {
+        ...transaction,
+        wait: async () => {
+          throw new Error('Not implemented');
+        },
+        to: transaction.to ?? undefined,
+        gasLimit: BigNumber.from(transaction.gasLimit),
+        value: BigNumber.from(transaction.value),
+        gasPrice:
+          transaction.gasPrice !== undefined && transaction.gasPrice !== null
+            ? BigNumber.from(transaction.gasPrice)
+            : undefined,
+        maxFeePerGas:
+          transaction.maxFeePerGas !== undefined &&
+          transaction.maxFeePerGas !== null
+            ? BigNumber.from(transaction.maxFeePerGas)
+            : undefined,
+        maxPriorityFeePerGas:
+          transaction.maxPriorityFeePerGas !== undefined &&
+          transaction.maxPriorityFeePerGas !== null
+            ? BigNumber.from(transaction.maxPriorityFeePerGas)
+            : undefined,
+      };
+
+      return transactionResponse;
     }
-  } else {
-    const transaction = await popupClient.wallet.sendTransaction(params);
-
-    const transactionResponse: TransactionResponse = {
-      ...transaction,
-      wait: async () => {
-        throw new Error('Not implemented');
-      },
-      to: transaction.to ?? undefined,
-      gasLimit: BigNumber.from(transaction.gasLimit),
-      value: BigNumber.from(transaction.value),
-      gasPrice:
-        transaction.gasPrice !== undefined && transaction.gasPrice !== null
-          ? BigNumber.from(transaction.gasPrice)
-          : undefined,
-      maxFeePerGas:
-        transaction.maxFeePerGas !== undefined &&
-        transaction.maxFeePerGas !== null
-          ? BigNumber.from(transaction.maxFeePerGas)
-          : undefined,
-      maxPriorityFeePerGas:
-        transaction.maxPriorityFeePerGas !== undefined &&
-        transaction.maxPriorityFeePerGas !== null
-          ? BigNumber.from(transaction.maxPriorityFeePerGas)
-          : undefined,
-    };
-
-    return transactionResponse;
+  } catch (error) {
+    // Re-throw insufficient funds errors as-is so they can be handled properly
+    if (isInsufficientFundsError(error)) {
+      throw error;
+    }
+    throw error;
   }
 };
 

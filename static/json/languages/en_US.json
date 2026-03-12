@@ -1387,7 +1387,8 @@
     "no_wallet_name_set": "No wallet name set",
     "report_error": "Report issue",
     "sending_transaction": "Error sending transaction",
-    "executing_swap": "Error executing swap"
+    "executing_swap": "Error executing swap",
+    "insufficient_funds_description": "You don't have enough funds to complete this transaction. Make sure you have enough to cover both the transaction amount and gas fees."
   },
   "common_titles": {
     "before_you_proceed": "Before you proceed"
