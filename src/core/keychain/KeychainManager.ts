@@ -1,11 +1,13 @@
 /* eslint-disable no-await-in-loop */
 import {
+  type KeyDerivationOptions,
   decrypt,
   decryptWithDetail,
   decryptWithKey,
   encryptWithDetail,
   encryptWithKey,
   importKey,
+  isVaultUpdated,
 } from '@metamask/browser-passworder';
 import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
@@ -30,6 +32,25 @@ import {
   ReadOnlyKeychain,
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
+
+/** Extracts salt from an encrypted vault string. Vault format matches EncryptionResult. */
+function getSaltFromVault(vault: string): string {
+  const parsed: unknown = JSON.parse(vault);
+  const salt =
+    typeof parsed === 'object' && parsed !== null && 'salt' in parsed
+      ? parsed.salt
+      : undefined;
+  if (typeof salt === 'string') {
+    return salt;
+  }
+  throw new Error('Invalid vault: missing or invalid salt');
+}
+
+// Target PBKDF2 iteration count — matches OWASP minimum and MetaMask's production config
+const RAINBOW_DERIVATION_PARAMS: KeyDerivationOptions = {
+  algorithm: 'PBKDF2',
+  params: { iterations: 600_000 },
+};
 
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -192,16 +213,16 @@ class KeychainManager {
           // hasKeychains is automatically maintained by setKeychains setter
           if (pwd) {
             // Generate a new encryption key every time we save and have a password
+            // Use stronger PBKDF2 params (600k iterations) for new encryptions
             const encryptionResult = await encryptWithDetail(
               privates.get(this).password as string,
               serializedKeychains,
+              undefined, // let library generate salt
+              RAINBOW_DERIVATION_PARAMS,
             );
             result.vault = encryptionResult.vault;
             result.exportedKeyString = encryptionResult.exportedKeyString;
-            const vaultObj = JSON.parse(encryptionResult.vault) as Awaited<
-              ReturnType<typeof decryptWithDetail>
-            >;
-            result.salt = vaultObj.salt;
+            result.salt = getSaltFromVault(encryptionResult.vault);
           } else if (encryptionKey && salt) {
             const key = await importKey(encryptionKey);
             const vaultObj = await encryptWithKey(key, serializedKeychains);
@@ -214,25 +235,23 @@ class KeychainManager {
           // Without encryption, we can't securely store the vault
           if (result.vault) {
             this.state.vault = result.vault;
-            await privates.get(this).setEncryptionKey(result.exportedKeyString);
-            await privates.get(this).setSalt(result.salt);
+            await privates
+              .get(this)
+              .setEncryptionKeyAndSalt(result.exportedKeyString, result.salt);
             // Use centralized vault setter - vault is non-empty, safe to persist
             await privates.get(this)._setVaultInStorage(result.vault);
           }
         }
       },
 
-      setSalt: (val: string | null) => {
-        return SessionStorage.set('salt', val);
-      },
-      getSalt: () => {
-        return SessionStorage.get('salt');
-      },
-      setEncryptionKey: (val: string | null) => {
-        return SessionStorage.set('encryptionKey', val);
-      },
-      getEncryptionKey: () => {
-        return SessionStorage.get('encryptionKey');
+      getSalt: () => SessionStorage.get('salt'),
+      getEncryptionKey: () => SessionStorage.get('encryptionKey'),
+      /** Atomically set encryptionKey and salt in a single session write. */
+      setEncryptionKeyAndSalt: (
+        encryptionKey: string | null,
+        salt: string | null,
+      ) => {
+        return SessionStorage.setMultiple({ encryptionKey, salt });
       },
       /**
        * Sets the keychains array and automatically updates hasKeychains in SessionStorage.
@@ -523,8 +542,7 @@ class KeychainManager {
     privates.get(this).setKeychains([]);
     this.state.isUnlocked = false;
     privates.get(this).password = null;
-    await privates.get(this).setEncryptionKey(null);
-    await privates.get(this).setSalt(null);
+    await privates.get(this).setEncryptionKeyAndSalt(null, null);
   }
 
   async wipe() {
@@ -537,8 +555,7 @@ class KeychainManager {
 
     // Use centralized vault setter - explicitly allow null for wipe operation
     await privates.get(this)._setVaultInStorage(null, false, true);
-    await privates.get(this).setEncryptionKey(null);
-    await privates.get(this).setSalt(null);
+    await privates.get(this).setEncryptionKeyAndSalt(null, null);
   }
 
   async unlock(password: string) {
@@ -552,8 +569,6 @@ class KeychainManager {
       salt,
     } = await decryptWithDetail(password, this.state.vault);
 
-    await privates.get(this).setEncryptionKey(exportedKeyString);
-    await privates.get(this).setSalt(salt);
     privates.get(this).password = password;
     this.state.isUnlocked = true;
 
@@ -562,7 +577,13 @@ class KeychainManager {
         return privates.get(this).restoreKeychain(serializedKeychain);
       }),
     );
-    await privates.get(this).persist();
+    if (isVaultUpdated(this.state.vault, RAINBOW_DERIVATION_PARAMS)) {
+      // Vault already uses 600k iterations — cache existing key/salt for rehydration
+      await privates.get(this).setEncryptionKeyAndSalt(exportedKeyString, salt);
+    } else {
+      // Legacy vault (10k iterations) — re-encrypt with 600k via persist()
+      await privates.get(this).persist();
+    }
   }
 
   async getAccounts() {
