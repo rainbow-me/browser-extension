@@ -10,8 +10,9 @@ The current `@rainbow-me/provider` (v0.1.3) is a tightly coupled package that mi
 - **Transaction logic duplication**: Each client (extension, mobile) must reimplement transaction flows (swaps, delegation, sends)
 - **Untestable in isolation**: Integration testing requires the full browser extension environment
 - **ethers.js legacy**: Still bridges viem → ethers.js for signing, adding unnecessary dependency weight
+- **Ad-hoc messenger protocol**: The current `bridgeMessenger` / `providerRequestTransport` uses untyped topic-based messaging without schema validation; the codebase has already moved to oRPC (`@orpc/contract` + `@orpc/server` + `@orpc/client`) for popup ↔ background communication — the provider channel should follow suit
 
-The redesign creates a monorepo that cleanly separates the **provider** (what dApps talk to) from the **wallet adapter** (what the host wallet implements), with pluggable transaction modules and EIP sub-packages.
+The redesign creates a monorepo that cleanly separates the **provider** (what dApps talk to) from the **wallet engine** (what processes requests), with oRPC-defined contracts at every boundary, pluggable transaction modules, and EIP sub-packages.
 
 ---
 
@@ -24,12 +25,12 @@ Standalone monorepo, consumed by both `rainbow-me/browser-extension` and `rainbo
 ```
 rainbow-me/provider/
 ├── packages/
-│   ├── core/                    # @rainbow-me/provider-core
+│   ├── eip1193/                 # @rainbow-me/provider-eip1193
+│   ├── engine/                  # @rainbow-me/provider-engine
 │   ├── eip-2255/                # @rainbow-me/provider-eip2255
 │   ├── eip-5792/                # @rainbow-me/provider-eip5792
 │   ├── inpage/                  # @rainbow-me/provider-inpage
-│   ├── handler/                 # @rainbow-me/provider-handler
-│   └── test-utils/              # @rainbow-me/provider-test-utils
+│   └── contracts/               # @rainbow-me/provider-contracts
 ├── package.json                 # Workspace root (turborepo)
 ├── turbo.json
 ├── tsconfig.base.json
@@ -38,9 +39,6 @@ rainbow-me/provider/
 
 > **EIP-6963 (MIPD):** No dedicated package. The `mipd` library already provides
 > `announceProvider()` — we call it directly from `provider-inpage`. No need to wrap it.
->
-> **EIP-1193:** Not a separate package — it IS `provider-core`. The provider implements
-> viem's `EIP1193Provider` interface directly.
 
 ---
 
@@ -48,38 +46,116 @@ rainbow-me/provider/
 
 | EIP | Standard | Where it lives | Status |
 |-----|----------|----------------|--------|
-| **EIP-1193** | Provider API (`request`, events) | `provider-core` — the provider IS this | Already handled, re-implemented on viem types |
+| **EIP-1193** | Provider API (`request`, events) | `provider-eip1193` — the provider IS this | Already handled, re-implemented on viem types |
 | **EIP-6963** | Multi Injected Provider Discovery | `provider-inpage` calls `mipd` directly | Already handled, no wrapper needed |
 | **EIP-2255** | Wallet Permissions | `provider-eip2255` middleware | **New** — `wallet_requestPermissions`, `wallet_getPermissions`, `wallet_revokePermissions` |
 | **EIP-5792** | Wallet Call Batching | `provider-eip5792` middleware | **New** — `wallet_sendCalls`, `wallet_getCapabilities`, `wallet_getCallsStatus` |
-| **EIP-3085** | `wallet_addEthereumChain` | `provider-handler` `methodRouterMiddleware` → `WalletAdapter.addChain()` | Already handled |
-| **EIP-3326** | `wallet_switchEthereumChain` | `provider-handler` `methodRouterMiddleware` → `WalletAdapter.switchChain()` | Already handled |
-| **EIP-747** | `wallet_watchAsset` | `provider-handler` `methodRouterMiddleware` → `WalletAdapter` | Already handled |
+| **EIP-3085** | `wallet_addEthereumChain` | `provider-engine` `methodRouterMiddleware` → `WalletAdapter.addChain()` | Already handled |
+| **EIP-3326** | `wallet_switchEthereumChain` | `provider-engine` `methodRouterMiddleware` → `WalletAdapter.switchChain()` | Already handled |
+| **EIP-747** | `wallet_watchAsset` | `provider-engine` `methodRouterMiddleware` → `WalletAdapter` | Already handled |
 | **EIP-7702** | Account delegation | External: `@rainbow-me/delegation` bound via `TransactionExecutor` | Already handled externally |
 
-EIPs that are single RPC methods (3085, 3326, 747) don't need their own packages — they're just method routes in the handler's `methodRouterMiddleware` that dispatch to `WalletAdapter` methods. Only EIPs with substantial state, multiple methods, or complex behavior (2255, 5792) warrant dedicated middleware packages.
+EIPs that are single RPC methods (3085, 3326, 747) don't need their own packages — they're just method routes in the engine's `methodRouterMiddleware` that dispatch to `WalletAdapter` methods. Only EIPs with substantial state, multiple methods, or complex behavior (2255, 5792) warrant dedicated middleware packages.
 
 ---
 
 ## Package Responsibilities
 
-### 1. `@rainbow-me/provider-core`
+### 1. `@rainbow-me/provider-contracts`
 
-The **platform-agnostic foundation**. Zero browser/mobile dependencies.
+**The oRPC contract definitions shared between provider and engine.** This is the single source of truth for every message that crosses the boundary. Both sides import from here.
+
+**Owns:**
+- oRPC contracts (`@orpc/contract` + zod) for every JSON-RPC method the provider can call
+- Request/response schemas for all supported RPC methods
+- Event schemas (accountsChanged, chainChanged, connect, disconnect)
+- Shared types (Address, Hex, ChainId, Session, etc.) re-exported from viem where possible
+
+**Key structure:**
+
+```typescript
+import { oc } from '@orpc/contract';
+import z from 'zod';
+import { addressSchema, hexSchema } from './schemas';
+
+// -- JSON-RPC request envelope --
+export const providerRequestContract = oc
+  .input(z.object({
+    method: z.string(),
+    params: z.array(z.unknown()).optional(),
+  }))
+  .output(z.unknown());
+
+// -- Typed per-method contracts --
+export const ethRequestAccountsContract = oc
+  .input(z.object({}))
+  .output(z.array(addressSchema));
+
+export const ethSendTransactionContract = oc
+  .input(z.object({
+    to: addressSchema.optional(),
+    from: addressSchema,
+    value: hexSchema.optional(),
+    data: hexSchema.optional(),
+    gas: hexSchema.optional(),
+    gasPrice: hexSchema.optional(),
+    maxFeePerGas: hexSchema.optional(),
+    maxPriorityFeePerGas: hexSchema.optional(),
+    nonce: hexSchema.optional(),
+    chainId: hexSchema.optional(),
+  }))
+  .output(hexSchema); // transaction hash
+
+export const personalSignContract = oc
+  .input(z.object({
+    message: hexSchema,
+    address: addressSchema,
+  }))
+  .output(hexSchema);
+
+export const walletSwitchEthereumChainContract = oc
+  .input(z.object({
+    chainId: hexSchema,
+  }))
+  .output(z.null());
+
+// -- Event contracts --
+export const accountsChangedEvent = z.array(addressSchema);
+export const chainChangedEvent = hexSchema;
+
+// -- Router grouping all method contracts --
+export const providerRouter = {
+  eth_requestAccounts: ethRequestAccountsContract,
+  eth_sendTransaction: ethSendTransactionContract,
+  personal_sign: personalSignContract,
+  wallet_switchEthereumChain: walletSwitchEthereumChainContract,
+  // ...
+};
+```
+
+**Why a dedicated package:** The contract is the API boundary. The inpage side (provider) and the wallet side (engine) both depend on it, but neither depends on the other. This is the same pattern the codebase uses today — `src/entries/background/contracts/popup/` defines contracts that both the popup client and background procedures import.
+
+---
+
+### 2. `@rainbow-me/provider-eip1193`
+
+The **platform-agnostic EIP-1193 provider**. What dApps talk to. Zero browser/mobile dependencies.
 
 **Owns:**
 - `RainbowEIP1193Provider` class implementing viem's `EIP1193Provider` interface
 - Transport abstraction: `ProviderTransport` interface (send request, receive response)
 - Event emitting (EIP-1193 events: `accountsChanged`, `chainChanged`, `connect`, `disconnect`)
-- JSON-RPC request/response types
 - Provider state (connected accounts, active chain)
 
 **Key interfaces:**
 
 ```typescript
+import type { EIP1193Provider } from 'viem';
+
 // The transport contract — implemented differently per platform
+// This is the raw channel. oRPC link implementations sit on top.
 interface ProviderTransport {
-  request(args: EIP1193RequestFn): Promise<unknown>;
+  request(args: { method: string; params?: unknown[] }): Promise<unknown>;
   on(event: string, handler: (...args: unknown[]) => void): void;
   removeListener(event: string, handler: (...args: unknown[]) => void): void;
 }
@@ -89,27 +165,26 @@ class RainbowEIP1193Provider implements EIP1193Provider {
   constructor(transport: ProviderTransport);
   request(args: { method: string; params?: unknown[] }): Promise<unknown>;
   on(event: string, listener: (...args: unknown[]) => void): this;
-  // ...standard EIP-1193 methods
+  removeListener(event: string, listener: (...args: unknown[]) => void): this;
 }
 ```
 
 **viem integration point:** The provider IS a valid `EIP1193Provider` that can be passed directly to viem's `custom(provider)` transport or `createWalletClient({ transport: custom(provider) })`.
 
-**Files to reference in current codebase:**
-- `src/entries/inpage/index.ts` (current provider construction, lines 37-63)
-- `src/core/transports/providerRequestTransport.ts` (current transport)
+**Depends on:** `@rainbow-me/provider-contracts` (for schema validation of responses)
 
 ---
 
-### 2. `@rainbow-me/provider-handler`
+### 3. `@rainbow-me/provider-engine`
 
-The **wallet-side request handler**. Runs in the privileged context (background script, mobile app process). This is the counterpart to the provider — it receives RPC requests and routes them through a middleware pipeline.
+The **wallet-side request processor**. Runs in the privileged context (background script, mobile app process). Receives RPC requests and routes them through a middleware pipeline. The "engine" name reflects what it does — it's the execution engine for provider requests, not a passive handler.
 
 **Owns:**
-- `RequestHandler` class with composable middleware pipeline
+- `ProviderEngine` class with composable middleware pipeline
 - Built-in middleware: rate limiting, session management, chain validation, logging
 - `WalletAdapter` interface — **the clear boundary for wallet clients**
-- Method routing to the correct handler (read-only RPC vs. signing vs. chain management)
+- Method routing to the correct processor (read-only RPC vs. signing vs. chain management)
+- oRPC server procedures implementing `@rainbow-me/provider-contracts`
 
 **Key interfaces:**
 
@@ -146,11 +221,30 @@ type Middleware = (
   next: () => Promise<JsonRpcResponse>
 ) => Promise<JsonRpcResponse>;
 
-class RequestHandler {
+class ProviderEngine {
   constructor(adapter: WalletAdapter, middlewares?: Middleware[]);
   handle(request: JsonRpcRequest, context: RequestContext): Promise<JsonRpcResponse>;
   use(middleware: Middleware): void;
 }
+```
+
+**oRPC integration — implementing the contracts:**
+
+The engine implements the provider contracts as oRPC server procedures, following the same pattern as the existing popup router:
+
+```typescript
+import { implement } from '@orpc/server';
+import { providerRouter } from '@rainbow-me/provider-contracts';
+
+// Create typed server procedures from contracts
+const providerOs = implement(providerRouter).$context<ProviderContext>();
+
+// Each method is a typed procedure
+export const ethRequestAccountsProcedure = providerOs.eth_requestAccounts
+  .handler(async ({ context }) => {
+    // flows through middleware pipeline, then to adapter
+    return engine.handle({ method: 'eth_requestAccounts' }, context);
+  });
 ```
 
 **Built-in middleware stack (ordered):**
@@ -167,28 +261,27 @@ class RequestHandler {
 
 Each middleware can short-circuit (return early), transform the request, or delegate to `next()`. This matches MetaMask's `json-rpc-engine` pattern but with async/await instead of callback-based flow.
 
-**Files to reference in current codebase:**
-- `src/entries/background/handlers/handleProviderRequest.ts` (current handler, all 407 lines)
-- `src/core/state/requests/index.ts` (pending request queue)
+**Depends on:** `@rainbow-me/provider-contracts`
 
 ---
 
-### 3. `@rainbow-me/provider-eip2255`
+### 4. `@rainbow-me/provider-eip2255`
 
-Contained EIP-2255 (wallet permissions) implementation as handler middleware.
+Contained EIP-2255 (wallet permissions) implementation as engine middleware.
 
 **Owns:**
-- `wallet_requestPermissions` handler — dApps request permission scopes (e.g. `eth_accounts`)
-- `wallet_getPermissions` handler — returns currently granted permissions for an origin
-- `wallet_revokePermissions` handler — revoke previously granted permissions
+- `wallet_requestPermissions` procedure — dApps request permission scopes (e.g. `eth_accounts`)
+- `wallet_getPermissions` procedure — returns currently granted permissions for an origin
+- `wallet_revokePermissions` procedure — revoke previously granted permissions
 - Permission types and caveat system (restrict permissions by chain, account, etc.)
+- oRPC contracts for the three methods (added to `provider-contracts` or co-located)
 
-**Exports as middleware** for `@rainbow-me/provider-handler`:
+**Exports as middleware** for `@rainbow-me/provider-engine`:
 
 ```typescript
 import { eip2255Middleware } from '@rainbow-me/provider-eip2255';
 
-const handler = new RequestHandler(adapter, [
+const engine = new ProviderEngine(adapter, [
   eip2255Middleware({ permissionStore }),
 ]);
 ```
@@ -199,23 +292,24 @@ const handler = new RequestHandler(adapter, [
 
 ---
 
-### 4. `@rainbow-me/provider-eip5792`
+### 5. `@rainbow-me/provider-eip5792`
 
 Contained EIP-5792 (wallet call batching) implementation.
 
 **Owns:**
-- `wallet_getCapabilities` handler
-- `wallet_sendCalls` handler (composes with `@rainbow-me/delegation` for atomic execution)
-- `wallet_getCallsStatus` handler
-- `wallet_showCallsStatus` handler
+- `wallet_getCapabilities` procedure
+- `wallet_sendCalls` procedure (composes with `@rainbow-me/delegation` for atomic execution)
+- `wallet_getCallsStatus` procedure
+- `wallet_showCallsStatus` procedure
 - Capability advertisement per chain
+- oRPC contracts for these methods
 
-**Exports as middleware** for `@rainbow-me/provider-handler`:
+**Exports as middleware** for `@rainbow-me/provider-engine`:
 
 ```typescript
 import { eip5792Middleware } from '@rainbow-me/provider-eip5792';
 
-const handler = new RequestHandler(adapter, [
+const engine = new ProviderEngine(adapter, [
   eip5792Middleware({ delegation: delegationModule }),
 ]);
 ```
@@ -231,59 +325,103 @@ interface TransactionExecutor {
 
 ---
 
-### 5. `@rainbow-me/provider-inpage`
+### 6. `@rainbow-me/provider-inpage`
 
 Browser-extension-specific inpage script bundler. **Not used by mobile.**
 
 **Owns:**
 - Inpage entry point script (replaces `src/entries/inpage/index.ts`)
-- `PostMessageTransport` implementing `ProviderTransport` over `window.postMessage`
+- oRPC client using `@orpc/client` + custom link for `window.postMessage` transport
 - `window.ethereum` / `window.rainbow` injection
 - Wallet router (`window.rnbwWalletRouter`)
 - Document type guards (`shouldInjectProvider`)
 - Webpack/build config for producing `inpage.js` bundle
 
 **Assembles:**
-- Creates `RainbowEIP1193Provider` from `@rainbow-me/provider-core`
+- Creates `RainbowEIP1193Provider` from `@rainbow-me/provider-eip1193`
 - Calls `announceProvider()` from `mipd` directly (EIP-6963 — no wrapper package needed)
-- Wires `PostMessageTransport` for browser extension messaging
+- Wires oRPC client link that sends requests through the content script bridge
 
 ---
 
-### 6. `@rainbow-me/provider-test-utils`
+## oRPC Messenger Architecture
 
-Integration testing utilities.
+The current codebase uses oRPC for popup ↔ background communication via `@orpc/server/message-port` and `@orpc/client/message-port` over `chrome.runtime.Port`. The provider channel follows the same pattern but needs to traverse: **inpage → content script → background**.
 
-**Owns:**
-- `MockWalletAdapter` — in-memory wallet adapter with configurable accounts, chains, signing
-- `createTestProvider()` — wires provider ↔ handler via direct function call transport (no messaging layer)
-- `MockTransport` — direct in-process transport (no postMessage, no chrome messaging)
-- Test fixtures for common scenarios (connect, sign, switch chain, EIP-5792 batching)
+### Current provider message flow (being replaced)
 
-```typescript
-// Full integration test without browser extension:
-const { provider, handler } = createTestProvider({
-  accounts: ['0xabc...'],
-  chainId: 1,
-});
-
-const accounts = await provider.request({ method: 'eth_requestAccounts' });
-expect(accounts).toEqual(['0xabc...']);
+```
+inpage: bridgeMessenger.send('providerRequest', payload)
+  → content script: windowMessenger relay → tabMessenger relay
+    → background: providerRequestTransport.reply()
 ```
 
----
+This is untyped, topic-based, with manual serialization.
 
-## Transport Architecture (Cross-Platform)
+### New oRPC-based flow
 
-The key to cross-platform compatibility is the `ProviderTransport` abstraction. Each platform provides its own:
+```
+inpage: orpcClient.eth_requestAccounts()          # typed, schema-validated
+  → PostMessageLink (window.postMessage)
+    → content script: relay (transparent bridge)
+      → chrome.runtime.sendMessage
+        → background: RPCHandler(providerRouter)   # typed procedures
+```
 
-| Platform | Transport Implementation | Communication Channel |
-|----------|------------------------|----------------------|
-| Browser Extension | `PostMessageTransport` | window.postMessage → content script relay → chrome.runtime |
-| Mobile (React Native) | `BridgeTransport` | React Native bridge / JSI |
-| Tests | `DirectTransport` | Direct function calls (in-process) |
+**Three layers:**
 
-The provider core never knows which transport it's using.
+#### 1. Contracts (`@rainbow-me/provider-contracts`)
+
+Shared zod schemas define every request/response. Both client and server import these.
+
+#### 2. Client side (`@rainbow-me/provider-inpage`)
+
+```typescript
+import { createORPCClient } from '@orpc/client';
+import { providerRouter } from '@rainbow-me/provider-contracts';
+
+// Custom oRPC link that sends over window.postMessage
+// (content script bridges to chrome.runtime)
+const link = new PostMessageLink({
+  targetOrigin: '*',
+  channel: 'rainbow-provider',
+});
+
+const providerClient = createORPCClient(link);
+```
+
+The `RainbowEIP1193Provider` wraps this client, translating EIP-1193 `request({ method, params })` calls into typed oRPC procedure calls.
+
+#### 3. Server side (`@rainbow-me/provider-engine`)
+
+```typescript
+import { implement } from '@orpc/server';
+import { RPCHandler } from '@orpc/server/message-port';
+import { providerRouter } from '@rainbow-me/provider-contracts';
+
+const procedures = implement(providerRouter).$context<ProviderContext>();
+
+// Background installs the handler
+// Extension: listens on chrome.runtime.onMessage (via content script relay)
+// Mobile: listens on RN bridge
+const handler = new RPCHandler(procedures);
+```
+
+#### Content script relay
+
+The content script remains a transparent bridge — it relays oRPC messages between `window.postMessage` (inpage) and `chrome.runtime` (background). It doesn't need to understand the oRPC protocol; it just forwards the raw message payloads. This is identical to the current `setupBridgeMessengerRelay()` pattern.
+
+#### Mobile
+
+On mobile, there's no content script. The oRPC client link connects directly to the engine — either via React Native bridge, JSI, or even direct in-process function calls. The contracts are identical; only the link implementation changes.
+
+### oRPC link implementations per platform
+
+| Platform | Client Link | Server Handler | Channel |
+|----------|------------|----------------|---------|
+| Browser Extension | `PostMessageLink` | `RPCHandler` via chrome.runtime relay | window.postMessage → content script → chrome.runtime |
+| Mobile (React Native) | `BridgeLink` | `RPCHandler` via RN bridge | React Native bridge / JSI |
+| Tests | `DirectLink` | Direct function call | In-process (no serialization) |
 
 ---
 
@@ -293,8 +431,8 @@ Instead of maintaining a parallel provider implementation, lean on viem througho
 
 1. **Provider IS `EIP1193Provider`** — viem's type, not a custom one
 2. **Wallet clients use viem directly** — `createWalletClient({ transport: custom(provider) })` works out of the box
-3. **Read-only RPC** — `WalletAdapter.rpcRequest()` delegates to viem `PublicClient` on the handler side
-4. **Signing** — handler side uses viem's `Account` abstraction and `signMessage`, `signTypedData`, `sendTransaction` from viem actions
+3. **Read-only RPC** — `WalletAdapter.rpcRequest()` delegates to viem `PublicClient` on the engine side
+4. **Signing** — engine side uses viem's `Account` abstraction and `signMessage`, `signTypedData`, `sendTransaction` from viem actions
 5. **Drop ethers.js** — Remove the `clientToProvider` bridge; use viem wallet clients for signing directly
 
 **Current files affected:**
@@ -364,10 +502,10 @@ After migration, both paths use viem. The sequential path switches to `walletCli
 
 ## Transaction Module Binding
 
-Transaction execution is **not** part of the provider. Instead, the provider handler delegates to pluggable modules via interfaces:
+Transaction execution is **not** part of the provider. Instead, the provider engine delegates to pluggable modules via interfaces:
 
 ```
-@rainbow-me/provider-handler
+@rainbow-me/provider-engine
     │
     ├── WalletAdapter.sendTransaction()
     │       │
@@ -389,13 +527,53 @@ The host wallet's `WalletAdapter` implementation decides routing. The provider p
 
 ---
 
+## Testing Strategy
+
+No separate test-utils package. Integration test fixtures live alongside each package's tests using vitest. The `DirectLink` (in-process oRPC link) is a small utility exported from `provider-engine` for testing.
+
+### Unit Tests (per package)
+- `provider-eip1193`: Provider event emission, request forwarding, state management
+- `provider-engine`: Middleware pipeline, method routing, rate limiting
+- `provider-contracts`: Schema validation round-trips
+- `eip-2255`: Permission granting, revocation, caveat enforcement
+- `eip-5792`: Capability reporting, call batching, status tracking
+
+### Integration Tests (in `provider-engine`)
+- Full request lifecycle: provider → engine → adapter → response (via `DirectLink`)
+- oRPC contract validation end-to-end — invalid requests rejected by schema
+- Chain switching flows
+- Account connection/disconnection
+- EIP-5792 batched transactions with mock delegation executor
+- Error scenarios: user rejection, rate limiting, unsupported chains
+- Multi-origin session isolation
+
+```typescript
+// Integration test — no browser, no messaging, just oRPC direct link
+import { createTestEngine } from '@rainbow-me/provider-engine/testing';
+
+const { provider, engine } = createTestEngine({
+  accounts: ['0xabc...'],
+  chainId: 1,
+});
+
+const accounts = await provider.request({ method: 'eth_requestAccounts' });
+expect(accounts).toEqual(['0xabc...']);
+```
+
+### E2E Tests (browser extension specific)
+- Existing E2E suite (`yarn e2e:dappInteractions`) validates the assembled system
+- No changes needed to E2E tests — they test the same `window.ethereum` API
+
+---
+
 ## Migration Path (Browser Extension)
 
-### Phase 1: Create monorepo, implement `provider-core` and `provider-handler`
+### Phase 1: Create monorepo, implement `provider-contracts`, `provider-eip1193`, and `provider-engine`
 - Set up monorepo with turborepo
-- Implement `RainbowEIP1193Provider` and `RequestHandler`
-- Implement `WalletAdapter` interface
-- Write `provider-test-utils` with `DirectTransport`
+- Define oRPC contracts for all supported RPC methods
+- Implement `RainbowEIP1193Provider` and `ProviderEngine`
+- Define `WalletAdapter` interface
+- `DirectLink` for in-process testing
 - Full integration test suite passing
 
 ### Phase 2: Implement EIP middleware packages
@@ -403,43 +581,23 @@ The host wallet's `WalletAdapter` implementation decides routing. The provider p
 - `provider-eip5792` — wallet call batching middleware (wallet_sendCalls, wallet_getCapabilities, wallet_getCallsStatus)
 
 ### Phase 3: Build `provider-inpage`
-- `PostMessageTransport` wrapping current messenger system
-- New inpage entry point assembling core + `mipd` for EIP-6963
+- `PostMessageLink` (oRPC client link over window.postMessage)
+- Content script relay (bridges postMessage ↔ chrome.runtime)
+- New inpage entry point assembling eip1193 + `mipd` for EIP-6963
 - Bundle config producing `inpage.js`
 
 ### Phase 4: Integrate into browser extension
 - Implement `WalletAdapter` in the extension's background script (replacing `handleProviderRequest.ts`)
-- Wire `RequestHandler` with extension's existing state stores
+- Install oRPC `RPCHandler` with engine procedures on chrome.runtime listener
 - Replace `@rainbow-me/provider` v0.1.3 dependency with new packages
 - Update `src/entries/inpage/index.ts` to use `@rainbow-me/provider-inpage`
-- Update `src/entries/background/handlers/handleProviderRequest.ts` to use `@rainbow-me/provider-handler`
+- Update `src/entries/background/handlers/handleProviderRequest.ts` to use `@rainbow-me/provider-engine`
+- Remove old messenger/transport code (`bridgeMessenger`, `providerRequestTransport`)
 
 ### Phase 5: Mobile adoption
-- Implement `BridgeTransport` for React Native
+- Implement `BridgeLink` for React Native (oRPC client link over RN bridge)
 - Implement `WalletAdapter` using mobile wallet's keychain/state
-- Same provider-core, same handler, same EIP modules
-
----
-
-## Testing Strategy
-
-### Unit Tests (per package)
-- `provider-core`: Provider event emission, request forwarding, state management
-- `provider-handler`: Middleware pipeline, method routing, rate limiting
-- `eip-2255`: Permission granting, revocation, caveat enforcement
-- `eip-5792`: Capability reporting, call batching, status tracking
-
-### Integration Tests (via `provider-test-utils`)
-- Full request lifecycle: dApp → provider → handler → adapter → response
-- Chain switching flows
-- Account connection/disconnection
-- EIP-5792 batched transactions with mock delegation executor
-- Error scenarios: user rejection, rate limiting, unsupported chains
-- Multi-origin session isolation
-
-### E2E Tests (browser extension specific)
-- Existing E2E suite (`yarn e2e:dappInteractions`) validates the assembled system
-- No changes needed to E2E tests — they test the same `window.ethereum` API
+- Same contracts, same engine, same EIP modules
 
 ---
 
@@ -448,9 +606,9 @@ The host wallet's `WalletAdapter` implementation decides routing. The provider p
 | Current File | Action |
 |---|---|
 | `src/entries/inpage/index.ts` | Replace with `@rainbow-me/provider-inpage` entry |
-| `src/entries/background/handlers/handleProviderRequest.ts` | Replace with `WalletAdapter` impl + `RequestHandler` |
-| `src/core/transports/providerRequestTransport.ts` | Replaced by `PostMessageTransport` in `provider-inpage` |
-| `src/core/messengers/internal/bridge.ts` | Reused by `PostMessageTransport` internally |
+| `src/entries/background/handlers/handleProviderRequest.ts` | Replace with `WalletAdapter` impl + `ProviderEngine` + oRPC RPCHandler |
+| `src/core/transports/providerRequestTransport.ts` | Delete — replaced by oRPC `PostMessageLink` in `provider-inpage` |
+| `src/core/messengers/internal/bridge.ts` | Simplify — content script relay now just bridges raw oRPC messages |
 | `src/core/viem/clientToProvider.ts` | Delete (ethers.js bridge no longer needed) |
 | `src/core/keychain/RainbowSigner.ts` | Migrate to viem `LocalAccount` interface |
 | `package.json` | Replace `@rainbow-me/provider` 0.1.3 with new packages |
