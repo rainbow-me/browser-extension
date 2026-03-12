@@ -4,11 +4,11 @@ import { useMemo } from 'react';
 import { Address, isAddress } from 'viem';
 
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
-import { useTokenSearch } from '~/core/resources/search';
 import { usePopularInRainbow } from '~/core/resources/search/popularInRainbow';
 import {
   tokenSearchQueryFunction,
   tokenSearchQueryKey,
+  useTokenSearch,
   useTokenSearchAllNetworks,
 } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';

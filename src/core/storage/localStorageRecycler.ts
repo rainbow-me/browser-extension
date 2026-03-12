@@ -1,6 +1,9 @@
 import { RainbowError, logger } from '~/logger';
 
-const OBSOLETE_KEYS = ['rainbow.wagmi'];
+const OBSOLETE_KEYS = [
+  'rainbow.wagmi',
+  'rainbow.react-query', // Legacy cache from previous chrome.storage.local persister (migrated to IndexedDB)
+];
 
 /**
  * Cleanup obsolete storage keys

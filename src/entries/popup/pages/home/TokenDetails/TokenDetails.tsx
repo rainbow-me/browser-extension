@@ -9,7 +9,7 @@ import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useAssetSearchMetadata } from '~/core/resources/assets/assetMetadata';
-import { useTokenSearch } from '~/core/resources/search';
+import { useTokenSearch } from '~/core/resources/search/tokenSearch';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';

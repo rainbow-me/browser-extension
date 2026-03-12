@@ -1,25 +1,25 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { createQueryKey } from '~/core/react-query';
-import { fetchTokenSearch } from '~/core/resources/search/tokenSearch';
+import { searchTokenSearch } from '~/core/resources/search/tokenSearchService';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 async function fetchFavoriteToken(address: AddressOrEth, chain: ChainId) {
-  const results = await fetchTokenSearch({
+  const results = await searchTokenSearch({
     chainId: chain,
     list: 'verifiedAssets',
     query: address.toLowerCase(),
   });
   if (results?.[0]) return results[0];
 
-  const unverifiedSearchResults = await fetchTokenSearch({
+  const unverifiedSearchResults = await searchTokenSearch({
     chainId: chain,
     list: 'highLiquidityAssets',
     query: address.toLowerCase(),
   });
-  if (!unverifiedSearchResults?.[0]) return unverifiedSearchResults[0];
+  if (unverifiedSearchResults?.[0]) return unverifiedSearchResults[0];
 }
 
 export function useFavoriteAssets(chainId: ChainId) {
