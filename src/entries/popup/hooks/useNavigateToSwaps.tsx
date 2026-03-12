@@ -1,9 +1,9 @@
 import React from 'react';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -22,12 +22,12 @@ export const useNavigateToSwaps = () => {
   const navigate = useRainbowNavigate();
   const { featureFlags } = useFeatureFlagLocalOverwriteStore();
   const { testnetMode } = useTestnetModeStore();
+  const swapsEnabled = useRemoteConfigStore((s) => s.swaps_enabled);
 
   const allowSwap = React.useMemo(
     () =>
-      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
-      config.swaps_enabled,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
+      (!isWatchingWallet || featureFlags.full_watching_wallets) && swapsEnabled,
+    [featureFlags.full_watching_wallets, isWatchingWallet, swapsEnabled],
   );
 
   return () => {

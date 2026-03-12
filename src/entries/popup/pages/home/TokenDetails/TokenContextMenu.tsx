@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useMemo } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -12,6 +11,7 @@ import {
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
@@ -67,10 +67,10 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
 
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
+  const swapsEnabled = useRemoteConfigStore((s) => s.swaps_enabled);
 
   const allowSwap =
-    (!isWatchingWallet || featureFlags.full_watching_wallets) &&
-    config.swaps_enabled;
+    (!isWatchingWallet || featureFlags.full_watching_wallets) && swapsEnabled;
 
   const isBridgeable = token.bridging?.isBridgeable;
 

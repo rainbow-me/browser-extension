@@ -5,13 +5,13 @@ import { Address, getAddress } from 'viem';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -68,9 +68,10 @@ export function SendTransaction({
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { allWallets, watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const txRequestsEnabled = useRemoteConfigStore((s) => s.tx_requests_enabled);
 
   const onAcceptRequest = useCallback(async () => {
-    if (!config.tx_requests_enabled) return;
+    if (!txRequestsEnabled) return;
     if (!selectedWallet || !activeSession) return;
     setLoading(true);
     try {
@@ -149,6 +150,7 @@ export function SendTransaction({
       setLoading(false);
     }
   }, [
+    txRequestsEnabled,
     selectedWallet,
     activeSession,
     request?.params,

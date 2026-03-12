@@ -5,13 +5,13 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
-import config, { useRemoteConfig } from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDelegationEnabled } from '~/core/resources/delegations/featureStatus';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings';
 import { useErrorStore } from '~/core/state/error';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Separator } from '~/design-system';
@@ -148,9 +148,11 @@ export const Home = memo(function Home() {
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { isWatchingWallet } = useWallets();
 
-  // Use reactive hooks for remote config values
-  const nftsEnabled = useRemoteConfig('nfts_enabled');
-  const rnbwRewardsEnabled = useRemoteConfig('rnbw_rewards_enabled');
+  const nftsEnabled = useRemoteConfigStore((s) => s.nfts_enabled);
+  const rnbwRewardsEnabled = useRemoteConfigStore(
+    (s) => s.rnbw_rewards_enabled,
+  );
+  const approvalsEnabled = useRemoteConfigStore((s) => s.approvals_enabled);
 
   const visibleTabs = useMemo(() => {
     const tabs: Tab[] = ['tokens', 'activity'];
@@ -227,7 +229,7 @@ export const Home = memo(function Home() {
           <NewTabBar tabs={visibleTabs} />
           <BackupReminder />
           {currentHomeSheet}
-          {config.approvals_enabled ? <RevokeApproval /> : null}
+          {approvalsEnabled ? <RevokeApproval /> : null}
           {delegationEnabled ? <ProactiveRevokeWatcher /> : null}
 
           <PendingTransactionWatcher />

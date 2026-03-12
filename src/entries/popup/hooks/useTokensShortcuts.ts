@@ -4,7 +4,6 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -14,6 +13,7 @@ import {
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -63,12 +63,9 @@ export function useTokensShortcuts() {
     ? !!pinnedStore[address]?.[selectedToken.uniqueId]?.pinned
     : false;
 
-  const allowSwap = useMemo(
-    () =>
-      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
-      config.swaps_enabled,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
-  );
+  const swapsEnabled = useRemoteConfigStore((s) => s.swaps_enabled);
+  const allowSwap =
+    (!isWatchingWallet || featureFlags.full_watching_wallets) && swapsEnabled;
 
   const hideToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {

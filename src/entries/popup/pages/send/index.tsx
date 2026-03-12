@@ -16,7 +16,6 @@ import { Address, isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
@@ -27,6 +26,7 @@ import {
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import {
@@ -102,6 +102,7 @@ interface ChildInputAPI {
 }
 
 export function Send() {
+  const sendEnabled = useRemoteConfigStore((s) => s.send_enabled);
   const [waitingForDevice, setWaitingForDevice] = useState(false);
   const [showReviewSheet, setShowReviewSheet] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
@@ -360,7 +361,7 @@ export function Send() {
 
   const handleSend = useCallback(
     async (callback?: () => void) => {
-      if (!config.send_enabled) return;
+      if (!sendEnabled) return;
 
       try {
         if (asset) {
@@ -450,6 +451,7 @@ export function Send() {
       }
     },
     [
+      sendEnabled,
       fromAddress,
       resetSendValues,
       txToAddress,

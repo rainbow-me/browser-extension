@@ -4,11 +4,11 @@ import * as React from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
@@ -141,6 +141,7 @@ function ActionButtonsSection() {
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const swapsEnabled = useRemoteConfigStore((s) => s.swaps_enabled);
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 
@@ -154,9 +155,8 @@ function ActionButtonsSection() {
 
   const allowSwap = React.useMemo(
     () =>
-      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
-      config.swaps_enabled,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
+      (!isWatchingWallet || featureFlags.full_watching_wallets) && swapsEnabled,
+    [featureFlags.full_watching_wallets, isWatchingWallet, swapsEnabled],
   );
 
   const allowSend = React.useMemo(
