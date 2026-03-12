@@ -41,21 +41,16 @@ import { PathOptions } from '../pages/hw/addByIndexSheet';
 
 import { popupClient } from './background';
 import {
-  sendTransactionFromLedger,
-  signMessageByTypeFromLedger,
-  signTransactionFromLedger,
-} from './ledger';
-import {
-  sendTransactionFromTrezor,
-  signMessageByTypeFromTrezor,
-  signTransactionFromTrezor,
-} from './trezor';
+  sendTransactionFromHW as sendTransactionFromHWImpl,
+  signMessageByTypeFromHW,
+  signTransactionFromHW as signTransactionFromHWImpl,
+} from './hardwareWallet';
 import { walletAction } from './walletAction';
 import { HARDWARE_WALLETS } from './walletVariables';
 
 export const signTransactionFromHW = async (
   transactionRequest: TransactionRequest,
-  vendor: string,
+  vendor: HardwareWalletVendor,
 ): Promise<Hex | undefined> => {
   const { selectedGas } = useGasStore.getState();
   const provider = getProvider({
@@ -82,11 +77,8 @@ export const signTransactionFromHW = async (
     params.gasLimit = toHex(gasLimit);
   }
 
-  if (vendor === 'Ledger') {
-    return signTransactionFromLedger(params);
-  } else if (vendor === 'Trezor') {
-    return signTransactionFromTrezor(params);
-  }
+  if (!vendor) throw new Error('Unsupported hardware wallet');
+  return signTransactionFromHWImpl(params, vendor);
 };
 
 export const sendTransaction = async (
@@ -153,14 +145,35 @@ export const sendTransaction = async (
 
   // Check the type of account it is
   if (type === 'HardwareWalletKeychain') {
-    switch (vendor) {
-      case 'Ledger':
-        return sendTransactionFromLedger(params);
-      case 'Trezor':
-        return sendTransactionFromTrezor(params);
-      default:
-        throw new Error('Unsupported hardware wallet');
-    }
+    if (!vendor) throw new Error('Unsupported hardware wallet');
+    const hash = await sendTransactionFromHWImpl(params, vendor);
+    return {
+      hash,
+      from: params.from as string,
+      to: params.to ?? undefined,
+      confirmations: 0,
+      nonce: params.nonce ?? 0,
+      data: (params.data as string) ?? '0x',
+      chainId: params.chainId ?? 1,
+      wait: async () => {
+        throw new Error('Not implemented');
+      },
+      gasLimit: BigNumber.from(params.gasLimit ?? 0),
+      value: BigNumber.from(params.value ?? 0),
+      gasPrice:
+        params.gasPrice !== undefined && params.gasPrice !== null
+          ? BigNumber.from(params.gasPrice)
+          : undefined,
+      maxFeePerGas:
+        params.maxFeePerGas !== undefined && params.maxFeePerGas !== null
+          ? BigNumber.from(params.maxFeePerGas)
+          : undefined,
+      maxPriorityFeePerGas:
+        params.maxPriorityFeePerGas !== undefined &&
+        params.maxPriorityFeePerGas !== null
+          ? BigNumber.from(params.maxPriorityFeePerGas)
+          : undefined,
+    } as TransactionResponse;
   } else {
     const transaction = await popupClient.wallet.sendTransaction(params);
 
@@ -218,14 +231,8 @@ export const personalSign = async (
 ): Promise<Hex> => {
   const { type, vendor } = await getWallet(address as Address);
   if (type === 'HardwareWalletKeychain') {
-    switch (vendor) {
-      case 'Ledger':
-        return signMessageByTypeFromLedger(message, address);
-      case 'Trezor':
-        return signMessageByTypeFromTrezor(message, address);
-      default:
-        throw new Error('Unsupported hardware wallet');
-    }
+    if (!vendor) throw new Error('Unsupported hardware wallet');
+    return signMessageByTypeFromHW(message, address, vendor);
   } else {
     return popupClient.wallet.personalSign({
       address,
@@ -241,15 +248,8 @@ export const signTypedData = async (
   const { type, vendor } = await getWallet(address as Address);
 
   if (type === 'HardwareWalletKeychain') {
-    switch (vendor) {
-      case 'Ledger':
-        return signMessageByTypeFromLedger(message, address);
-      case 'Trezor': {
-        return signMessageByTypeFromTrezor(message, address);
-      }
-      default:
-        throw new Error('Unsupported hardware wallet');
-    }
+    if (!vendor) throw new Error('Unsupported hardware wallet');
+    return signMessageByTypeFromHW(message, address, vendor);
   } else {
     return walletAction('sign_typed_data', {
       address,

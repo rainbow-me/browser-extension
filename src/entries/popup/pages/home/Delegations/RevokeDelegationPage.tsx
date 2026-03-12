@@ -34,7 +34,7 @@ import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { popupClient } from '~/entries/popup/handlers/background';
-import { isLedgerConnectionError } from '~/entries/popup/handlers/ledger';
+import { isConnectionError } from '~/entries/popup/handlers/hardwareWallet';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
@@ -344,7 +344,7 @@ export const RevokeDelegationPage = () => {
       const parsedError =
         error instanceof Error ? error : new Error(errorMessage);
 
-      if (!isLedgerConnectionError(parsedError)) {
+      if (!isConnectionError(parsedError)) {
         const extractedError = errorMessage.split('[')[0] || 'Unknown error';
         triggerAlert({
           text: i18n.t('errors.sending_transaction'),

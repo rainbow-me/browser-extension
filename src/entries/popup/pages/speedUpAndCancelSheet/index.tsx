@@ -41,7 +41,7 @@ import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
-import { isLedgerConnectionError } from '../../handlers/ledger';
+import { isConnectionError } from '../../handlers/hardwareWallet';
 import { sendTransaction } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -291,7 +291,7 @@ export function SpeedUpAndCancelSheet({
       navigate(ROUTES.HOME, { state: { tab: 'activity' } });
     },
     onError: (e: Error) => {
-      if (!isLedgerConnectionError(e)) {
+      if (!isConnectionError(e)) {
         const extractedError = e.message.split('[')[0];
         triggerAlert({
           text: i18n.t('errors.sending_transaction'),

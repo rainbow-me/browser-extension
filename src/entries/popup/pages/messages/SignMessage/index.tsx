@@ -17,7 +17,7 @@ import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Bleed, Box, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
-import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
+import { showDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/hardwareWallet';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { RainbowError, logger } from '~/logger';
@@ -134,7 +134,7 @@ export function SignMessage({
       approveRequest(result);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      showLedgerDisconnectedAlertIfNeeded(e);
+      showDisconnectedAlertIfNeeded(e);
       logger.info('error in sign message');
       logger.error(new RainbowError(e.name), { message: e.message });
     } finally {

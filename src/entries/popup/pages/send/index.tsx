@@ -71,7 +71,7 @@ import {
 import { Navbar } from '../../components/Navbar/Navbar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
-import { isLedgerConnectionError } from '../../handlers/ledger';
+import { isConnectionError } from '../../handlers/hardwareWallet';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
 import { useSendAsset } from '../../hooks/send/useSendAsset';
 import { useSendInputs } from '../../hooks/send/useSendInputs';
@@ -435,7 +435,7 @@ export function Send() {
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        if (!isLedgerConnectionError(e)) {
+        if (!isConnectionError(e)) {
           const extractedError = (e as Error).message.split('[')[0];
           triggerAlert({
             text: i18n.t('errors.sending_transaction'),
