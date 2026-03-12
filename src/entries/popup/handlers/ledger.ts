@@ -28,6 +28,7 @@ import {
   isTypedDataMessage,
 } from '~/core/types/messageSigning';
 import { sanitizeTypedData } from '~/core/utils/ethereum';
+import { logTransactionGasError } from '~/core/utils/gas-logging';
 import { joinSignature } from '~/core/utils/hex';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { logger } from '~/logger';
@@ -137,7 +138,16 @@ export async function sendTransactionFromLedger(
     chainId: transaction.chainId,
   });
 
-  return provider.sendTransaction(serializedTransaction);
+  try {
+    return await provider.sendTransaction(serializedTransaction);
+  } catch (error) {
+    await logTransactionGasError({
+      error,
+      transactionRequest: transaction,
+      chainId: transaction.chainId as number,
+    });
+    throw error;
+  }
 }
 
 export async function signMessageByTypeFromLedger(
