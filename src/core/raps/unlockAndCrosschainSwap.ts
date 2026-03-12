@@ -1,5 +1,3 @@
-import { isAllowedTargetContract } from '@rainbow-me/swaps';
-
 import { crosschainQuoteTargetsRecipient } from '~/core/utils/quotes';
 
 import { add } from '../utils/numbers';
@@ -31,9 +29,6 @@ export const estimateUnlockAndCrosschainSwap = async (
   let swapAssetNeedsUnlocking = false;
 
   if (allowanceTargetAddress) {
-    if (!isAllowedTargetContract(allowanceTargetAddress, chainId)) {
-      throw new Error('Target contract is not allowed');
-    }
     swapAssetNeedsUnlocking = await needsTokenApproval({
       owner: quote.from,
       tokenAddress: quote.sellTokenAddress,
@@ -87,9 +82,6 @@ export const createUnlockAndCrosschainSwapRap = async (
   let swapAssetNeedsUnlocking = false;
 
   if (allowanceTargetAddress) {
-    if (!isAllowedTargetContract(allowanceTargetAddress, chainId)) {
-      throw new Error('Target contract is not allowed');
-    }
     swapAssetNeedsUnlocking = await needsTokenApproval({
       owner: quote.from,
       tokenAddress: quote.sellTokenAddress,
