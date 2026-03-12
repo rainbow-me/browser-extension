@@ -25,7 +25,7 @@ Standalone monorepo, consumed by both `rainbow-me/browser-extension` and `rainbo
 rainbow-me/provider/
 ├── packages/
 │   ├── core/                    # @rainbow-me/provider-core
-│   ├── eip-6963/                # @rainbow-me/provider-eip6963
+│   ├── eip-2255/                # @rainbow-me/provider-eip2255
 │   ├── eip-5792/                # @rainbow-me/provider-eip5792
 │   ├── inpage/                  # @rainbow-me/provider-inpage
 │   ├── handler/                 # @rainbow-me/provider-handler
@@ -35,6 +35,29 @@ rainbow-me/provider/
 ├── tsconfig.base.json
 └── vitest.workspace.ts          # Shared test config
 ```
+
+> **EIP-6963 (MIPD):** No dedicated package. The `mipd` library already provides
+> `announceProvider()` — we call it directly from `provider-inpage`. No need to wrap it.
+>
+> **EIP-1193:** Not a separate package — it IS `provider-core`. The provider implements
+> viem's `EIP1193Provider` interface directly.
+
+---
+
+## EIP Coverage
+
+| EIP | Standard | Where it lives | Status |
+|-----|----------|----------------|--------|
+| **EIP-1193** | Provider API (`request`, events) | `provider-core` — the provider IS this | Already handled, re-implemented on viem types |
+| **EIP-6963** | Multi Injected Provider Discovery | `provider-inpage` calls `mipd` directly | Already handled, no wrapper needed |
+| **EIP-2255** | Wallet Permissions | `provider-eip2255` middleware | **New** — `wallet_requestPermissions`, `wallet_getPermissions`, `wallet_revokePermissions` |
+| **EIP-5792** | Wallet Call Batching | `provider-eip5792` middleware | **New** — `wallet_sendCalls`, `wallet_getCapabilities`, `wallet_getCallsStatus` |
+| **EIP-3085** | `wallet_addEthereumChain` | `provider-handler` `methodRouterMiddleware` → `WalletAdapter.addChain()` | Already handled |
+| **EIP-3326** | `wallet_switchEthereumChain` | `provider-handler` `methodRouterMiddleware` → `WalletAdapter.switchChain()` | Already handled |
+| **EIP-747** | `wallet_watchAsset` | `provider-handler` `methodRouterMiddleware` → `WalletAdapter` | Already handled |
+| **EIP-7702** | Account delegation | External: `@rainbow-me/delegation` bound via `TransactionExecutor` | Already handled externally |
+
+EIPs that are single RPC methods (3085, 3326, 747) don't need their own packages — they're just method routes in the handler's `methodRouterMiddleware` that dispatch to `WalletAdapter` methods. Only EIPs with substantial state, multiple methods, or complex behavior (2255, 5792) warrant dedicated middleware packages.
 
 ---
 
@@ -136,9 +159,10 @@ class RequestHandler {
 1. loggingMiddleware        — request/response tracing
 2. rateLimitMiddleware      — per-origin rate limiting (configurable)
 3. sessionMiddleware        — validates active session, rejects unauthorized origins
-4. [EIP middleware slots]   — eip5792Middleware, future EIPs plug in here
-5. methodRouterMiddleware   — dispatches to WalletAdapter methods by RPC method name
-6. rpcForwardMiddleware     — fallback: forwards unknown methods to node via adapter.rpcRequest()
+4. eip2255Middleware        — wallet_requestPermissions / wallet_getPermissions / wallet_revokePermissions
+5. [EIP middleware slots]   — eip5792Middleware, future EIPs plug in here
+6. methodRouterMiddleware   — dispatches to WalletAdapter methods by RPC method name
+7. rpcForwardMiddleware     — fallback: forwards unknown methods to node via adapter.rpcRequest()
 ```
 
 Each middleware can short-circuit (return early), transform the request, or delegate to `next()`. This matches MetaMask's `json-rpc-engine` pattern but with async/await instead of callback-based flow.
@@ -149,19 +173,29 @@ Each middleware can short-circuit (return early), transform the request, or dele
 
 ---
 
-### 3. `@rainbow-me/provider-eip6963`
+### 3. `@rainbow-me/provider-eip2255`
 
-Contained EIP-6963 (Multi Injected Provider Discovery) implementation.
+Contained EIP-2255 (wallet permissions) implementation as handler middleware.
 
 **Owns:**
-- `announceRainbowProvider(provider, info)` function
-- `createProviderDetail()` helper
-- RDNS constants, icon management
-- Listens for `eip6963:requestProvider` and dispatches `eip6963:announceProvider`
+- `wallet_requestPermissions` handler — dApps request permission scopes (e.g. `eth_accounts`)
+- `wallet_getPermissions` handler — returns currently granted permissions for an origin
+- `wallet_revokePermissions` handler — revoke previously granted permissions
+- Permission types and caveat system (restrict permissions by chain, account, etc.)
 
-**Depends on:** `@rainbow-me/provider-core` (for the provider type)
+**Exports as middleware** for `@rainbow-me/provider-handler`:
 
-**Current code to replace:** `src/entries/inpage/index.ts` lines 66-80
+```typescript
+import { eip2255Middleware } from '@rainbow-me/provider-eip2255';
+
+const handler = new RequestHandler(adapter, [
+  eip2255Middleware({ permissionStore }),
+]);
+```
+
+**Why a separate package:** Permissions intersect with session management but have their own specification, caveat system, and per-origin state. MetaMask implements this as a dedicated `PermissionController` — we follow the same separation but as composable middleware rather than a controller class.
+
+**Integrates with `WalletAdapter`:** The middleware calls `adapter.requestAccounts()` when `eth_accounts` permission is granted, keeping the adapter as the single boundary for wallet-specific logic.
 
 ---
 
@@ -211,7 +245,7 @@ Browser-extension-specific inpage script bundler. **Not used by mobile.**
 
 **Assembles:**
 - Creates `RainbowEIP1193Provider` from `@rainbow-me/provider-core`
-- Calls `announceRainbowProvider` from `@rainbow-me/provider-eip6963`
+- Calls `announceProvider()` from `mipd` directly (EIP-6963 — no wrapper package needed)
 - Wires `PostMessageTransport` for browser extension messaging
 
 ---
@@ -364,13 +398,13 @@ The host wallet's `WalletAdapter` implementation decides routing. The provider p
 - Write `provider-test-utils` with `DirectTransport`
 - Full integration test suite passing
 
-### Phase 2: Implement EIP packages
-- `provider-eip6963` — extract from current `inpage/index.ts`
-- `provider-eip5792` — new implementation as middleware
+### Phase 2: Implement EIP middleware packages
+- `provider-eip2255` — permissions middleware (wallet_requestPermissions, wallet_getPermissions, wallet_revokePermissions)
+- `provider-eip5792` — wallet call batching middleware (wallet_sendCalls, wallet_getCapabilities, wallet_getCallsStatus)
 
 ### Phase 3: Build `provider-inpage`
 - `PostMessageTransport` wrapping current messenger system
-- New inpage entry point assembling core + eip6963
+- New inpage entry point assembling core + `mipd` for EIP-6963
 - Bundle config producing `inpage.js`
 
 ### Phase 4: Integrate into browser extension
@@ -392,7 +426,7 @@ The host wallet's `WalletAdapter` implementation decides routing. The provider p
 ### Unit Tests (per package)
 - `provider-core`: Provider event emission, request forwarding, state management
 - `provider-handler`: Middleware pipeline, method routing, rate limiting
-- `eip-6963`: Announcement events, provider detail construction
+- `eip-2255`: Permission granting, revocation, caveat enforcement
 - `eip-5792`: Capability reporting, call batching, status tracking
 
 ### Integration Tests (via `provider-test-utils`)
