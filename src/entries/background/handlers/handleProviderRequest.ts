@@ -238,9 +238,17 @@ export const handleProviderRequest = ({
 }) =>
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
-    isSupportedChain: (chainId: number) =>
-      !!useNetworkStore.getState().getBackendSupportedChain(chainId) ||
-      isCustomChain(chainId),
+    getSupportedChainIds: () => {
+      const { getAllChains, getBackendSupportedChain } =
+        useNetworkStore.getState();
+      const allChains = getAllChains(true);
+      return Object.keys(allChains)
+        .map(Number)
+        .filter(
+          (chainId) =>
+            !!getBackendSupportedChain(chainId) || isCustomChain(chainId),
+        );
+    },
     getActiveSession: ({ host }: { host: string }) =>
       useAppSessionsStore.getState().getActiveSession({ host }),
     removeAppSession: ({ host }: { host: string }) => {
