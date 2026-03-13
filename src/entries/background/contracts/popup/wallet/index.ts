@@ -3,6 +3,7 @@ import { addContract } from './add';
 import { addAccountAtIndexContract } from './addAccountAtIndex';
 import { createContract } from './create';
 import { deriveAccountsFromSecretContract } from './deriveAccountsFromSecret';
+import { executeSendCallsBatchContract } from './executeSendCallsBatch';
 import { exportAccountContract } from './exportAccount';
 import { exportWalletContract } from './exportWallet';
 import { importContract } from './import';
@@ -38,6 +39,7 @@ export const walletContract = {
   addAccountAtIndex: addAccountAtIndexContract,
   remove: removeContract,
   deriveAccountsFromSecret: deriveAccountsFromSecretContract,
+  executeSendCallsBatch: executeSendCallsBatchContract,
   isMnemonicInVault: isMnemonicInVaultContract,
   accounts: accountsContract,
   wallets: walletsContract,

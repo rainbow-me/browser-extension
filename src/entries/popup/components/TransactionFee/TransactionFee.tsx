@@ -286,7 +286,7 @@ type TransactionFeeProps = {
   disableShortcuts?: boolean;
   address?: Address;
   defaultSpeed?: GasSpeed;
-  transactionRequest: TransactionRequest;
+  transactionRequests: TransactionRequest[];
   accentColor?: string;
   plainTriggerBorder?: boolean;
   analyticsEvents?: {
@@ -294,6 +294,8 @@ type TransactionFeeProps = {
     transactionSpeedSwitched: keyof EventProperties;
     transactionSpeedClicked: keyof EventProperties;
   };
+  feeLabel?: string;
+  feeInfoButton?: { onClick: () => void };
 };
 
 export function TransactionFee({
@@ -301,10 +303,12 @@ export function TransactionFee({
   disableShortcuts,
   address,
   defaultSpeed,
-  transactionRequest,
+  transactionRequests,
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
+  feeLabel,
+  feeInfoButton,
 }: TransactionFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -322,7 +326,7 @@ export function TransactionFee({
     chainId,
     address,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
-    transactionRequest,
+    transactionRequests,
   });
 
   return (
@@ -342,6 +346,8 @@ export function TransactionFee({
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       feeType={feeType}
+      feeLabel={feeLabel}
+      feeInfoButton={feeInfoButton}
     />
   );
 }
