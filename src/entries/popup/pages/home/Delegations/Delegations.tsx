@@ -48,11 +48,22 @@ const smartWalletCardStyles = {
 } as const;
 
 // Shared Smart Wallet Card Component
-const SmartWalletCard = ({ status }: { status: 'active' | 'disabled' }) => {
+const SmartWalletCard = ({
+  status,
+  hasDelegations,
+}: {
+  status: 'active' | 'disabled';
+  hasDelegations: boolean;
+}) => {
   const isActive = status === 'active';
   const currentTheme = useCurrentThemeStore((s) => s.currentTheme);
   const isDark = currentTheme === 'dark';
   const styles = smartWalletCardStyles[isDark ? 'dark' : 'light'];
+
+  const descriptionKey =
+    !isActive && hasDelegations
+      ? 'delegations.smart_wallet.disabled_with_delegations_description'
+      : 'delegations.smart_wallet.description';
 
   return (
     <Box
@@ -106,7 +117,7 @@ const SmartWalletCard = ({ status }: { status: 'active' | 'disabled' }) => {
           color="labelSecondary"
           align="center"
         >
-          {i18n.t('delegations.smart_wallet.description')}
+          {i18n.t(descriptionKey)}
         </Text>
       </Stack>
     </Box>
@@ -328,7 +339,10 @@ export const Delegations = () => {
       <Box paddingHorizontal="20px" paddingTop="20px">
         <Stack space="20px">
           {/* Smart Wallet Card */}
-          <SmartWalletCard status={isActivated ? 'active' : 'disabled'} />
+          <SmartWalletCard
+            status={isActivated ? 'active' : 'disabled'}
+            hasDelegations={(delegations?.length ?? 0) > 0}
+          />
 
           {/* Activated Networks - Rainbow delegations */}
           {rainbowDelegations.length > 0 && (
@@ -372,7 +386,13 @@ export const Delegations = () => {
         </Stack>
       </Box>
     ),
-    [rainbowDelegations, thirdPartyDelegations, handleRevokeOne, isActivated],
+    [
+      rainbowDelegations,
+      thirdPartyDelegations,
+      handleRevokeOne,
+      isActivated,
+      delegations?.length,
+    ],
   );
 
   return (

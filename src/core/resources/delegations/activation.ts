@@ -1,8 +1,4 @@
-import {
-  disableDelegation,
-  enableDelegation,
-  useDelegations,
-} from '@rainbow-me/delegation';
+import { disableDelegation, enableDelegation } from '@rainbow-me/delegation';
 import { useCallback } from 'react';
 import type { Address } from 'viem';
 
@@ -16,8 +12,8 @@ export interface ActivationStatus {
 
 /**
  * Smart wallet activation status.
- * isActive when: on-chain delegations exist OR (feature flag on and user has not opted out).
- * Fixes: delegation_enabled=false should still show "Active" when user has delegations.
+ * isActive reflects the user's opt-in preference (feature flag + SDK),
+ * independent of whether on-chain delegations still exist.
  */
 export function useActivationStatus({
   address,
@@ -25,9 +21,8 @@ export function useActivationStatus({
   address: Address;
 }): ActivationStatus {
   const delegationAvailable = useDelegationAvailable(address);
-  const delegations = useDelegations(address);
 
-  const isActive = (delegations?.length ?? 0) > 0 || delegationAvailable;
+  const isActive = delegationAvailable;
 
   const enable = useCallback(() => enableDelegation(address), [address]);
   const disable = useCallback(() => disableDelegation(address), [address]);
