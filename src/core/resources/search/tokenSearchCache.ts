@@ -1,16 +1,16 @@
+import { createResilientStore } from '~/core/storage/resilientIdb';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset, TokenSearchListId } from '~/core/types/search';
 
-/**
- * Uses raw IndexedDB (not idb-keyval) – this service will need advanced querying
- * (e.g. range scans, indexes, compound keys) in the future.
- */
-const IDB_DB_NAME = 'rainbow-token-search';
-const IDB_STORE_NAME = 'cache';
-const DB_VERSION = 1;
 const INDEX_BY_TIMESTAMP = 'by-timestamp';
 
-let cachedDb: IDBDatabase | null = null;
+const idbStore = createResilientStore('rainbow-token-search', 'cache', {
+  version: 1,
+  onUpgrade: (db) => {
+    const store = db.createObjectStore('cache');
+    store.createIndex(INDEX_BY_TIMESTAMP, 'timestamp', { unique: false });
+  },
+});
 
 /** Bump to invalidate all cached TokenSearch data */
 const CACHE_VERSION = 1;
@@ -31,41 +31,6 @@ function isExpired(entry: unknown): boolean {
 function parseEntry(entry: unknown): SearchAsset[] | null {
   if (isExpired(entry)) return null;
   return (entry as CachedEntry).data;
-}
-
-function getDb(): Promise<IDBDatabase> {
-  if (cachedDb) return Promise.resolve(cachedDb);
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(IDB_DB_NAME, DB_VERSION);
-    req.onerror = () => reject(req.error);
-    req.onsuccess = () => {
-      const db = req.result;
-      cachedDb = db;
-      db.onclose = () => {
-        cachedDb = null;
-      };
-      db.onversionchange = () => {
-        db.close();
-        cachedDb = null;
-      };
-      resolve(db);
-    };
-    req.onupgradeneeded = () => {
-      const store = req.result.createObjectStore(IDB_STORE_NAME);
-      store.createIndex(INDEX_BY_TIMESTAMP, 'timestamp', { unique: false });
-    };
-  });
-}
-
-function withStore<T>(
-  mode: IDBTransactionMode,
-  fn: (store: IDBObjectStore) => Promise<T>,
-): Promise<T> {
-  return getDb().then((db) => {
-    const tx = db.transaction(IDB_STORE_NAME, mode);
-    const store = tx.objectStore(IDB_STORE_NAME);
-    return fn(store);
-  });
 }
 
 export type TokenSearchCacheKey = {
@@ -89,7 +54,7 @@ export async function getTokenSearchFromCache(
   key: TokenSearchCacheKey,
 ): Promise<SearchAsset[] | null> {
   const k = toCacheKeyString(key);
-  return withStore('readonly', (store) => {
+  return idbStore('readonly', (store) => {
     return new Promise<SearchAsset[] | null>((resolve, reject) => {
       const req = store.get(k);
       req.onsuccess = () => resolve(parseEntry(req.result));
@@ -106,7 +71,7 @@ export async function getManyTokenSearchFromCache(
   const keyStrings = keys.map(toCacheKeyString);
   const uniqueKeys = [...new Set(keyStrings)];
 
-  return withStore('readonly', (store) => {
+  return idbStore('readonly', (store) => {
     return new Promise<Map<string, SearchAsset[]>>((resolve, reject) => {
       const result = new Map<string, SearchAsset[]>();
       let pending = uniqueKeys.length;
@@ -137,7 +102,7 @@ export async function setTokenSearchInCache(
 ): Promise<void> {
   const k = toCacheKeyString(key);
   const entry: CachedEntry = { data, timestamp: Date.now() };
-  return withStore('readwrite', (store) => {
+  return idbStore('readwrite', (store) => {
     return new Promise<void>((resolve, reject) => {
       const req = store.put(entry, k);
       req.onsuccess = () => resolve();
@@ -148,7 +113,7 @@ export async function setTokenSearchInCache(
 
 /** Lists all cache keys without loading values – for inspection, never loads full store. */
 export async function getAllTokenSearchCacheKeys(): Promise<string[]> {
-  return withStore('readonly', (store) => {
+  return idbStore('readonly', (store) => {
     return new Promise<string[]>((resolve, reject) => {
       const req = store.getAllKeys();
       req.onsuccess = () => resolve(req.result as string[]);
@@ -158,7 +123,7 @@ export async function getAllTokenSearchCacheKeys(): Promise<string[]> {
 }
 
 export async function clearTokenSearchCache(): Promise<void> {
-  return withStore('readwrite', (store) => {
+  return idbStore('readwrite', (store) => {
     return new Promise<void>((resolve, reject) => {
       const req = store.clear();
       req.onsuccess = () => resolve();
@@ -171,7 +136,7 @@ export async function clearTokenSearchCache(): Promise<void> {
 export async function evictExpiredEntries(): Promise<number> {
   const cutoff = Date.now() - TTL_MS;
   let evicted = 0;
-  return withStore('readwrite', (store) => {
+  return idbStore('readwrite', (store) => {
     return new Promise<number>((resolve, reject) => {
       const index = store.index(INDEX_BY_TIMESTAMP);
       const req = index.openCursor(IDBKeyRange.upperBound(cutoff, true));

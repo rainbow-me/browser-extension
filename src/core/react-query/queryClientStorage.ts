@@ -2,7 +2,9 @@ import type {
   PersistedClient,
   Persister,
 } from '@tanstack/react-query-persist-client';
-import { createStore, del, get, set } from 'idb-keyval';
+import { del, get, set } from 'idb-keyval';
+
+import { createResilientStore } from '~/core/storage/resilientIdb';
 
 const IDB_DB_NAME = 'rainbow-react-query';
 const IDB_STORE_NAME = 'query-cache';
@@ -10,7 +12,7 @@ const IDB_KEY = 'persisted-client';
 
 const THROTTLE_MS = 600; // 600ms to batch writes to IndexedDB
 
-const idbStore = createStore(IDB_DB_NAME, IDB_STORE_NAME);
+const idbStore = createResilientStore(IDB_DB_NAME, IDB_STORE_NAME);
 
 /**
  * Strip non-cloneable values (Promise, Function, Symbol) so IndexedDB can store.
