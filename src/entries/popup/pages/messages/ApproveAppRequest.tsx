@@ -189,6 +189,7 @@ export const ApproveAppRequest = () => {
         </ApproveAppRequestWrapper>
       );
     case 'eth_sendTransaction':
+    case 'wallet_sendCalls':
       return (
         <ApproveAppRequestWrapper
           pendingRequest={pendingRequest}

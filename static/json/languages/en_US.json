@@ -1295,7 +1295,12 @@
     "bridge_and_try_again": "Bridge some gas funds and try again",
     "buy_and_try_again": "Buy some gas funds and try again",
     "buy_gas": "Buy %{token}",
-    "get_testnet_gas": "Get free testnet %{token}"
+    "get_testnet_gas": "Get free testnet %{token}",
+    "batch_request_title": "Batch request: %{count} calls on",
+    "batch_request_chain_unknown": "Chain %{chainId}",
+    "batch_call_label": "Call %{index}",
+    "batch_of_calls": "Batch of %{count} calls",
+    "batch_fee_note": "Estimated from simulation. Actual fee may vary when using smart wallet."
   },
   "add_chain": {
     "name": "Name",

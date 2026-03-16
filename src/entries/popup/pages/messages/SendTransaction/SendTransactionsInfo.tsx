@@ -63,6 +63,13 @@ import {
   useSimulateTransaction,
 } from '../useSimulateTransaction';
 
+import {
+  getSendCallsParams,
+  getTransactionRequestFromRequest,
+  getTransactionRequestsFromRequest,
+  isWalletSendCallsRequest,
+} from './normalizeRequest';
+
 interface SendTransactionProps {
   request: ProviderRequestPayload;
   onRejectRequest: ({
@@ -621,7 +628,8 @@ export function SendTransactionInfo({
 
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
-  const txRequest = request?.params?.[0] as TransactionRequest;
+  const isBatch = isWalletSendCallsRequest(request);
+  const sendParams = getSendCallsParams(request);
 
   const [expanded, setExpanded] = useState(false);
 
@@ -660,16 +668,70 @@ export function SendTransactionInfo({
                   hostName={dappMetadata?.appHostName}
                   dappStatus={dappMetadata?.status}
                 />
-                <Text
-                  align="center"
-                  size="14pt"
-                  weight="bold"
-                  color={isScamDapp ? 'red' : 'labelSecondary'}
-                >
-                  {isScamDapp
-                    ? i18n.t('approve_request.dangerous_request')
-                    : i18n.t('approve_request.transaction_request')}
-                </Text>
+                {isScamDapp ? (
+                  <Text align="center" size="14pt" weight="bold" color="red">
+                    {i18n.t('approve_request.dangerous_request')}
+                  </Text>
+                ) : isBatch && sendParams?.chainId ? (
+                  <Inline
+                    alignVertical="center"
+                    alignHorizontal="center"
+                    space="6px"
+                    wrap
+                  >
+                    <Text size="14pt" weight="bold" color="labelSecondary">
+                      {i18n.t('approve_request.batch_request_title', {
+                        count: sendParams?.calls?.length ?? 0,
+                      })}
+                    </Text>
+                    {(() => {
+                      const chainId = Number(sendParams.chainId);
+                      const chain = getChain({ chainId });
+                      return chain?.name ? (
+                        <Inline alignVertical="center" space="6px" wrap={false}>
+                          <ChainBadge chainId={chainId} size={14} />
+                          <Text
+                            size="14pt"
+                            weight="bold"
+                            color="labelSecondary"
+                          >
+                            {chain.name}
+                          </Text>
+                        </Inline>
+                      ) : (
+                        <Text size="14pt" weight="bold" color="labelSecondary">
+                          {i18n.t(
+                            'approve_request.batch_request_chain_unknown',
+                            { chainId },
+                          )}
+                        </Text>
+                      );
+                    })()}
+                  </Inline>
+                ) : isBatch ? (
+                  <Text
+                    align="center"
+                    size="14pt"
+                    weight="bold"
+                    color="labelSecondary"
+                  >
+                    {i18n.t('approve_request.batch_request_title', {
+                      count: sendParams?.calls?.length ?? 0,
+                    })}{' '}
+                    {i18n.t('approve_request.batch_request_chain_unknown', {
+                      chainId: '?',
+                    })}
+                  </Text>
+                ) : (
+                  <Text
+                    align="center"
+                    size="14pt"
+                    weight="bold"
+                    color="labelSecondary"
+                  >
+                    {i18n.t('approve_request.transaction_request')}
+                  </Text>
+                )}
               </Stack>
             </Stack>
           </motion.div>
@@ -686,15 +748,15 @@ export function SendTransactionInfo({
             onRejectRequest={onRejectRequest}
           />
         )
-      ) : (
+      ) : getTransactionRequestsFromRequest(request) ? (
         <TransactionInfo
-          request={txRequest}
+          request={getTransactionRequestFromRequest(request)!}
           dappMetadata={dappMetadata}
           dappUrl={dappUrl}
           expanded={expanded}
           onExpand={() => setExpanded((e) => !e)}
         />
-      )}
+      ) : null}
     </Box>
   );
 }

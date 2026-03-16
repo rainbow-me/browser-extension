@@ -17,6 +17,7 @@ import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
+import { getDappHost } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
@@ -29,11 +30,17 @@ import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { RainbowError, logger } from '~/logger';
 
+import { popupClient } from '../../../handlers/background';
 import * as wallet from '../../../handlers/wallet';
 import { AccountSigningWith } from '../AccountSigningWith';
 
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
+import {
+  getSendCallsParams,
+  getTransactionRequestFromRequest,
+  isWalletSendCallsRequest,
+} from './normalizeRequest';
 
 interface ApproveRequestProps {
   approveRequest: (payload: unknown) => void;
@@ -72,9 +79,52 @@ export function SendTransaction({
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
+
+    if (isWalletSendCallsRequest(request)) {
+      const sendParams = getSendCallsParams(request);
+      if (!sendParams) return;
+      const senderUrl = request?.meta?.sender?.url;
+      const app =
+        dappMetadata?.appHost ??
+        (typeof senderUrl === 'string' ? getDappHost(senderUrl) : '') ??
+        '';
+      if (!app) {
+        logger.error(new RainbowError('send: batch approval missing app host'));
+        return;
+      }
+      setLoading(true);
+      try {
+        await popupClient.wallet.executeSendCallsBatch({
+          sendParams: {
+            version: sendParams.version,
+            chainId: sendParams.chainId,
+            from: sendParams.from,
+            calls: sendParams.calls,
+            id: sendParams.id,
+            atomicRequired: sendParams.atomicRequired,
+          },
+          sender: selectedWallet,
+          app,
+        });
+        approveRequest({ id: sendParams.id });
+      } catch (e) {
+        logger.error(new RainbowError('send: batch approval error'), {
+          message: (e as Error)?.message,
+        });
+        triggerAlert({
+          text: i18n.t('errors.sending_transaction'),
+          description: (e as Error)?.message,
+        });
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     setLoading(true);
     try {
-      const txRequest = request?.params?.[0] as TransactionRequest;
+      const txRequest = getTransactionRequestFromRequest(request);
+      if (!txRequest) return;
       const { type, vendor } = await wallet.getWallet(selectedWallet);
 
       // Change the label while we wait for confirmation
@@ -164,9 +214,9 @@ export function SendTransaction({
       setLoading(false);
     }
   }, [
+    request,
     selectedWallet,
     activeSession,
-    request?.params,
     connectedToHardhat,
     connectedToHardhatOp,
     asset,
