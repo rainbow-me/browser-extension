@@ -315,7 +315,11 @@ export function SendTransaction({
           }}
           chainId={activeSession?.chainId || ChainId.mainnet}
           address={activeSession?.address}
-          transactionRequest={request?.params?.[0] as TransactionRequest}
+          transactionRequests={
+            request?.params?.[0]
+              ? [request.params[0] as TransactionRequest]
+              : []
+          }
           plainTriggerBorder
         />
         <SendTransactionActions
