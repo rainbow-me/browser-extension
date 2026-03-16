@@ -5,6 +5,7 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { isPendingTxTimedOut } from '~/core/state/networks/timing';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import {
@@ -16,12 +17,20 @@ import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
+export interface WatchPendingTransactionsOptions {
+  /** When true, skip timed-out txs (only check them once on worker start). Default: false */
+  skipTimedOutTxs?: boolean;
+}
+
 /**
  * Checks receipt status for all pending transactions and updates the store
  * when they are mined. Does NOT remove transactions - that's the popup's job
  * after React Query cache is updated. Runs in background service worker.
  */
-export async function watchPendingTransactions(): Promise<void> {
+export async function watchPendingTransactions(
+  options?: WatchPendingTransactionsOptions,
+): Promise<void> {
+  const { skipTimedOutTxs = false } = options ?? {};
   const { pendingTransactions } = usePendingTransactionsStore.getState();
   const { currentCurrency } = useCurrentCurrencyStore.getState();
   const { updatePendingTransaction } = usePendingTransactionsStore.getState();
@@ -84,9 +93,17 @@ export async function watchPendingTransactions(): Promise<void> {
     return updatedTransaction as MinedTransaction;
   };
 
+  const now = Date.now();
   const allPendingTxs = addresses.flatMap((addr) =>
     (pendingTransactions[addr] || [])
       .filter((tx) => tx.status === 'pending')
+      .filter((tx) => {
+        if (!skipTimedOutTxs) return true;
+        const pendingDurationMs = tx.lastSubmittedTimestamp
+          ? now - tx.lastSubmittedTimestamp
+          : 0;
+        return !isPendingTxTimedOut(tx.chainId, pendingDurationMs);
+      })
       .map((tx) => ({ address: addr, tx })),
   );
 
