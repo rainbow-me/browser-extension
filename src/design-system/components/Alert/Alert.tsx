@@ -82,17 +82,30 @@ export const Alert = () => {
 
   return (
     <Prompt zIndex={zIndexes.ALERT} show={visible} handleClose={onClose}>
-      <Box padding="20px">
+      <Box padding="20px" style={{ maxHeight: '85vh', overflow: 'hidden' }}>
         <Stack space="20px">
-          <Box style={{ wordBreak: 'break-word' }}>
+          <Box style={{ wordBreak: 'break-word', minWidth: 0 }}>
             <Stack space="12px">
               <Text align="center" color="label" size="14pt" weight="medium">
                 {alert.text}
               </Text>
               {alert.description && (
-                <Text align="center" color="label" size="12pt" weight="regular">
-                  {alert.description}
-                </Text>
+                <Box
+                  style={{
+                    maxHeight: 200,
+                    overflow: 'auto',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  <Text
+                    align="center"
+                    color="label"
+                    size="12pt"
+                    weight="regular"
+                  >
+                    {alert.description}
+                  </Text>
+                </Box>
               )}
             </Stack>
           </Box>

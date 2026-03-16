@@ -136,38 +136,100 @@ function parseSimulation(
         ...approval,
         asset: parseSimulationAsset(approval.asset, chainId),
       })),
-    meta: simulation.meta ?? null,
+    metas: simulation.meta ? [simulation.meta] : [],
     hasChanges:
       inChanges.length > 0 || outChanges.length > 0 || approvals.length > 0,
   };
 }
 
-export const useSimulateTransaction = ({
+/** Merges multiple simulation results into one (worst scanning, combined in/out/approvals) */
+function mergeSimulations(
+  results: TransactionSimulationResult[],
+  chainId: ChainId,
+): TransactionSimulation {
+  const severity = (r: TransactionScanResultType) =>
+    r === TransactionScanResultType.Malicious
+      ? 2
+      : r === TransactionScanResultType.Warning
+      ? 1
+      : 0;
+
+  const worst = results.reduce((acc, r) => {
+    const accSev = severity(
+      acc.scanning?.result ?? TransactionScanResultType.Ok,
+    );
+    const rSev = severity(r.scanning?.result ?? TransactionScanResultType.Ok);
+    return rSev > accSev ? r : acc;
+  });
+
+  const parsed = results.map((r) => parseSimulation(r, chainId));
+
+  const inChanges = parsed.flatMap((p) => p.in);
+  const outChanges = parsed.flatMap((p) => p.out);
+  const approvals = parsed.flatMap((p) => p.approvals);
+  const metas = parsed.flatMap((p) => p.metas);
+
+  return {
+    chainId,
+    scanning: {
+      result: worst.scanning?.result ?? TransactionScanResultType.Ok,
+      description: parseScanningDescription(
+        (worst.scanning?.description ?? '').toLowerCase() as Lowercase<string>,
+      ),
+    },
+    in: inChanges,
+    out: outChanges,
+    approvals,
+    metas,
+    hasChanges:
+      inChanges.length > 0 || outChanges.length > 0 || approvals.length > 0,
+  };
+}
+
+/**
+ * Simulates one or more transactions using the backend's batch API.
+ * Works for both single (eth_sendTransaction) and batch (wallet_sendCalls) requests.
+ */
+export const useSimulateTransactions = ({
   chainId,
-  transaction,
+  transactions,
   domain,
 }: {
   chainId: ChainId;
-  transaction: Transaction;
+  transactions: Transaction[];
   domain: string;
 }) => {
   return useQuery<TransactionSimulation, SimulationError>({
-    queryKey: createQueryKey('simulateTransaction', {
-      transaction,
+    queryKey: createQueryKey('simulateTransactions', {
+      transactions,
       chainId,
       domain,
     }),
-    enabled: !!chainId && (!!transaction.value || !!transaction.data),
+    enabled:
+      !!chainId &&
+      !!transactions.length &&
+      transactions.some((t) => t.value || t.data),
     queryFn: async () => {
+      const normalized = transactions.map((t) => ({
+        ...t,
+        to: t.to || '',
+      }));
       const results = await simulateTransactions({
         chainId,
-        transactions: [{ ...transaction, to: transaction.to || '' }],
+        transactions: normalized,
         domain,
       });
 
-      if (!results[0]) throw 'UNSUPPORTED';
+      if (results.length === 0) throw 'UNSUPPORTED';
+      if (results.some((r) => r?.error)) {
+        const firstError = results.find((r) => r?.error);
+        if (firstError?.error) throw firstError.error.type;
+      }
 
-      return parseSimulation(results[0], chainId);
+      return mergeSimulations(
+        results as TransactionSimulationResult[],
+        chainId,
+      );
     },
     staleTime: 60 * 1000, // 1 min
   });
@@ -227,9 +289,17 @@ export type TransactionSimulation = {
     result: TransactionScanResultType;
     description: string;
   };
-  meta: SimulationMeta | null;
+  metas: SimulationMeta[];
   hasChanges: boolean;
   chainId: ChainId;
 };
 
 export type SimulationError = 'REVERT' | 'UNSUPPORTED';
+
+/** Shape passed down from useSimulateTransactions for consumers that need simulation state */
+export type SimulationQueryResult = {
+  data?: TransactionSimulation;
+  status: 'pending' | 'error' | 'success';
+  error: SimulationError | null;
+  isRefetching: boolean;
+};
