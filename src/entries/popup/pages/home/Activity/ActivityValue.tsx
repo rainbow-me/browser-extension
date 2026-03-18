@@ -108,10 +108,15 @@ const activityValues = (transaction: RainbowTransaction) => {
     return approvalTypeValues(transaction);
 
   const nonNftChanges = changes?.filter((c) => c?.asset.type !== 'nft') ?? [];
+
+  // Prefer "out"/"in" changes over "self" — self-transfers (e.g. contract
+  // returning funds to the sender) carry the full wallet balance and would
+  // misrepresent the actual value of the transaction.
+  const nonSelfChanges = nonNftChanges.filter((c) => c?.direction !== 'self');
   const changeWithAsset =
-    !direction && nonNftChanges.length === 1 // if there's no direction and only one change
-      ? nonNftChanges[0] // use the first change
-      : nonNftChanges.find((c) => c?.direction === direction); // else: use the change with the direction
+    nonSelfChanges.find((c) => c?.direction === direction) ??
+    (nonSelfChanges.length === 1 ? nonSelfChanges[0] : undefined) ??
+    (nonNftChanges.length === 1 ? nonNftChanges[0] : undefined);
 
   const asset = changeWithAsset?.asset ?? _asset;
 
@@ -125,8 +130,9 @@ const activityValues = (transaction: RainbowTransaction) => {
 
   const { balance, native } = asset;
 
+  const resolvedDirection = changeWithAsset?.direction ?? direction;
   const valueSymbol =
-    balance.amount === '0' ? '' : direction === 'in' ? '+' : '-'; // direction === "out" || direction === "self" || direction == undefined
+    balance.amount === '0' ? '' : resolvedDirection === 'in' ? '+' : '-';
 
   const formatOptions =
     +balance.amount > 100_000 ? ({ notation: 'compact' } as const) : undefined;
