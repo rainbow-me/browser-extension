@@ -119,7 +119,7 @@ beforeAll(async () => {
       fromAddress: TEST_ADDRESS_2,
       sellTokenAddress: ETH_MAINNET_ASSET.address,
       buyTokenAddress: USDC_MAINNET_ASSET.address,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       slippage: 5,
       destReceiver: TEST_ADDRESS_2,
       toChainId: 1,
@@ -133,7 +133,7 @@ beforeAll(async () => {
       fromAddress: TEST_ADDRESS_2,
       sellTokenAddress: ETH_MAINNET_ASSET.address,
       buyTokenAddress: ENS_MAINNET_ASSET.address,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       slippage: 5,
       destReceiver: TEST_ADDRESS_2,
       toChainId: 1,
@@ -147,7 +147,7 @@ beforeAll(async () => {
       fromAddress: TEST_ADDRESS_2,
       sellTokenAddress: ENS_MAINNET_ASSET.address,
       buyTokenAddress: USDC_MAINNET_ASSET.address,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       slippage: 5,
       destReceiver: TEST_ADDRESS_2,
       toChainId: 1,
@@ -161,7 +161,7 @@ beforeAll(async () => {
       fromAddress: TEST_ADDRESS_2,
       sellTokenAddress: ETH_MAINNET_ASSET.address,
       buyTokenAddress: WETH_MAINNET_ASSET.address,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       slippage: 5,
       destReceiver: TEST_ADDRESS_2,
       toChainId: 1,
@@ -175,7 +175,7 @@ beforeAll(async () => {
       fromAddress: TEST_ADDRESS_2,
       sellTokenAddress: WETH_MAINNET_ASSET.address,
       buyTokenAddress: ETH_MAINNET_ASSET.address,
-      sellAmount: '100000000000000000',
+      sellAmount: 100000000000000000n,
       slippage: 5,
       destReceiver: TEST_ADDRESS_2,
       toChainId: 1,
@@ -192,7 +192,7 @@ test.todo(
       quote: doesntNeedUnlockQuote,
       chainId: 1,
       assetToSell: ETH_MAINNET_ASSET,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       assetToBuy: USDC_MAINNET_ASSET,
     });
     expect(Number(gasLimit)).toBeGreaterThan(0);
@@ -207,7 +207,7 @@ test.todo(
       quote: needsUnlockQuote,
       chainId: 1,
       assetToSell: ENS_MAINNET_ASSET,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       assetToBuy: USDC_MAINNET_ASSET,
     });
     expect(Number(gasLimit)).toBeGreaterThan(0);
@@ -219,7 +219,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async (
   const rap = await createUnlockAndSwapRap({
     quote: doesntNeedUnlockQuote,
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ETH_MAINNET_ASSET,
     assetToBuy: USDC_MAINNET_ASSET,
   });
@@ -232,7 +232,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execu
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: doesntNeedUnlockQuote,
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ETH_MAINNET_ASSET,
     assetToBuy: USDC_MAINNET_ASSET,
   });
@@ -243,7 +243,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () =
   const rap = await createUnlockAndSwapRap({
     quote: needsUnlockQuote,
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ENS_MAINNET_ASSET,
     assetToBuy: USDC_MAINNET_ASSET,
   });
@@ -260,7 +260,7 @@ test('[rap/unlockAndSwap] :: create swap rap and execute it', async () => {
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: ethToEnsQuote,
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ETH_MAINNET_ASSET,
     assetToBuy: ENS_MAINNET_ASSET,
   });
@@ -277,7 +277,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock and execute 
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: needsUnlockQuote,
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ENS_MAINNET_ASSET,
     assetToBuy: USDC_MAINNET_ASSET,
   });
@@ -294,7 +294,7 @@ test('[rap/unlockAndSwap] :: create unlock and wrap eth rap with unlock and exec
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: withSwapType(wrapEthQuote, SwapType.wrap),
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ETH_MAINNET_ASSET,
     assetToBuy: WETH_MAINNET_ASSET,
   });
@@ -309,7 +309,7 @@ test('[rap/unlockAndSwap] :: unwrap bypasses target checks even with allowance f
       allowanceTarget: TEST_ADDRESS_2,
     },
     chainId: 1,
-    sellAmount: '100000000000000000',
+    sellAmount: 100000000000000000n,
     assetToSell: WETH_MAINNET_ASSET,
     assetToBuy: ETH_MAINNET_ASSET,
   });
@@ -325,7 +325,7 @@ test('[rap/unlockAndSwap] :: wrap bypasses target checks even with allowance fie
       allowanceTarget: TEST_ADDRESS_2,
     },
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ETH_MAINNET_ASSET,
     assetToBuy: WETH_MAINNET_ASSET,
   });
@@ -342,7 +342,7 @@ test('[rap/unlockAndSwap] :: standard ERC20 swaps still enforce target allowlist
         allowanceTarget: TEST_ADDRESS_2,
       },
       chainId: 1,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       assetToSell: ENS_MAINNET_ASSET,
       assetToBuy: USDC_MAINNET_ASSET,
     }),
@@ -353,7 +353,7 @@ test('[rap/unlockAndSwap] :: create unwrap eth rap', async () => {
   const rap = await createUnlockAndSwapRap({
     quote: withSwapType(unwrapEthQuote, SwapType.unwrap),
     chainId: 1,
-    sellAmount: '100000000000000000',
+    sellAmount: 100000000000000000n,
     assetToSell: WETH_MAINNET_ASSET,
     assetToBuy: ETH_MAINNET_ASSET,
   });
@@ -370,7 +370,7 @@ test('[rap/unlockAndSwap] :: create unwrap weth rap and execute it', async () =>
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: withSwapType(unwrapEthQuote, SwapType.unwrap),
     chainId: 1,
-    sellAmount: '100000000000000000',
+    sellAmount: 100000000000000000n,
     assetToSell: WETH_MAINNET_ASSET,
     assetToBuy: ETH_MAINNET_ASSET,
   });
