@@ -4,6 +4,7 @@ import { Address, isAddress } from 'viem';
 import { RainbowTransaction } from '~/core/types/transactions';
 
 import { createExtensionStoreOptions } from '../../_internal';
+import { migrateApprovalAmountToBigInt } from '../migrateApprovalAmount';
 
 export interface PendingTransactionsStateV1 {
   [key: Address]: {
@@ -114,7 +115,7 @@ export const usePendingTransactionsStore =
     }),
     createExtensionStoreOptions({
       storageKey: 'pendingTransactions',
-      version: 2,
+      version: 3,
       migrate(persistedState, version) {
         const state = persistedState as PendingTransactionsState;
         if (version === 0) {
@@ -161,6 +162,14 @@ export const usePendingTransactionsStore =
           });
           state.pendingTransactions = pendingTransactions;
           return state;
+        }
+        if (version === 2) {
+          return {
+            ...state,
+            pendingTransactions: migrateApprovalAmountToBigInt(
+              state.pendingTransactions,
+            ),
+          };
         }
         return state;
       },

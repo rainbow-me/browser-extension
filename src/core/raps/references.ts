@@ -11,12 +11,6 @@ import {
 } from '../types/gas';
 import type { NewTransaction } from '../types/transactions';
 
-export enum SwapModalField {
-  input = 'inputAmount',
-  native = 'nativeAmount',
-  output = 'outputAmount',
-}
-
 export enum Source {
   AggregatorRainbow = 'rainbow',
   Aggregator0x = '0x',
@@ -25,20 +19,11 @@ export enum Source {
 }
 
 export interface UnlockActionParameters {
-  amount: string;
+  amount: bigint;
   assetToUnlock: ParsedAsset;
   contractAddress: Address;
   chainId: number;
 }
-
-export type SwapMetadata = {
-  slippage: number;
-  route: Source;
-  inputAsset: ParsedAsset;
-  outputAsset: ParsedAsset;
-  independentField: SwapModalField;
-  independentValue: string;
-};
 
 export type QuoteTypeMap = {
   swap: Quote;
@@ -46,14 +31,9 @@ export type QuoteTypeMap = {
 };
 
 export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
-  amount?: string | null;
-  sellAmount: string;
-  buyAmount?: string;
-  permit?: boolean;
+  sellAmount: bigint;
   chainId: number;
-  toChainId?: number;
   requiresApprove?: boolean;
-  meta?: SwapMetadata;
   assetToSell: ParsedAsset;
   assetToBuy: ParsedAsset;
   nonce?: number;
@@ -65,7 +45,7 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
 
 export interface RapUnlockActionParameters {
   fromAddress: Address;
-  amount: string;
+  amount: bigint;
   assetToUnlock: ParsedAsset;
   contractAddress: Address;
   chainId: number;
