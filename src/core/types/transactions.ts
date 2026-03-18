@@ -51,7 +51,8 @@ type BaseTransaction = {
   description?: string;
 
   asset?: ParsedAsset; // this is the relevant tx asset, like the asset being sold/approved/withdrawn etc
-  approvalAmount?: 'UNLIMITED' | (string & object);
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  approvalAmount?: 'UNLIMITED' | (string & {}); // `& {}` is a workaround to allow 'UNLIMITED' to not be collapsed with strings https://stackoverflow.com/questions/75262513/what-is-the-purpose-of-string
   contract?: {
     name: string;
     iconUrl?: string;

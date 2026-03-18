@@ -437,9 +437,7 @@ export const unlock = async ({
     gasLimit: gasLimit?.toString(),
     status: 'pending',
     type: 'approve',
-    approvalAmount: (isUnlimited ? 'UNLIMITED' : approvalAmount) as
-      | 'UNLIMITED'
-      | (string & object),
+    approvalAmount: isUnlimited ? 'UNLIMITED' : approvalAmount,
     ...gasParams,
   };
 
