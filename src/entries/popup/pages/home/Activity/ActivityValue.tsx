@@ -1,154 +1,60 @@
-/*
-  when tx type is SWAP, WRAP, UNWRAP
-  values are token out on top and token in on bottom
-
-  when tx type is BRIDGE
-  values are "to <network_name>" on top and bridge value on bottom
-
-  when tx type is APPROVE
-  values are contract name and symbol on top and approved amount on bottom
-
-  when tx type is STAKE or UNSTAKE
-  protocol name and symbol on top, and staked/unstake token amount on bottom
-
-  ALL OTHER TX TYPES
-  if direction out, token amount out on top and it's native amount on bottom
-  if direction in, the same but with token in amounts
-  if native amount is 0, show no value on top and token amount on bottom
-*/
-
-import { capitalize } from 'lodash';
-
-import { i18n } from '~/core/languages';
-import { chainIdToNameMapping } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { isParsedUserAsset } from '~/core/utils/assets';
-import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
-import { getApprovalLabel } from '~/core/utils/transactions';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
-const approvalTypeValues = (transaction: RainbowTransaction) => {
-  const { asset, approvalAmount, hash, contract } = transaction;
+import {
+  type ActivityDisplayValues,
+  getActivityDisplayValues,
+} from './getActivityDisplayValues';
 
-  if (!asset || !approvalAmount) return;
-  const label = getApprovalLabel(transaction);
+const renderValues = (
+  values: ActivityDisplayValues,
+): [React.ReactNode, React.ReactNode] => {
+  switch (values.type) {
+    case 'swap':
+      return [values.outValue, values.inValue];
 
-  return [
-    contract?.name ? (
-      <Inline key={`app${hash}`} alignVertical="center" space="4px">
-        {contract.iconUrl && (
-          <ContractIcon size={16} iconUrl={contract.iconUrl} />
-        )}
-        {contract.name}
-      </Inline>
-    ) : null,
-    label && (
-      <Box
-        key={`approval${hash}`}
-        paddingHorizontal="6px"
-        paddingVertical="5px"
-        borderColor="separatorSecondary"
-        borderRadius="6px"
-        borderWidth="1px"
-        style={{ borderStyle: 'dashed' }}
-      >
-        <Text size="11pt" weight="semibold" color="labelTertiary">
-          {label}
-        </Text>
-      </Box>
-    ),
-  ];
-};
+    case 'bridge':
+      return [
+        <Inline key="bridge" alignVertical="center" space="4px">
+          <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
+            to {values.chainName}
+          </TextOverflow>
+          <ChainBadge chainId={values.chainId} size={12} />
+        </Inline>,
+        values.inValue,
+      ];
 
-const swapTypeValues = (changes: RainbowTransaction['changes']) => {
-  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
-  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
+    case 'approval':
+      return [
+        values.contractName ? (
+          <Inline alignVertical="center" space="4px">
+            {values.contractIconUrl && (
+              <ContractIcon size={16} iconUrl={values.contractIconUrl} />
+            )}
+            {values.contractName}
+          </Inline>
+        ) : null,
+        values.label ? (
+          <Box
+            paddingHorizontal="6px"
+            paddingVertical="5px"
+            borderColor="separatorSecondary"
+            borderRadius="6px"
+            borderWidth="1px"
+            style={{ borderStyle: 'dashed' }}
+          >
+            <Text size="11pt" weight="semibold" color="labelTertiary">
+              {values.label}
+            </Text>
+          </Box>
+        ) : null,
+      ];
 
-  if (!tokenIn || !tokenOut || !tokenIn.symbol || !tokenOut.symbol) return;
-
-  const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
-    tokenOut.symbol
-  }`;
-  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
-
-  return [valueOut, valueIn];
-};
-
-const bridgeTypeValues = (changes: RainbowTransaction['changes']) => {
-  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
-  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
-
-  if (!tokenIn || !tokenOut) return;
-
-  const chainName = chainIdToNameMapping[tokenIn.chainId];
-  const destinationChainName = chainName ? capitalize(chainName) : 'Unknown';
-
-  const topValue = (
-    <Inline alignVertical="center" space="4px">
-      <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
-        to {destinationChainName}
-      </TextOverflow>
-      <ChainBadge chainId={tokenIn.chainId} size={12} />
-    </Inline>
-  );
-
-  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
-
-  return [topValue, valueIn];
-};
-
-const activityValues = (transaction: RainbowTransaction) => {
-  const { changes, direction, type, asset: _asset } = transaction;
-  if (['swap', 'wrap', 'unwrap'].includes(type)) return swapTypeValues(changes);
-  if (type === 'bridge' && changes?.length === 2)
-    return bridgeTypeValues(changes);
-  if (['approve', 'revoke'].includes(type))
-    return approvalTypeValues(transaction);
-
-  const nonNftChanges = changes?.filter((c) => c?.asset.type !== 'nft') ?? [];
-
-  // Prefer "out"/"in" changes over "self" — self-transfers (e.g. contract
-  // returning funds to the sender) carry the full wallet balance and would
-  // misrepresent the actual value of the transaction.
-  const nonSelfChanges = nonNftChanges.filter((c) => c?.direction !== 'self');
-  const changeWithAsset =
-    nonSelfChanges.find((c) => c?.direction === direction) ??
-    (nonSelfChanges.length === 1 ? nonSelfChanges[0] : undefined) ??
-    (nonNftChanges.length === 1 ? nonNftChanges[0] : undefined);
-
-  const asset = changeWithAsset?.asset ?? _asset;
-
-  if (
-    !asset ||
-    !isParsedUserAsset(asset) ||
-    asset.type === 'nft' ||
-    !asset.symbol
-  )
-    return;
-
-  const { balance, native } = asset;
-
-  const resolvedDirection = changeWithAsset?.direction ?? direction;
-  const valueSymbol =
-    balance.amount === '0' ? '' : resolvedDirection === 'in' ? '+' : '-';
-
-  const formatOptions =
-    +balance.amount > 100_000 ? ({ notation: 'compact' } as const) : undefined;
-  const assetValue = `${formatNumber(balance.amount, formatOptions)} ${
-    asset.symbol
-  }`;
-
-  const nativeBalance = native.balance.amount;
-  const assetNativeValue =
-    +nativeBalance > 0
-      ? `${valueSymbol}${formatCurrency(nativeBalance)}`
-      : i18n.t('activity.no_value');
-
-  return +nativeBalance > 0
-    ? [assetValue, assetNativeValue]
-    : [assetNativeValue, `${valueSymbol}${assetValue}`];
+    case 'transfer':
+      return [values.topValue, values.bottomValue];
+  }
 };
 
 export const ActivityValue = ({
@@ -156,7 +62,10 @@ export const ActivityValue = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const [topValue, bottomValue] = activityValues(transaction) ?? [];
+  const values = getActivityDisplayValues(transaction);
+  if (!values) return null;
+
+  const [topValue, bottomValue] = renderValues(values);
   if (!topValue && !bottomValue) return null;
 
   return (
