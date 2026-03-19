@@ -7,6 +7,7 @@ import { setupDelegationClient } from '~/core/resources/delegations/setup';
 import { initThemingLocal } from '~/design-system/styles/initThemingLocal';
 
 import { App } from './App';
+import { setupPendingTransactionCleanup } from './pendingTransactionCleanup';
 
 require('../../core/utils/lockdown');
 
@@ -18,6 +19,8 @@ if (process.env.IS_TESTING === 'true') {
 
 // Configure delegation SDK before render
 setupDelegationClient();
+
+setupPendingTransactionCleanup();
 
 const domContainer = document.querySelector('#app') as Element;
 const root = createRoot(domContainer);
