@@ -95,7 +95,23 @@ export function SendTransaction({
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
+        const hasNativeValue = result.value?.gt(0);
         const transaction = {
+          ...(hasNativeValue && asset
+            ? {
+                type: 'send' as const,
+                changes: [
+                  {
+                    direction: 'out' as const,
+                    asset,
+                    value: result.value.toString(),
+                  },
+                ],
+              }
+            : {
+                type: 'contract_interaction' as const,
+                changes: [],
+              }),
           asset: asset || undefined,
           value: result.value.toString(),
           data: result.data,
@@ -105,7 +121,6 @@ export function SendTransaction({
           chainId: txData.chainId,
           nonce: result.nonce,
           status: 'pending',
-          type: 'send',
           ...selectedGas.transactionGasParams,
         } satisfies NewTransaction;
 
