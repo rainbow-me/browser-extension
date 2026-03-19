@@ -66,7 +66,7 @@ const swapTypeValues = (changes: RainbowTransaction['changes']) => {
   const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
   const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
 
-  if (!tokenIn || !tokenOut) return;
+  if (!tokenIn || !tokenOut || !tokenIn.symbol || !tokenOut.symbol) return;
 
   const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
     tokenOut.symbol
@@ -115,7 +115,13 @@ const activityValues = (transaction: RainbowTransaction) => {
 
   const asset = changeWithAsset?.asset ?? _asset;
 
-  if (!asset || !isParsedUserAsset(asset) || asset.type === 'nft') return;
+  if (
+    !asset ||
+    !isParsedUserAsset(asset) ||
+    asset.type === 'nft' ||
+    !asset.symbol
+  )
+    return;
 
   const { balance, native } = asset;
 
