@@ -119,11 +119,13 @@ export async function watchPendingTransactions(
     );
 
   for (const { address: addr, mined: minedTransaction } of minedWithAddress) {
+    // Update tx in-place (pending -> confirmed/failed), keep in store
     updatePendingTransaction({
       address: addr,
       pendingTransaction: minedTransaction,
     });
 
+    // Stale balance markers for asset refresh when popup opens
     if (minedTransaction.changes?.length) {
       minedTransaction.changes.forEach((change) => {
         const changedAsset = change?.asset;
@@ -152,6 +154,7 @@ export async function watchPendingTransactions(
       });
     }
 
+    // Custom chain txs go to custom network store
     if (isCustomChain(minedTransaction.chainId)) {
       addCustomNetworkTransactions({
         address: addr,
