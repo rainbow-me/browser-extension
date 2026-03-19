@@ -760,7 +760,7 @@ export const getApprovalLabel = ({
   if (!approvalAmount || !asset) return;
   if (approvalAmount === 'UNLIMITED') return i18n.t('approvals.unlimited');
   if (type === 'revoke') return i18n.t('approvals.no_allowance');
-  return `${formatNumber(formatUnits(approvalAmount, asset.decimals))} ${
-    asset.symbol
-  }`;
+  return `${formatNumber(
+    formatUnits(BigInt(approvalAmount), asset.decimals),
+  )} ${asset.symbol}`;
 };
