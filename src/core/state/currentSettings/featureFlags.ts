@@ -8,6 +8,7 @@ export enum featureFlagTypes {
   rewards_scheduled_drop = 'rewards_scheduled_drop',
   atomic_swaps_enabled = 'atomic_swaps_enabled',
   delegation_enabled = 'delegation_enabled',
+  eip5792_enabled = 'eip5792_enabled',
 }
 export type FeatureFlagTypes = keyof typeof featureFlagTypes;
 
@@ -16,6 +17,7 @@ export interface FeatureFlagsStore {
     [K in FeatureFlagTypes]: K extends
       | 'atomic_swaps_enabled'
       | 'delegation_enabled'
+      | 'eip5792_enabled'
       ? boolean | null // null = use remote config; boolean = user override (enables "reset to remote" without forcing false)
       : boolean;
   };
@@ -31,6 +33,7 @@ export const useFeatureFlagLocalOverwriteStore =
         rewards_scheduled_drop: false,
         atomic_swaps_enabled: null,
         delegation_enabled: null,
+        eip5792_enabled: null,
       },
       setFeatureFlag: (key, value) => {
         const { featureFlags } = get();
@@ -62,6 +65,11 @@ export const useFeatureFlagLocalOverwriteStore =
             persistedState.featureFlags.delegation_enabled !== undefined &&
             typeof persistedState.featureFlags.delegation_enabled === 'boolean'
               ? persistedState.featureFlags.delegation_enabled
+              : null,
+          eip5792_enabled:
+            persistedState.featureFlags.eip5792_enabled !== undefined &&
+            typeof persistedState.featureFlags.eip5792_enabled === 'boolean'
+              ? persistedState.featureFlags.eip5792_enabled
               : null,
         };
         return {
