@@ -4,15 +4,16 @@ import {
   type Transaction as DelegationPreparedTransaction,
   prepareBatchedTransaction,
 } from '@rainbow-me/delegation';
-import { type Address, zeroAddress } from 'viem';
+import { type Address } from 'viem';
 
 import type { SendCallsParams } from './types';
 
 export function sendCallsParamsToBatchCalls(
   sendParams: SendCallsParams,
+  from: Address,
 ): BatchCall[] {
   return sendParams.calls.map((call) => ({
-    to: call.to ?? zeroAddress,
+    to: call.to ?? from,
     value: call.value ?? '0x0',
     data: call.data ?? '0x',
   }));
@@ -31,7 +32,7 @@ export async function prepareSendCallsEnvelope({
   from: Address;
   provisionalNonce: number;
 }): Promise<DelegationPreparedTransaction> {
-  const calls = sendCallsParamsToBatchCalls(sendParams);
+  const calls = sendCallsParamsToBatchCalls(sendParams, from);
   const chainId = Number(sendParams.chainId);
   return prepareBatchedTransaction({
     from,
