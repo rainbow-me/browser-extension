@@ -1,3 +1,8 @@
 export { executeSendCallsBatch } from './executeSendCallsBatch';
 export type { ExecuteSendCallsBatchResult } from './executeSendCallsBatch';
-export type { SendCallsParams } from './types';
+export {
+  envelopeToTransactionRequest,
+  prepareSendCallsEnvelope,
+  sendCallsParamsToBatchCalls,
+} from './prepareEnvelope';
+export type { SendCallsParams, RequestCapability } from '@rainbow-me/provider';

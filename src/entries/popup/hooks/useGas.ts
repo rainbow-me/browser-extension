@@ -370,16 +370,27 @@ export const useTransactionGas = ({
   address,
   defaultSpeed,
   transactionRequest,
+  simulatedGasLimit,
 }: {
   chainId: ChainId;
   address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
+  /** When set (e.g. from metadata simulation), skip RPC estimate and use this gas limit. */
+  simulatedGasLimit?: string;
 }) => {
-  const { data: estimatedGasLimit } = useEstimateGasLimit({
-    chainId,
-    transactionRequest: useDebounce(transactionRequest, 500),
-  });
+  const useRpcEstimate =
+    simulatedGasLimit === undefined || simulatedGasLimit === '';
+  const { data: rpcEstimatedGasLimit } = useEstimateGasLimit(
+    {
+      chainId,
+      transactionRequest: useDebounce(transactionRequest, 500),
+    },
+    { enabled: useRpcEstimate },
+  );
+  const estimatedGasLimit = useRpcEstimate
+    ? rpcEstimatedGasLimit
+    : simulatedGasLimit;
   return useGas({
     chainId,
     address,

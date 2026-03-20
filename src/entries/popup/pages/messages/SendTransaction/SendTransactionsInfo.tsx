@@ -1,9 +1,11 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, memo, useState } from 'react';
 import { Address } from 'viem';
 
-import { DAppStatus } from '~/core/graphql/__generated__/metadata';
+import {
+  DAppStatus,
+  TransactionScanResultType,
+} from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useUserAssets } from '~/core/resources/assets';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
@@ -16,6 +18,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
+import { truncateAddress } from '~/core/utils/address';
 import { getChain } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { getFaucetsUrl } from '~/core/utils/faucets';
@@ -58,13 +61,22 @@ import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import { useHasEnoughGas } from '../useHasEnoughGas';
 import {
-  SimulationError,
+  SimulationQueryResult,
   TransactionSimulation,
-  useSimulateTransaction,
 } from '../useSimulateTransaction';
+
+import {
+  getSendCallsParams,
+  getTransactionRequestsFromRequest,
+  isWalletSendCallsRequest,
+} from './normalizeRequest';
 
 interface SendTransactionProps {
   request: ProviderRequestPayload;
+  /** Single chain for simulation, tabs, and gas (parent-derived). */
+  chainId: ChainId;
+  dappStatusForUi?: DAppStatus;
+  simulationResult?: SimulationQueryResult;
   onRejectRequest: ({
     preventWindowClose,
   }: {
@@ -112,15 +124,11 @@ const InfoRow = ({
 
 const Overview = memo(function Overview({
   chainId,
-  simulation,
-  status,
-  error,
+  simulationResult,
   metadata,
 }: {
   chainId: ChainId;
-  simulation: TransactionSimulation | undefined;
-  status: 'pending' | 'error' | 'success';
-  error: SimulationError | null;
+  simulationResult?: SimulationQueryResult;
   metadata: DappMetadata | null;
 }) {
   const { badge, color } = getDappStatusBadge(
@@ -128,6 +136,13 @@ const Overview = memo(function Overview({
     { size: 12 },
   );
   const chainName = getChain({ chainId }).name;
+
+  const simulation = simulationResult?.data;
+  const status =
+    simulationResult?.status === 'error' && simulationResult?.isRefetching
+      ? 'pending'
+      : simulationResult?.status ?? 'pending';
+  const error = simulationResult?.error ?? null;
 
   return (
     <Stack space="16px" paddingTop="14px">
@@ -192,7 +207,7 @@ const TransactionDetails = memo(function TransactionDetails({
 
   const nonce = useNonceStore((s) => s.getNonce(session)?.currentNonce);
 
-  const functionName = metaTo?.function.split('(')[0];
+  const functionName = metaTo?.function?.split('(')[0];
   const contract = metaTo && {
     address: metaTo.address as Address,
     name: metaTo.name,
@@ -297,6 +312,58 @@ const TransactionData = memo(function TransactionData({
   );
 });
 
+const BatchTransactionData = memo(function BatchTransactionData({
+  callsData,
+  expanded,
+}: {
+  callsData: Array<{ to?: string; data: string; value?: string }>;
+  expanded: boolean;
+}) {
+  const allDataCopyValue = callsData
+    .map(
+      (call, i) =>
+        `${i18n.t('approve_request.batch_call_label', { index: i + 1 })}${
+          call.to ? ` → ${call.to}` : ''
+        }\n${call.data}`,
+    )
+    .join('\n\n');
+
+  return (
+    <Box paddingBottom="32px" paddingTop="14px">
+      <Stack space="16px">
+        {callsData.map((call, index) => (
+          <Box key={index} display="flex" flexDirection="column" gap="8px">
+            <Text size="12pt" weight="semibold" color="labelTertiary">
+              {i18n.t('approve_request.batch_call_label', {
+                index: index + 1,
+              })}
+              {call.to ? ` → ${truncateAddress(call.to as Address)}` : ''}
+            </Text>
+            <Text size="12pt" weight="medium" color="labelSecondary">
+              <span style={{ wordWrap: 'break-word' }}>{call.data}</span>
+            </Text>
+          </Box>
+        ))}
+      </Stack>
+      <CopyButton
+        withLabel={expanded}
+        onClick={() =>
+          copy({
+            value: allDataCopyValue,
+            title: i18n.t('approve_request.transaction_data_copied'),
+            description:
+              callsData.length > 1
+                ? i18n.t('approve_request.batch_of_calls', {
+                    count: callsData.length,
+                  })
+                : truncateString(callsData[0]?.data ?? '', 20),
+          })
+        }
+      />
+    </Box>
+  );
+});
+
 function BalanceLoadingSkeleton() {
   const { currentTheme } = useCurrentThemeStore();
   const overflowGradient =
@@ -338,46 +405,46 @@ function BalanceLoadingSkeleton() {
 
 function TransactionInfo({
   request,
-  dappUrl,
   dappMetadata,
   expanded,
   onExpand,
+  simulationResult,
+  chainId,
 }: {
-  request: TransactionRequest;
-  dappUrl: string;
+  request: ProviderRequestPayload;
   dappMetadata: DappMetadata | null;
   expanded: boolean;
   onExpand: VoidFunction;
+  simulationResult?: SimulationQueryResult;
+  chainId: ChainId;
 }) {
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const chainId = activeSession?.chainId || ChainId.mainnet;
 
-  const txData = request?.data?.toString() || '';
+  const transactionRequests = getTransactionRequestsFromRequest(request);
+  const sendParams = getSendCallsParams(request);
+  const isBatch = isWalletSendCallsRequest(request);
 
-  const {
-    data: simulation,
-    status,
-    error,
-    isRefetching,
-  } = useSimulateTransaction({
-    chainId,
-    transaction: {
-      from: request.from || '',
-      to: request.to || '',
-      value: request.value?.toString() || '0',
-      data: request.data?.toString() || '',
-    },
-    domain: dappUrl,
-  });
+  const callsData =
+    sendParams?.calls.map((call) => ({
+      to: call.to,
+      data: call.data ?? '0x',
+      value: call.value,
+    })) ?? [];
+
+  const simulation = simulationResult?.data;
 
   const tabLabel = (tab: string) => i18n.t(tab, { scope: 'simulation.tabs' });
+  const dappBadge = dappMetadata
+    ? getDappStatusBadge(dappMetadata?.status || DAppStatus.Unverified, {
+        size: 12,
+      })
+    : null;
 
   return (
     <>
       <Tabs
         tabs={
-          // we need a simulation to show the details tab
-          !simulation && status === 'error'
+          !simulation && simulationResult?.status === 'error'
             ? [tabLabel('overview'), tabLabel('data')]
             : [tabLabel('overview'), tabLabel('details'), tabLabel('data')]
         }
@@ -387,32 +454,81 @@ function TransactionInfo({
         <TabContent value={tabLabel('overview')}>
           <Overview
             chainId={chainId}
-            simulation={simulation}
-            status={status === 'error' && isRefetching ? 'pending' : status}
-            error={error}
+            simulationResult={simulationResult}
             metadata={dappMetadata}
           />
         </TabContent>
         {simulation && (
           <TabContent value={tabLabel('details')}>
-            <TransactionDetails
-              session={activeSession!}
-              simulation={simulation}
-            />
+            <Stack space="16px" paddingTop="14px">
+              {chainId && getChain({ chainId }).name && (
+                <InfoRow
+                  symbol="network"
+                  label={i18n.t('chain')}
+                  value={
+                    <Inline space="6px" alignVertical="center">
+                      <ChainBadge chainId={chainId} size={14} />
+                      <Text
+                        size="12pt"
+                        weight="semibold"
+                        color="labelSecondary"
+                      >
+                        {getChain({ chainId }).name}
+                      </Text>
+                    </Inline>
+                  }
+                />
+              )}
+              {dappMetadata && dappBadge && (
+                <InfoRow
+                  symbol="app.badge.checkmark"
+                  label="App"
+                  value={
+                    <Tag
+                      size="12pt"
+                      color={dappBadge.color}
+                      bleed
+                      left={
+                        dappBadge.badge && (
+                          <Bleed vertical="3px">{dappBadge.badge}</Bleed>
+                        )
+                      }
+                    >
+                      {dappMetadata.appName}
+                    </Tag>
+                  }
+                />
+              )}
+              <TransactionDetails
+                session={activeSession!}
+                simulation={simulation}
+              />
+            </Stack>
           </TabContent>
         )}
         <TabContent value={tabLabel('data')}>
-          <TransactionData data={txData} expanded={expanded} />
+          {isBatch ? (
+            <BatchTransactionData callsData={callsData} expanded={expanded} />
+          ) : (
+            <TransactionData
+              data={transactionRequests?.[0]?.data?.toString() ?? ''}
+              expanded={expanded}
+            />
+          )}
         </TabContent>
       </Tabs>
 
-      {!expanded && simulation && simulation.scanning.result !== 'OK' && (
-        <MaliciousRequestWarning
-          title={i18n.t('approve_request.malicious_transaction_warning.title')}
-          description={simulation.scanning.description}
-          symbol="exclamationmark.octagon.fill"
-        />
-      )}
+      {!expanded &&
+        simulation &&
+        simulation.scanning.result !== TransactionScanResultType.Ok && (
+          <MaliciousRequestWarning
+            title={i18n.t(
+              'approve_request.malicious_transaction_warning.title',
+            )}
+            description={simulation.scanning.description}
+            symbol="exclamationmark.octagon.fill"
+          />
+        )}
     </>
   );
 }
@@ -614,6 +730,9 @@ function InsuficientGasFunds({
 
 export function SendTransactionInfo({
   request,
+  chainId,
+  dappStatusForUi,
+  simulationResult,
   onRejectRequest,
 }: SendTransactionProps) {
   const dappUrl = request?.meta?.sender?.url || '';
@@ -621,11 +740,13 @@ export function SendTransactionInfo({
 
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
 
-  const txRequest = request?.params?.[0] as TransactionRequest;
+  const isBatch = isWalletSendCallsRequest(request);
+  const sendParams = getSendCallsParams(request);
 
   const [expanded, setExpanded] = useState(false);
 
-  const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
+  const statusForUi = dappStatusForUi ?? dappMetadata?.status;
+  const isScamDapp = statusForUi === DAppStatus.Scam;
 
   const { hasEnough: hasEnoughGas, isLoading: isGasLoading } =
     useHasEnoughGas(activeSession);
@@ -658,18 +779,57 @@ export function SendTransactionInfo({
               <Stack space="12px">
                 <DappHostName
                   hostName={dappMetadata?.appHostName}
-                  dappStatus={dappMetadata?.status}
+                  dappStatus={statusForUi}
                 />
-                <Text
-                  align="center"
-                  size="14pt"
-                  weight="bold"
-                  color={isScamDapp ? 'red' : 'labelSecondary'}
-                >
-                  {isScamDapp
-                    ? i18n.t('approve_request.dangerous_request')
-                    : i18n.t('approve_request.transaction_request')}
-                </Text>
+                {isScamDapp ? (
+                  <Text align="center" size="14pt" weight="bold" color="red">
+                    {i18n.t('approve_request.dangerous_request')}
+                  </Text>
+                ) : isBatch ? (
+                  <Inline
+                    alignVertical="center"
+                    alignHorizontal="center"
+                    space="6px"
+                    wrap
+                  >
+                    <Text size="14pt" weight="bold" color="labelSecondary">
+                      {i18n.t('approve_request.batch_request_title', {
+                        count: sendParams?.calls?.length ?? 0,
+                      })}
+                    </Text>
+                    {(() => {
+                      const chain = getChain({ chainId });
+                      return chain?.name ? (
+                        <Inline alignVertical="center" space="6px" wrap={false}>
+                          <ChainBadge chainId={chainId} size={14} />
+                          <Text
+                            size="14pt"
+                            weight="bold"
+                            color="labelSecondary"
+                          >
+                            {chain.name}
+                          </Text>
+                        </Inline>
+                      ) : (
+                        <Text size="14pt" weight="bold" color="labelSecondary">
+                          {i18n.t(
+                            'approve_request.batch_request_chain_unknown',
+                            { chainId },
+                          )}
+                        </Text>
+                      );
+                    })()}
+                  </Inline>
+                ) : (
+                  <Text
+                    align="center"
+                    size="14pt"
+                    weight="bold"
+                    color="labelSecondary"
+                  >
+                    {i18n.t('approve_request.transaction_request')}
+                  </Text>
+                )}
               </Stack>
             </Stack>
           </motion.div>
@@ -686,15 +846,16 @@ export function SendTransactionInfo({
             onRejectRequest={onRejectRequest}
           />
         )
-      ) : (
+      ) : getTransactionRequestsFromRequest(request) ? (
         <TransactionInfo
-          request={txRequest}
+          request={request}
           dappMetadata={dappMetadata}
-          dappUrl={dappUrl}
           expanded={expanded}
           onExpand={() => setExpanded((e) => !e)}
+          simulationResult={simulationResult}
+          chainId={chainId}
         />
-      )}
+      ) : null}
     </Box>
   );
 }
