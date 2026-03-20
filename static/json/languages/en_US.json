@@ -524,6 +524,7 @@
         "disable_flashbots": "Disable Flashbots",
         "copy_uuid": "Copy UUID",
         "clear_transactions": "Clear Pending Transactions",
+        "clear_batches": "Clear Batch Store",
         "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "diagnostics",
         "refresh_data": "refresh, reload, clear cache, reset, update",
         "clear_transactions": "clear, reset, pending, transactions, nonce, nonces",
+        "clear_batches": "clear, reset, batch, batches, sendCalls, 5792",
         "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
