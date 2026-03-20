@@ -422,7 +422,7 @@ function TransactionInfo({
 
   const transactionRequests = getTransactionRequestsFromRequest(request);
   const sendParams = getSendCallsParams(request);
-  const isBatch = (transactionRequests?.length ?? 0) > 1;
+  const isBatch = isWalletSendCallsRequest(request);
 
   const callsData =
     sendParams?.calls.map((call) => ({
