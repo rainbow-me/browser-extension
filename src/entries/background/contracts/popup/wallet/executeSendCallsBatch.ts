@@ -5,7 +5,7 @@ import { addressSchema } from '~/core/schemas/address';
 import { hexSchema } from '~/core/schemas/hex';
 
 const sendCallsCallSchema = z.object({
-  to: hexSchema.optional(),
+  to: addressSchema.optional(),
   data: hexSchema.optional(),
   value: hexSchema.optional(),
 });
