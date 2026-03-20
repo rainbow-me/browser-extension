@@ -3,6 +3,7 @@ import { uuid4 } from '@sentry/core';
 import { initializeMessenger } from '~/core/messengers';
 import { setupDelegationClient } from '~/core/resources/delegations/setup';
 import { initializeSentry } from '~/core/sentry';
+import { useBatchStore } from '~/core/state';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 
 import { handleAutoLock } from './handlers/handleAutoLock';
@@ -38,5 +39,7 @@ handleSetupInpage();
 handleWallets();
 handleAutoLock();
 handleWatchPendingTransactions();
+
+useBatchStore.getState().evictExpiredBatches();
 
 uuid4();
