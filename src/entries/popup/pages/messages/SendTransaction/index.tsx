@@ -179,7 +179,7 @@ export function SendTransaction({
         return;
       }
       const sp = sendParams;
-      if (!sp?.calls?.length) return;
+      if (!sp?.calls?.length || !preparedEnvelope) return;
       const senderUrl = request?.meta?.sender?.url;
       const app =
         dappMetadata?.appHost ??
@@ -331,6 +331,7 @@ export function SendTransaction({
     selectedWallet,
     activeSession,
     sendParams,
+    preparedEnvelope,
     isSendCalls,
     isSigningWithDevice,
     connectedToHardhat,
