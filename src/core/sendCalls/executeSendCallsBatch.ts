@@ -3,7 +3,7 @@ import {
   executeBatchedTransaction,
   supportsDelegation,
 } from '@rainbow-me/delegation';
-import { type Address, type Hex } from 'viem';
+import { type Address } from 'viem';
 
 import { getDelegationEnabled } from '~/core/resources/delegations/featureStatus';
 import { useGasStore } from '~/core/state';
@@ -33,9 +33,9 @@ export async function executeSendCallsBatch({
   const chainId = Number(sendParams.chainId);
 
   const calls: BatchCall[] = sendParams.calls.map((call) => ({
-    to: (call.to ?? '0x0000000000000000000000000000000000000000') as Address,
-    value: toHex(BigInt(call.value ?? '0x0')) as Hex,
-    data: (call.data ?? '0x') as Hex,
+    to: call.to ?? from,
+    value: toHex(BigInt(call.value ?? '0x0')),
+    data: call.data ?? '0x',
   }));
 
   if (!calls.length) {
@@ -96,7 +96,7 @@ export async function executeSendCallsBatch({
       nonce,
       chainId,
       from,
-      to: calls[0]?.to as Address,
+      to: calls[0]?.to,
       data: calls[0]?.data,
       value: totalValue.toString(),
       status: 'pending',
