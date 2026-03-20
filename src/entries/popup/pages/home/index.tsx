@@ -35,7 +35,6 @@ import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import { HomeShortcuts } from '../../hooks/useHomeShortcuts';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { PendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { RestoreNavigation } from '../../hooks/useRestoreNavigation';
@@ -229,8 +228,6 @@ export const Home = memo(function Home() {
           {currentHomeSheet}
           {config.approvals_enabled ? <RevokeApproval /> : null}
           {delegationEnabled ? <ProactiveRevokeWatcher /> : null}
-
-          <PendingTransactionWatcher />
 
           <HomeShortcuts />
           <RestoreNavigation />
