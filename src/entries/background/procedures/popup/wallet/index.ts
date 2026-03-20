@@ -3,6 +3,7 @@ import { addHandler } from './add';
 import { addAccountAtIndexHandler } from './addAccountAtIndex';
 import { createHandler } from './create';
 import { deriveAccountsFromSecretHandler } from './deriveAccountsFromSecret';
+import { executeSendCallsBatchHandler } from './executeSendCallsBatch';
 import { exportAccountHandler } from './exportAccount';
 import { exportWalletHandler } from './exportWallet';
 import { importHandler } from './import';
@@ -48,6 +49,7 @@ export const walletRouter = {
   sendTransaction: sendTransactionHandler,
   revokeDelegation: revokeDelegationHandler,
   shouldRevokeDelegation: shouldRevokeDelegationHandler,
+  executeSendCallsBatch: executeSendCallsBatchHandler,
   personalSign: personalSignHandler,
   testSandbox: testSandboxHandler,
 };

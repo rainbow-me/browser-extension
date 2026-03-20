@@ -3,6 +3,7 @@ import { addContract } from './add';
 import { addAccountAtIndexContract } from './addAccountAtIndex';
 import { createContract } from './create';
 import { deriveAccountsFromSecretContract } from './deriveAccountsFromSecret';
+import { executeSendCallsBatchContract } from './executeSendCallsBatch';
 import { exportAccountContract } from './exportAccount';
 import { exportWalletContract } from './exportWallet';
 import { importContract } from './import';
@@ -48,6 +49,7 @@ export const walletContract = {
   sendTransaction: sendTransactionContract,
   revokeDelegation: revokeDelegationContract,
   shouldRevokeDelegation: shouldRevokeDelegationContract,
+  executeSendCallsBatch: executeSendCallsBatchContract,
   personalSign: personalSignContract,
   testSandbox: testSandboxContract,
 };

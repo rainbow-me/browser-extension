@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
@@ -110,6 +110,9 @@ function parseSimulation(
   const outChanges = simulation.out ?? [];
   const approvals = simulation.approvals ?? [];
 
+  const gasEstimate =
+    'gas' in result && result.gas?.estimate ? result.gas.estimate : undefined;
+
   return {
     chainId,
     scanning: {
@@ -139,6 +142,7 @@ function parseSimulation(
     meta: simulation.meta ?? null,
     hasChanges:
       inChanges.length > 0 || outChanges.length > 0 || approvals.length > 0,
+    gasEstimate,
   };
 }
 
@@ -148,7 +152,7 @@ export const useSimulateTransaction = ({
   domain,
 }: {
   chainId: ChainId;
-  transaction: Transaction;
+  transaction: Transaction | null;
   domain: string;
 }) => {
   return useQuery<TransactionSimulation, SimulationError>({
@@ -157,8 +161,11 @@ export const useSimulateTransaction = ({
       chainId,
       domain,
     }),
-    enabled: !!chainId && (!!transaction.value || !!transaction.data),
+    enabled:
+      !!chainId && !!transaction && (!!transaction.value || !!transaction.data),
     queryFn: async () => {
+      if (!transaction) throw 'UNSUPPORTED';
+
       const results = await simulateTransactions({
         chainId,
         transactions: [{ ...transaction, to: transaction.to || '' }],
@@ -230,6 +237,14 @@ export type TransactionSimulation = {
   meta: SimulationMeta | null;
   hasChanges: boolean;
   chainId: ChainId;
+  /** From metadata `gas.estimate` when present (e.g. EIP-7702 batch envelope). */
+  gasEstimate?: string;
 };
 
 export type SimulationError = 'REVERT' | 'UNSUPPORTED';
+
+/** Shape passed down for consumers that need simulation state */
+export type SimulationQueryResult = Pick<
+  UseQueryResult<TransactionSimulation, SimulationError>,
+  'data' | 'status' | 'error' | 'isRefetching'
+>;

@@ -287,6 +287,8 @@ type TransactionFeeProps = {
   address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
+  /** Gas units from metadata simulation when RPC estimate is unreliable (e.g. EIP-7702 batch). */
+  simulatedGasLimit?: string;
   accentColor?: string;
   plainTriggerBorder?: boolean;
   analyticsEvents?: {
@@ -294,6 +296,8 @@ type TransactionFeeProps = {
     transactionSpeedSwitched: keyof EventProperties;
     transactionSpeedClicked: keyof EventProperties;
   };
+  feeLabel?: string;
+  feeInfoButton?: { onClick: () => void };
 };
 
 export function TransactionFee({
@@ -302,9 +306,12 @@ export function TransactionFee({
   address,
   defaultSpeed,
   transactionRequest,
+  simulatedGasLimit,
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
+  feeLabel,
+  feeInfoButton,
 }: TransactionFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -323,6 +330,7 @@ export function TransactionFee({
     address,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
+    simulatedGasLimit,
   });
 
   return (
@@ -342,6 +350,8 @@ export function TransactionFee({
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       feeType={feeType}
+      feeLabel={feeLabel}
+      feeInfoButton={feeInfoButton}
     />
   );
 }

@@ -5,6 +5,7 @@ import {
 } from '@rainbow-me/delegation';
 import {
   AddEthereumChainProposedChain,
+  type BatchRecord as ProviderBatchRecord,
   createProviderError,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from '@rainbow-me/provider';
@@ -19,7 +20,15 @@ import {
   getDelegationAvailable,
   getEip5792Enabled,
 } from '~/core/resources/delegations/featureStatus';
-import { useAppSessionsStore, useNotificationWindowStore } from '~/core/state';
+import {
+  useAppSessionsStore,
+  useBatchStore,
+  useNotificationWindowStore,
+} from '~/core/state';
+import {
+  validateAndNormalizeBatchRecord,
+  validateBatchKeyParams,
+} from '~/core/state/batches/validation';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { SessionStorage } from '~/core/storage';
@@ -437,6 +446,53 @@ export const handleProviderRequest = ({
         }),
       );
       return Object.fromEntries(results);
+    },
+    getBatchByKey: (params) => {
+      if (!getEip5792Enabled()) {
+        throw createProviderError(
+          'METHOD_NOT_SUPPORTED',
+          'EIP-5792 methods are not enabled',
+        );
+      }
+      if (!validateBatchKeyParams(params)) {
+        return Promise.resolve(undefined);
+      }
+      const batch = useBatchStore.getState().getBatchByKey(params);
+      if (!batch) return Promise.resolve(undefined);
+      const { nonces: _, ...rest } = batch;
+      return Promise.resolve(rest as ProviderBatchRecord);
+    },
+    setBatch: (record) => {
+      if (!getEip5792Enabled()) {
+        throw createProviderError(
+          'METHOD_NOT_SUPPORTED',
+          'EIP-5792 methods are not enabled',
+        );
+      }
+      const validated = validateAndNormalizeBatchRecord(record);
+      if (!validated) return;
+      if (!validated.app.trim()) {
+        throw createProviderError(
+          'INVALID_PARAMS',
+          'wallet_sendCalls requires a known app host',
+        );
+      }
+      const session = useAppSessionsStore
+        .getState()
+        .getActiveSession({ host: validated.app });
+      if (!session) {
+        throw createProviderError(
+          'INVALID_PARAMS',
+          'No active session for this app',
+        );
+      }
+      if (session.chainId !== validated.chainId) {
+        throw createProviderError(
+          'INVALID_PARAMS',
+          'Active chain must match wallet_sendCalls batch chain',
+        );
+      }
+      useBatchStore.getState().setBatch(validated);
     },
     onSwitchEthereumChainSupported: ({
       proposedChain,
