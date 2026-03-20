@@ -5,6 +5,10 @@ import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import {
+  type MinedTxInfo,
+  updateBatchesForMinedTx,
+} from '~/core/state/batches/updateBatchStatus';
 import { isPendingTxTimedOut } from '~/core/state/networks/timing';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
@@ -161,6 +165,30 @@ export async function watchPendingTransactions(
         chainId: minedTransaction.chainId,
         transaction: minedTransaction,
       });
+    }
+
+    // Batch status updates
+    if (
+      minedTransaction.hash &&
+      minedTransaction.chainId &&
+      minedTransaction.nonce != null
+    ) {
+      const minedTxInfo: MinedTxInfo = {
+        nonce: minedTransaction.nonce,
+        chainId: minedTransaction.chainId,
+        sender: addr,
+        hash: minedTransaction.hash,
+        isCancellation: minedTransaction.typeOverride === 'cancel',
+      };
+      updateBatchesForMinedTx(minedTxInfo)
+        .then((batchCount) => {
+          if (batchCount > 0) {
+            logger.debug(
+              `Batch status updated for nonce ${minedTxInfo.nonce} (chain ${minedTxInfo.chainId}): ${batchCount} batch(es) synced`,
+            );
+          }
+        })
+        .catch(() => undefined);
     }
   }
 }
