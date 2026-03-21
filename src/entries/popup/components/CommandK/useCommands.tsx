@@ -14,6 +14,7 @@ import {
   useNonceStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { useBatchStore } from '~/core/state/batches';
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
@@ -341,6 +342,15 @@ export const getStaticCommandInfo = (): CommandInfo => {
       name: getCommandName('clear_transactions'),
       page: PAGES.HOME,
       searchTags: getSearchTags('clear_transactions'),
+      shouldRemainOnActiveRoute: true,
+      symbol: 'xmark.circle.fill',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    clearBatches: {
+      name: getCommandName('clear_batches'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('clear_batches'),
       shouldRemainOnActiveRoute: true,
       symbol: 'xmark.circle.fill',
       symbolSize: 15,
@@ -1208,6 +1218,13 @@ export const useCommands = (
             ),
           });
         },
+      },
+      clearBatches: {
+        action: () => {
+          useBatchStore.setState({ batches: {} });
+          triggerToast({ title: 'Batch store cleared' });
+        },
+        hidden: !IS_DEV,
       },
       triggerSecurityAlert: {
         action: () => {
