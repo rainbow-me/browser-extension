@@ -699,6 +699,7 @@
       "active": "Active",
       "disabled": "Disabled",
       "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "disabled_with_delegations_description": "Smart Wallet updates for your wallet are disabled, but existing delegations remain in effect until revoked",
       "enabled_description": "You'll miss out on faster transactions and lower gas costs",
       "disabled_description": "Updates will take effect on your next swap",
       "learn_more": "Learn more..."
