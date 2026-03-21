@@ -524,6 +524,7 @@
         "disable_flashbots": "تعطيل Flashbots",
         "copy_uuid": "نسخ UUID",
         "clear_transactions": "مسح المعاملات المعلقة",
+        "clear_batches": "مسح مخزن الدُفعات",
         "trigger_security_alert": "تشغيل تنبيه الأمان"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "التشخيص",
         "refresh_data": "تحديث، إعادة تحميل، مسح الذاكرة المؤقتة، إعادة تعيين، تحديث",
         "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات",
+        "clear_batches": "مسح، إعادة تعيين، دفعة، دُفعات، sendCalls، 5792",
         "trigger_security_alert": "تفويض، إلغاء، محاكاة، تصحيح، اختبار"
       }
     },
@@ -697,6 +699,7 @@
       "active": "نشط",
       "disabled": "معطل",
       "description": "تتيح المحافظ الذكية تجربة محفظة أسرع وأرخص وأكثر موثوقية.",
+      "disabled_with_delegations_description": "تم تعطيل تحديثات المحفظة الذكية لمحفظتك، لكن تظل التفويضات الحالية سارية حتى يتم إلغاؤها",
       "enabled_description": "ستفوتك معاملات أسرع وتكاليف غاز أقل",
       "disabled_description": "ستسري التحديثات عند عملية المبادلة التالية",
       "learn_more": "أعرف أكثر..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "تم ربط بعض أموال الغاز وحاول مرة أخرى",
     "buy_and_try_again": "اشتري بعض أموال الغاز وحاول مرة أخرى",
     "buy_gas": "شراء %{token}",
-    "get_testnet_gas": "احصل على تيستنت مجاني %{token}"
+    "get_testnet_gas": "احصل على تيستنت مجاني %{token}",
+    "batch_request_title": "طلب دفعة: %{count} استدعاءات على",
+    "batch_request_chain_unknown": "السلسلة %{chainId}",
+    "batch_call_label": "الاستدعاء %{index}",
+    "batch_of_calls": "دفعة من %{count} استدعاءات",
+    "batch_fee_note": "تقديرًا من معاملة الدفعة المُعَدّة. قد تختلف الرسوم الفعلية عند البث.",
+    "batch_hardware_unsupported": "تتطلب دفعات المحفظة الذكية محفظة برمجية."
   },
   "add_chain": {
     "name": "الاسم",
