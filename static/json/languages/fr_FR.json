@@ -524,6 +524,7 @@
         "disable_flashbots": "Désactiver Flashbots",
         "copy_uuid": "Copier UUID",
         "clear_transactions": "Effacer les transactions en attente",
+        "clear_batches": "Effacer le stockage de lots",
         "trigger_security_alert": "Déclencher une alerte de sécurité"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "diagnostics :)",
         "refresh_data": "actualiser, recharger, vider le cache, réinitialiser, mettre à jour",
         "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces",
+        "clear_batches": "effacer, réinitialiser, lot, lots, sendCalls, 5792",
         "trigger_security_alert": "délégation, révoquer, simuler, déboguer, tester"
       }
     },
@@ -697,6 +699,7 @@
       "active": "Actif",
       "disabled": "Désactivé",
       "description": "Les smart wallets permettent une expérience de portefeuille plus rapide, moins chère et plus fiable.",
+      "disabled_with_delegations_description": "Les mises à jour Smart Wallet pour votre portefeuille sont désactivées, mais les délégations existantes restent en vigueur jusqu’à leur révocation",
       "enabled_description": "Vous passerez à côté de transactions plus rapides et de frais de gas réduits",
       "disabled_description": "Les mises à jour prendront effet lors de votre prochain swap",
       "learn_more": "En savoir plus..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "Transférez des fonds de gaz et réessayez",
     "buy_and_try_again": "Achetez quelques fonds de gaz et réessayez",
     "buy_gas": "Acheter %{token}",
-    "get_testnet_gas": "Obtenir gratuitement du testnet %{token}"
+    "get_testnet_gas": "Obtenir gratuitement du testnet %{token}",
+    "batch_request_title": "Requête par lot : %{count} appels sur",
+    "batch_request_chain_unknown": "Chaîne sur %{chainId}",
+    "batch_call_label": "Appel %{index}",
+    "batch_of_calls": "Lot de %{count} appels",
+    "batch_fee_note": "Estimation basée sur la transaction préparée du lot. Les frais réels peuvent varier lors de la diffusion.",
+    "batch_hardware_unsupported": "Les lots de smart wallets nécessitent un wallet logiciel."
   },
   "add_chain": {
     "name": "Nom",
