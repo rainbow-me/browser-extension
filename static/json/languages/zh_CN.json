@@ -524,7 +524,7 @@
         "disable_flashbots": "禁用Flashbots",
         "copy_uuid": "复制UUID",
         "clear_transactions": "清除待处理交易",
-        "clear_batches": "Clear Batch Store",
+        "clear_batches": "清除批量存储",
         "trigger_security_alert": "触发安全警报"
       },
       "search_tags": {
@@ -554,7 +554,7 @@
         "diagnostics": "诊断",
         "refresh_data": "刷新、重新加载、清除缓存、重置、更新",
         "clear_transactions": "清除、重置、待处理、事务、nonce、nonces",
-        "clear_batches": "clear, reset, batch, batches, sendCalls, 5792",
+        "clear_batches": "清除, 重置, 批量, 批次, sendCalls, 5792",
         "trigger_security_alert": "委托，撤销，模拟，调试，测试"
       }
     },
@@ -699,7 +699,7 @@
       "active": "激活",
       "disabled": "已禁用",
       "description": "智能钱包可带来更快、更便宜且更可靠的钱包体验。",
-      "disabled_with_delegations_description": "Smart Wallet updates for your wallet are disabled, but existing delegations remain in effect until revoked",
+      "disabled_with_delegations_description": "你的钱包的智能钱包更新已被禁用，但现有委托在被撤销之前仍然有效",
       "enabled_description": "你将错过更快的交易和更低的 Gas 费用",
       "disabled_description": "更新将在你下次兑换时生效",
       "learn_more": "了解更多..."
