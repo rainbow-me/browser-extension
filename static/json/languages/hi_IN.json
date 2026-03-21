@@ -524,7 +524,7 @@
         "disable_flashbots": "Flashbots अक्षम करें",
         "copy_uuid": "UUID कॉपी करें",
         "clear_transactions": "लंबित लेन-देन साफ करें",
-        "clear_batches": "Clear Batch Store",
+        "clear_batches": "बैच स्टोर साफ़ करें",
         "trigger_security_alert": "सुरक्षा अलर्ट ट्रिगर करें"
       },
       "search_tags": {
@@ -554,7 +554,7 @@
         "diagnostics": "डायग्नोस्टिक्स",
         "refresh_data": "ताज़ा करें, पुनः लोड करें, कैश साफ करें, रीसेट करें, अपडेट करें",
         "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस",
-        "clear_batches": "clear, reset, batch, batches, sendCalls, 5792",
+        "clear_batches": "साफ़ करें, रीसेट, बैच, बैचेस, sendCalls, 5792",
         "trigger_security_alert": "डेलीगेशन, रद्द करें, मॉक, डिबग, टेस्ट"
       }
     },
@@ -699,7 +699,7 @@
       "active": "सक्रिय",
       "disabled": "निष्क्रिय",
       "description": "स्मार्ट वॉलेट तेज़, सस्ते और अधिक विश्वसनीय वॉलेट अनुभव को सक्षम बनाते हैं।",
-      "disabled_with_delegations_description": "Smart Wallet updates for your wallet are disabled, but existing delegations remain in effect until revoked",
+      "disabled_with_delegations_description": "आपके वॉलेट के लिए स्मार्ट वॉलेट अपडेट्स अक्षम हैं, लेकिन मौजूदा डेलिगेशन रद्द किए जाने तक प्रभावी रहेंगे",
       "enabled_description": "आप तेज़ लेन-देन और कम गैस लागत का लाभ नहीं उठा पाएंगे",
       "disabled_description": "अपडेट्स आपके अगले स्वैप पर लागू होंगे",
       "learn_more": "और जानें..."
