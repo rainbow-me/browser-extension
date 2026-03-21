@@ -524,6 +524,7 @@
         "disable_flashbots": "ปิดการใช้งาน Flashbots",
         "copy_uuid": "คัดลอก UUID",
         "clear_transactions": "ล้างธุรกรรมที่รอดำเนินการ",
+        "clear_batches": "ล้าง Batch Store",
         "trigger_security_alert": "ทริกเกอร์การแจ้งเตือนความปลอดภัย"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "การวินิจฉัย",
         "refresh_data": "รีเฟรช, โหลดใหม่, ล้างแคช, รีเซ็ต, อัปเดต",
         "clear_transactions": "ล้าง, รีเซ็ต, ที่อยู่ระหว่างดำเนินการ, ธุรกรรม, นอนซ์, นอนซ์",
+        "clear_batches": "ล้าง, รีเซ็ต, แบทช์, แบทช์, sendCalls, 5792",
         "trigger_security_alert": "การมอบหมาย, เพิกถอน, จำลอง, ดีบัก, ทดสอบ"
       }
     },
@@ -697,6 +699,7 @@
       "active": "กำลังใช้งาน",
       "disabled": "ปิดการใช้งาน",
       "description": "กระเป๋าเงินอัจฉริยะช่วยให้ประสบการณ์ใช้งานกระเป๋าเงินเร็วขึ้น ถูกลง และเชื่อถือได้มากขึ้น",
+      "disabled_with_delegations_description": "ปิดใช้งานการอัปเดต Smart Wallet สำหรับกระเป๋าเงินของคุณแล้ว แต่การมอบอำนาจที่มีอยู่จะยังคงมีผลจนกว่าจะถูกเพิกถอน",
       "enabled_description": "คุณจะพลาดโอกาสทำธุรกรรมที่เร็วขึ้นและค่าแก๊สที่ถูกลง",
       "disabled_description": "การอัปเดตจะมีผลในการสวอปครั้งถัดไปของคุณ",
       "learn_more": "เรียนรู้เพิ่มเติม..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "ส่งเงินม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
     "buy_and_try_again": "ซื้อม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
     "buy_gas": "ซื้อ %{token}",
-    "get_testnet_gas": "รับ testnet ฟรี %{token}"
+    "get_testnet_gas": "รับ testnet ฟรี %{token}",
+    "batch_request_title": "คำขอแบบแบตช์: %{count} คำเรียกบน",
+    "batch_request_chain_unknown": "เชน %{chainId}",
+    "batch_call_label": "คำเรียก %{index}",
+    "batch_of_calls": "แบตช์ของ %{count} คำเรียก",
+    "batch_fee_note": "ประมาณการจากธุรกรรมแบบแบตช์ที่เตรียมไว้ ค่าธรรมเนียมจริงอาจแตกต่างกันเมื่อมีการบรอดแคสต์",
+    "batch_hardware_unsupported": "แบตช์ของสมาร์ทวอลเล็ตต้องใช้ซอฟต์แวร์วอลเล็ต"
   },
   "add_chain": {
     "name": "ชื่อ",
