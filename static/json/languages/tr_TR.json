@@ -524,6 +524,7 @@
         "disable_flashbots": "Flashbots'i devre dışı bırak",
         "copy_uuid": "UUID'yi kopyala",
         "clear_transactions": "Bekleyen İşlemleri Temizle",
+        "clear_batches": "Toplu İşlem Deposu'nu Temizle",
         "trigger_security_alert": "Güvenlik Uyarısını Tetikle"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "teşhisler",
         "refresh_data": "yenile, tekrar yükle, önbelleği temizle, sıfırla, güncelle",
         "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler",
+        "clear_batches": "temizle, sıfırla, toplu işlem, toplu işlemler, sendCalls, 5792",
         "trigger_security_alert": "delegasyon, iptal et, sahte, hata ayıklama, test"
       }
     },
@@ -697,6 +699,7 @@
       "active": "Aktif",
       "disabled": "Devre Dışı",
       "description": "Akıllı cüzdanlar daha hızlı, daha ucuz ve daha güvenilir bir cüzdan deneyimi sağlar.",
+      "disabled_with_delegations_description": "Smart Wallet updates for your wallet are disabled, but existing delegations remain in effect until revoked",
       "enabled_description": "Daha hızlı işlemleri ve daha düşük gas maliyetlerini kaçırırsınız",
       "disabled_description": "Güncellemeler bir sonraki takasınızda geçerli olacak",
       "learn_more": "Daha fazla bilgi edinin..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "Biraz gaz fonu köprüle ve tekrar dene",
     "buy_and_try_again": "Biraz gaz fonu satın al ve tekrar dene",
     "buy_gas": "%{token}Satın Al",
-    "get_testnet_gas": "Ücretsiz testnet %{token}al"
+    "get_testnet_gas": "Ücretsiz testnet %{token}al",
+    "batch_request_title": "Toplu istek: %{count} çağrı üzerinde",
+    "batch_request_chain_unknown": "Zincir %{chainId}",
+    "batch_call_label": "Çağrı %{index}",
+    "batch_of_calls": "%{count} çağrıdan oluşan toplu işlem",
+    "batch_fee_note": "Hazırlanan toplu işlemden tahmin edilmiştir. Yayınlandığında gerçek ücret değişebilir.",
+    "batch_hardware_unsupported": "Akıllı cüzdan toplu işlemleri için bir yazılım cüzdanı gerekir."
   },
   "add_chain": {
     "name": "İsim",
