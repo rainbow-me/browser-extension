@@ -524,6 +524,7 @@
         "disable_flashbots": "Flashbots अक्षम करें",
         "copy_uuid": "UUID कॉपी करें",
         "clear_transactions": "लंबित लेन-देन साफ करें",
+        "clear_batches": "Clear Batch Store",
         "trigger_security_alert": "सुरक्षा अलर्ट ट्रिगर करें"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "डायग्नोस्टिक्स",
         "refresh_data": "ताज़ा करें, पुनः लोड करें, कैश साफ करें, रीसेट करें, अपडेट करें",
         "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस",
+        "clear_batches": "clear, reset, batch, batches, sendCalls, 5792",
         "trigger_security_alert": "डेलीगेशन, रद्द करें, मॉक, डिबग, टेस्ट"
       }
     },
@@ -697,6 +699,7 @@
       "active": "सक्रिय",
       "disabled": "निष्क्रिय",
       "description": "स्मार्ट वॉलेट तेज़, सस्ते और अधिक विश्वसनीय वॉलेट अनुभव को सक्षम बनाते हैं।",
+      "disabled_with_delegations_description": "Smart Wallet updates for your wallet are disabled, but existing delegations remain in effect until revoked",
       "enabled_description": "आप तेज़ लेन-देन और कम गैस लागत का लाभ नहीं उठा पाएंगे",
       "disabled_description": "अपडेट्स आपके अगले स्वैप पर लागू होंगे",
       "learn_more": "और जानें..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "कुछ गैस फंड ब्रिज करें और पुनः प्रयास करें",
     "buy_and_try_again": "कुछ गैस फंड खरीदें और पुनः प्रयास करें",
     "buy_gas": "%{token}खरीदें",
-    "get_testnet_gas": "मुफ्त टेस्टनेट %{token}प्राप्त करें"
+    "get_testnet_gas": "मुफ्त टेस्टनेट %{token}प्राप्त करें",
+    "batch_request_title": "बैच अनुरोध: %{count} कॉल्स पर",
+    "batch_request_chain_unknown": "चेन %{chainId}",
+    "batch_call_label": "कॉल %{index}",
+    "batch_of_calls": "%{count} कॉल्स का बैच",
+    "batch_fee_note": "तैयार किए गए बैच ट्रांज़ैक्शन से अनुमानित। ब्रॉडकास्ट के समय वास्तविक शुल्क बदल सकता है।",
+    "batch_hardware_unsupported": "स्मार्ट वॉलेट बैच के लिए सॉफ़्टवेयर वॉलेट चाहिए।"
   },
   "add_chain": {
     "name": "नाम",
