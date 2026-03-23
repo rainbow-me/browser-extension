@@ -524,6 +524,7 @@
         "disable_flashbots": "Desativar Flashbots",
         "copy_uuid": "Copiar UUID",
         "clear_transactions": "Limpar Transações Pendentes",
+        "clear_batches": "Limpar Armazenamento de Lotes",
         "trigger_security_alert": "Acionar alerta de segurança"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "diagnóstico",
         "refresh_data": "atualizar, recarregar, limpar cache, redefinir, atualizar",
         "clear_transactions": "limpar, redefinir, pendente, transações, nonce, nonces",
+        "clear_batches": "limpar, redefinir, lote, lotes, sendCalls, 5792",
         "trigger_security_alert": "delegação, revogar, simular, depurar, teste"
       }
     },
@@ -697,6 +699,7 @@
       "active": "Ativo",
       "disabled": "Desativado",
       "description": "Carteiras inteligentes oferecem uma experiência de carteira mais rápida, mais barata e mais confiável.",
+      "disabled_with_delegations_description": "As atualizações da Smart Wallet para sua carteira estão desativadas, mas as delegações existentes permanecem em vigor até serem revogadas",
       "enabled_description": "Você vai perder transações mais rápidas e custos de gas mais baixos",
       "disabled_description": "As atualizações entrarão em vigor na sua próxima troca",
       "learn_more": "Saiba mais..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "Conecte alguns fundos de gás e tente novamente",
     "buy_and_try_again": "Compre alguns fundos de gás e tente novamente",
     "buy_gas": "Comprar %{token}",
-    "get_testnet_gas": "Obter testnet grátis %{token}"
+    "get_testnet_gas": "Obter testnet grátis %{token}",
+    "batch_request_title": "Solicitação em lote: %{count} chamadas em",
+    "batch_request_chain_unknown": "Rede %{chainId}",
+    "batch_call_label": "Chamada %{index}",
+    "batch_of_calls": "Lote de %{count} chamadas",
+    "batch_fee_note": "Estimado a partir da transação em lote preparada. A taxa real pode variar no envio.",
+    "batch_hardware_unsupported": "Lotes de smart wallet exigem uma carteira de software."
   },
   "add_chain": {
     "name": "Nome",

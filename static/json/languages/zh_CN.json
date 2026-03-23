@@ -524,6 +524,7 @@
         "disable_flashbots": "禁用Flashbots",
         "copy_uuid": "复制UUID",
         "clear_transactions": "清除待处理交易",
+        "clear_batches": "清除批量存储",
         "trigger_security_alert": "触发安全警报"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "诊断",
         "refresh_data": "刷新、重新加载、清除缓存、重置、更新",
         "clear_transactions": "清除、重置、待处理、事务、nonce、nonces",
+        "clear_batches": "清除, 重置, 批量, 批次, sendCalls, 5792",
         "trigger_security_alert": "委托，撤销，模拟，调试，测试"
       }
     },
@@ -697,6 +699,7 @@
       "active": "激活",
       "disabled": "已禁用",
       "description": "智能钱包可带来更快、更便宜且更可靠的钱包体验。",
+      "disabled_with_delegations_description": "你的钱包的智能钱包更新已被禁用，但现有委托在被撤销之前仍然有效",
       "enabled_description": "你将错过更快的交易和更低的 Gas 费用",
       "disabled_description": "更新将在你下次兑换时生效",
       "learn_more": "了解更多..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "桥接一些燃气资金然后再试",
     "buy_and_try_again": "购买一些燃气资金然后再试",
     "buy_gas": "购买 %{token}",
-    "get_testnet_gas": "获取免费测试网 %{token}"
+    "get_testnet_gas": "获取免费测试网 %{token}",
+    "batch_request_title": "批量请求：%{count} 次调用，链上",
+    "batch_request_chain_unknown": "链 %{chainId}",
+    "batch_call_label": "调用 %{index}",
+    "batch_of_calls": "%{count} 次调用的批量交易",
+    "batch_fee_note": "根据已准备的批量交易估算。实际费用在广播时可能会有所不同。",
+    "batch_hardware_unsupported": "智能钱包的批量交易需要软件钱包。"
   },
   "add_chain": {
     "name": "名称",

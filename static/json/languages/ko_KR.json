@@ -524,6 +524,7 @@
         "disable_flashbots": "플래시봇 비활성화",
         "copy_uuid": "UUID 복사",
         "clear_transactions": "보류 중인 트랜잭션 지우기",
+        "clear_batches": "배치 저장소 지우기",
         "trigger_security_alert": "보안 경고 트리거"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "진단",
         "refresh_data": "새로 고침, 다시 로드, 캐시 제거, 초기화, 업데이트",
         "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들",
+        "clear_batches": "지우기, 재설정, 배치, 배치들, sendCalls, 5792",
         "trigger_security_alert": "위임, 철회, 모의, 디버그, 테스트"
       }
     },
@@ -697,6 +699,7 @@
       "active": "활성화",
       "disabled": "비활성화됨",
       "description": "스마트 지갑은 더 빠르고, 더 저렴하며, 더 안정적인 지갑 경험을 제공합니다.",
+      "disabled_with_delegations_description": "지갑에 대한 스마트 월렛 업데이트가 비활성화되어 있지만, 기존 위임은 취소되기 전까지 계속 유효합니다",
       "enabled_description": "더 빠른 거래와 더 낮은 가스 비용 혜택을 놓치게 됩니다",
       "disabled_description": "업데이트는 다음 스왑에서 적용됩니다",
       "learn_more": "더 알아보기..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "일부 가스 펀드를 다리 놓고 다시 시도하세요",
     "buy_and_try_again": "일부 가스 펀드를 구입하고 다시 시도하세요",
     "buy_gas": "%{token}구매",
-    "get_testnet_gas": "무료 테스트넷 %{token}받기"
+    "get_testnet_gas": "무료 테스트넷 %{token}받기",
+    "batch_request_title": "일괄 요청: %{count}건 호출",
+    "batch_request_chain_unknown": "체인 %{chainId}",
+    "batch_call_label": "호출 %{index}",
+    "batch_of_calls": "%{count}건 호출 일괄 처리",
+    "batch_fee_note": "준비된 일괄 트랜잭션을 기준으로 한 예상치입니다. 실제 수수료는 브로드캐스트 시 달라질 수 있습니다.",
+    "batch_hardware_unsupported": "스마트 지갑의 일괄 처리는 소프트웨어 지갑이 필요합니다."
   },
   "add_chain": {
     "name": "이름",

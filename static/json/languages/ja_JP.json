@@ -524,6 +524,7 @@
         "disable_flashbots": "Flashbotsを無効にする",
         "copy_uuid": "UUIDをコピー",
         "clear_transactions": "保留中のトランザクションをクリア",
+        "clear_batches": "バッチストアをクリア",
         "trigger_security_alert": "セキュリティアラートをトリガー"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "診断",
         "refresh_data": "更新、リロード、キャッシュクリア、リセット、アップデート",
         "clear_transactions": "クリア、リセット、保留中、取引、ナンス、ナンセス",
+        "clear_batches": "クリア, リセット, バッチ, バッチ（複数）, sendCalls, 5792",
         "trigger_security_alert": "委任、取り消し、モック、デバッグ、テスト"
       }
     },
@@ -697,6 +699,7 @@
       "active": "有効",
       "disabled": "無効",
       "description": "スマートウォレットにより、より速く、より安く、より信頼性の高いウォレット体験が可能になります。",
+      "disabled_with_delegations_description": "あなたのウォレットのスマートウォレットの更新は無効になっていますが、既存の委任は取り消されるまで有効のままです",
       "enabled_description": "より速いトランザクションや低いガス代の恩恵を受けられなくなります",
       "disabled_description": "更新は次回のスワップから反映されます",
       "learn_more": "詳しくはこちら..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "ガス資金をブリッジして再試行",
     "buy_and_try_again": "ガス資金を購入して再試行",
     "buy_gas": "%{token}を購入",
-    "get_testnet_gas": "無料のテストネット %{token}を入手"
+    "get_testnet_gas": "無料のテストネット %{token}を入手",
+    "batch_request_title": "バッチリクエスト：%{count} 件の呼び出し",
+    "batch_request_chain_unknown": "チェーン %{chainId}",
+    "batch_call_label": "呼び出し %{index}",
+    "batch_of_calls": "%{count} 件の呼び出しのバッチ",
+    "batch_fee_note": "準備されたバッチトランザクションからの推定です。ブロードキャスト時に実際の手数料が変わる場合があります。",
+    "batch_hardware_unsupported": "スマートウォレットのバッチにはソフトウェアウォレットが必要です。"
   },
   "add_chain": {
     "name": "名前",

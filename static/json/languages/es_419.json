@@ -524,6 +524,7 @@
         "disable_flashbots": "Desactivar Flashbots",
         "copy_uuid": "Copiar UUID",
         "clear_transactions": "Borrar Transacciones Pendientes",
+        "clear_batches": "Borrar almacenamiento por lotes",
         "trigger_security_alert": "Activar alerta de seguridad"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "diagnósticos",
         "refresh_data": "actualizar, recargar, limpiar caché, reiniciar, actualizar",
         "clear_transactions": "limpiar, reiniciar, pendientes, transacciones, nonce, nonces",
+        "clear_batches": "borrar, restablecer, lote, lotes, sendCalls, 5792",
         "trigger_security_alert": "delegación, revocar, simular, depurar, probar"
       }
     },
@@ -697,6 +699,7 @@
       "active": "Activo",
       "disabled": "Deshabilitado",
       "description": "Las billeteras inteligentes permiten una experiencia de billetera más rápida, más barata y más confiable.",
+      "disabled_with_delegations_description": "Las actualizaciones de Smart Wallet para tu billetera están desactivadas, pero las delegaciones existentes siguen vigentes hasta que se revoquen",
       "enabled_description": "Te perderás transacciones más rápidas y costos de gas más bajos",
       "disabled_description": "Las actualizaciones se aplicarán en tu próximo swap",
       "learn_more": "Obtener más información..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "Transfiere algunos fondos de gas y prueba de nuevo",
     "buy_and_try_again": "Compra algunos fondos de gas e intenta de nuevo",
     "buy_gas": "Comprar %{token}",
-    "get_testnet_gas": "Obtener testnet gratis %{token}"
+    "get_testnet_gas": "Obtener testnet gratis %{token}",
+    "batch_request_title": "Solicitud por lote: %{count} llamadas en",
+    "batch_request_chain_unknown": "Cadena %{chainId}",
+    "batch_call_label": "Llamada %{index}",
+    "batch_of_calls": "Lote de %{count} llamadas",
+    "batch_fee_note": "Estimado a partir de la transacción por lote preparada. La comisión real puede variar al transmitirse.",
+    "batch_hardware_unsupported": "Los lotes de smart wallet requieren una wallet de software."
   },
   "add_chain": {
     "name": "Nombre",

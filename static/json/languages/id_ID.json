@@ -524,6 +524,7 @@
         "disable_flashbots": "Nonaktifkan Flashbots",
         "copy_uuid": "Salin UUID",
         "clear_transactions": "Hapus Transaksi Tertunda",
+        "clear_batches": "Hapus Penyimpanan Batch",
         "trigger_security_alert": "Picu Peringatan Keamanan"
       },
       "search_tags": {
@@ -553,6 +554,7 @@
         "diagnostics": "diagnostik",
         "refresh_data": "segarkan kembali, muat ulang, bersihkan cache, atur ulang, perbarui",
         "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces",
+        "clear_batches": "hapus, setel ulang, batch, batch-batch, sendCalls, 5792",
         "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
@@ -697,6 +699,7 @@
       "active": "Aktif",
       "disabled": "Nonaktif",
       "description": "Dompet pintar menghadirkan pengalaman dompet yang lebih cepat, lebih murah, dan lebih andal.",
+      "disabled_with_delegations_description": "Pembaruan Smart Wallet untuk wallet Anda dinonaktifkan, tetapi delegasi yang ada tetap berlaku hingga dicabut",
       "enabled_description": "Anda akan kehilangan transaksi yang lebih cepat dan biaya gas yang lebih rendah",
       "disabled_description": "Pembaruan akan berlaku pada swap Anda berikutnya",
       "learn_more": "Pelajari lebih lanjut..."
@@ -1295,7 +1298,13 @@
     "bridge_and_try_again": "Jembatani beberapa dana gas dan coba lagi",
     "buy_and_try_again": "Beli beberapa dana gas dan coba lagi",
     "buy_gas": "Beli %{token}",
-    "get_testnet_gas": "Dapatkan testnet gratis %{token}"
+    "get_testnet_gas": "Dapatkan testnet gratis %{token}",
+    "batch_request_title": "Permintaan batch: %{count} panggilan di",
+    "batch_request_chain_unknown": "Chain %{chainId}",
+    "batch_call_label": "Panggilan %{index}",
+    "batch_of_calls": "Batch %{count} panggilan",
+    "batch_fee_note": "Perkiraan dari transaksi batch yang telah disiapkan. Biaya sebenarnya dapat berbeda saat disiarkan.",
+    "batch_hardware_unsupported": "Batch smart wallet memerlukan software wallet."
   },
   "add_chain": {
     "name": "Nama",
