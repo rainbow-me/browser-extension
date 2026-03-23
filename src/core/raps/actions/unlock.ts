@@ -63,22 +63,6 @@ export const getAssetRawAllowance = async ({
   }
 };
 
-function parseRawAmount(
-  value: string | undefined,
-  decimals?: number,
-): bigint | null {
-  if (!value || value === '') return null;
-  try {
-    if (decimals !== undefined) {
-      const raw = convertAmountToRawAmount(value, decimals);
-      return BigInt(raw);
-    }
-    return BigInt(value);
-  } catch {
-    return null;
-  }
-}
-
 export const getApprovalAmount = async ({
   address,
   chainId,
@@ -86,8 +70,8 @@ export const getApprovalAmount = async ({
 }: {
   address: Address;
   chainId: ChainId;
-  amount: string;
-}): Promise<{ approvalAmount: string; isUnlimited: boolean }> => {
+  amount: bigint;
+}): Promise<{ approvalAmount: bigint; isUnlimited: boolean }> => {
   const delegationEnabled = getDelegationEnabled();
 
   if (delegationEnabled) {
@@ -100,7 +84,7 @@ export const getApprovalAmount = async ({
       // Fall through to unlimited on error
     }
   }
-  return { approvalAmount: maxUint256.toString(), isUnlimited: true };
+  return { approvalAmount: maxUint256, isUnlimited: true };
 };
 
 export const needsTokenApproval = async ({
@@ -109,18 +93,13 @@ export const needsTokenApproval = async ({
   spender,
   amount,
   chainId,
-  decimals,
 }: {
   owner: Address;
   tokenAddress: Address;
   spender: Address;
-  amount: string;
+  amount: bigint;
   chainId: ChainId;
-  decimals?: number;
 }): Promise<boolean> => {
-  const requiredAmount = parseRawAmount(amount, decimals);
-  if (requiredAmount === null) return true;
-
   const allowance = await getAssetRawAllowance({
     owner,
     assetAddress: tokenAddress,
@@ -129,10 +108,11 @@ export const needsTokenApproval = async ({
   });
   if (allowance === null) return true;
 
-  const currentAllowance = parseRawAmount(allowance);
-  if (currentAllowance === null) return true;
-
-  return currentAllowance < requiredAmount;
+  try {
+    return BigInt(allowance) < amount;
+  } catch {
+    return true;
+  }
 };
 
 export const assetNeedsUnlocking = async ({
@@ -205,13 +185,12 @@ export const populateApprove = async ({
   tokenAddress: Address;
   spender: Address;
   chainId: ChainId;
-  amount?: string;
+  amount?: bigint;
 }): Promise<PopulatedTransaction | null> => {
   try {
     const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
-    // Use specific amount if provided (for atomic swaps), otherwise unlimited
-    const approvalAmount = amount ? BigInt(amount) : maxUint256;
+    const approvalAmount = amount ?? maxUint256;
     const approveTransaction = await tokenContract.populateTransaction.approve(
       spender,
       approvalAmount,
@@ -307,7 +286,7 @@ export const executeApprove = async ({
   spender: Address;
   tokenAddress: Address;
   wallet: Signer;
-  approvalAmount: string;
+  approvalAmount: bigint;
 }) => {
   const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
 

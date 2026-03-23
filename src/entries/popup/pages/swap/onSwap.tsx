@@ -53,11 +53,10 @@ export const onSwap = async ({
 
   const { errorMessage, nonce } = await executeRap<typeof type>({
     rapActionParameters: {
-      sellAmount: q.sellAmount?.toString(),
-      buyAmount: q.buyAmount?.toString(),
+      sellAmount: BigInt(q.sellAmount?.toString() ?? '0'),
       chainId,
-      assetToSell: assetToSell,
-      assetToBuy: assetToBuy,
+      assetToSell,
+      assetToBuy,
       gasParams,
       quote: q,
     },
