@@ -12,6 +12,7 @@ import {
 import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
 
+import { persistWalletKeychainTypesFromWallets } from '~/core/state/walletKeychainTypes';
 import { RainbowError, logger } from '~/logger';
 
 import { LocalStorage, SessionStorage } from '../storage';
@@ -242,6 +243,7 @@ class KeychainManager {
             await privates.get(this)._setVaultInStorage(result.vault);
           }
         }
+        await this.persistWalletKeychainMetadata();
       },
 
       getSalt: () => SessionStorage.get('salt'),
@@ -444,6 +446,7 @@ class KeychainManager {
       );
     }
     privates.get(this).setKeychains(newKeychains);
+    await this.persistWalletKeychainMetadata();
   }
 
   async isMnemonicInVault(mnemonic: string) {
@@ -556,6 +559,7 @@ class KeychainManager {
     // Use centralized vault setter - explicitly allow null for wipe operation
     await privates.get(this)._setVaultInStorage(null, false, true);
     await privates.get(this).setEncryptionKeyAndSalt(null, null);
+    await this.persistWalletKeychainMetadata();
   }
 
   async unlock(password: string) {
@@ -580,10 +584,16 @@ class KeychainManager {
     if (isVaultUpdated(this.state.vault, RAINBOW_DERIVATION_PARAMS)) {
       // Vault already uses 600k iterations — cache existing key/salt for rehydration
       await privates.get(this).setEncryptionKeyAndSalt(exportedKeyString, salt);
+      await this.persistWalletKeychainMetadata();
     } else {
       // Legacy vault (10k iterations) — re-encrypt with 600k via persist()
       await privates.get(this).persist();
     }
+  }
+
+  private async persistWalletKeychainMetadata() {
+    const wallets = await this.getWallets();
+    persistWalletKeychainTypesFromWallets(wallets);
   }
 
   async getAccounts() {
