@@ -433,12 +433,16 @@ export const handleProviderRequest = ({
           'EIP-5792 methods are not enabled',
         );
       }
-      if (!getDelegationAvailable(address)) {
-        return Object.fromEntries(
-          chainIds.map((chainId) => [
-            chainId,
-            { atomic: { status: 'unsupported' } },
-          ]),
+      const delegationAvailability = getDelegationAvailable(address);
+      if (!delegationAvailability.available) {
+        // Non-compliant: spec expects a capabilities object (e.g. atomic: unsupported) rather than an error.
+        // We throw here because some dapps (e.g. revoke.cash) interpret any non-error response from
+        // wallet_getCapabilities as full EIP-5792 support and immediately call wallet_sendCalls.
+        // Since Rainbow only executes batches atomically via delegation, returning unsupported capabilities
+        // would mislead those dapps into attempting a flow that will always fail.
+        throw createProviderError(
+          'METHOD_NOT_SUPPORTED',
+          `Delegation not available: ${delegationAvailability.reason}`,
         );
       }
 
@@ -485,13 +489,11 @@ export const handleProviderRequest = ({
           'EIP-5792 methods are not enabled',
         );
       }
-      if (!validateBatchKeyParams(params)) {
-        return Promise.resolve(undefined);
-      }
+      if (!validateBatchKeyParams(params)) return undefined;
       const batch = useBatchStore.getState().getBatchByKey(params);
-      if (!batch) return Promise.resolve(undefined);
+      if (!batch) return undefined;
       const { nonces: _, ...rest } = batch;
-      return Promise.resolve(rest as ProviderBatchRecord);
+      return rest as ProviderBatchRecord;
     },
     setBatch: (record) => {
       if (!getEip5792Enabled()) {
@@ -508,6 +510,8 @@ export const handleProviderRequest = ({
           'wallet_sendCalls requires a known app host',
         );
       }
+      // Validate session before any address-dependent checks to avoid leaking
+      // wallet-address info (e.g. keychain type) to unauthorized callers.
       const session = useAppSessionsStore
         .getState()
         .getActiveSession({ host: validated.app });
@@ -521,6 +525,23 @@ export const handleProviderRequest = ({
         throw createProviderError(
           'INVALID_PARAMS',
           'Active chain must match wallet_sendCalls batch chain',
+        );
+      }
+      if (session.address.toLowerCase() !== validated.sender.toLowerCase()) {
+        throw createProviderError(
+          'INVALID_PARAMS',
+          'Active session address must match wallet_sendCalls batch sender',
+        );
+      }
+      const delegationAvailability = getDelegationAvailable(validated.sender);
+      if (!delegationAvailability.available) {
+        // Non-compliant: spec allows wallet_sendCalls with atomicRequired: false to proceed even when
+        // atomic capability is unsupported (wallet MAY execute sequentially). We block it regardless
+        // because Rainbow only executes batches atomically via delegation — there is no sequential
+        // fallback path, so allowing the call through would open the UI and then fail on execution.
+        throw createProviderError(
+          'METHOD_NOT_SUPPORTED',
+          `Delegation not available: ${delegationAvailability.reason}`,
         );
       }
       useBatchStore.getState().setBatch(validated);

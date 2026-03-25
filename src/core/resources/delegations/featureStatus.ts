@@ -6,6 +6,8 @@ import type { Address } from 'viem';
 
 import config, { useRemoteConfig } from '~/core/firebase/remoteConfig';
 import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useWalletKeychainTypesStore } from '~/core/state/walletKeychainTypes';
+import { KeychainType } from '~/core/types/keychainTypes';
 
 /**
  * Delegation and atomic-swap feature status.
@@ -41,12 +43,42 @@ export function getEip5792Enabled(): boolean {
   return config.eip5792_enabled ?? false;
 }
 
+export type DelegationUnavailableReason =
+  | 'feature_disabled'
+  | 'user_opted_out'
+  | 'unsupported_keychain';
+
+export type DelegationAvailability =
+  | { available: true }
+  | { available: false; reason: DelegationUnavailableReason };
+
+const ATOMIC_UNSUPPORTED_KEYCHAIN_TYPES: ReadonlySet<KeychainType> = new Set([
+  KeychainType.HardwareWalletKeychain,
+  KeychainType.ReadOnlyKeychain,
+]);
+
 /**
- * Sync: feature flag + SDK user opt-out. Background only.
- * Use when you need "can this address use delegation?" without async supportsDelegation.
+ * Sync: feature flag + SDK user opt-out + keychain type check. Background only.
+ * Returns structured availability with a reason when unavailable.
  */
-export function getDelegationAvailable(address: Address): boolean {
-  return getDelegationEnabled() && isDelegationEnabled(address);
+export function getDelegationAvailable(
+  address: Address,
+): DelegationAvailability {
+  if (!getDelegationEnabled()) {
+    return { available: false, reason: 'feature_disabled' };
+  }
+  if (!isDelegationEnabled(address)) {
+    return { available: false, reason: 'user_opted_out' };
+  }
+  const keychainType = useWalletKeychainTypesStore
+    .getState()
+    .getKeychainType(address);
+  // Unknown keychain (store not yet populated, e.g. locked after upgrade) is
+  // treated as unsupported to avoid advertising capabilities we can't verify.
+  if (!keychainType || ATOMIC_UNSUPPORTED_KEYCHAIN_TYPES.has(keychainType)) {
+    return { available: false, reason: 'unsupported_keychain' };
+  }
+  return { available: true };
 }
 
 /** Hook: feature flag only. Popup only. */
