@@ -99,6 +99,16 @@ export async function watchPendingTransactions(
         );
         return null;
       }
+      const msg = typeof e === 'string' ? e : (e as Error)?.message ?? '';
+      if (msg.startsWith('getCustomChainTransaction')) {
+        // custom chain transactions can have many issues, we don't want to have them as sentry errors
+        logger.info('watchPendingTransactions: getCustomChainTransaction', {
+          chainId: tx.chainId,
+          hash: tx.hash,
+          msg,
+        });
+        return null;
+      }
       logger.error(
         new RainbowError(
           `watchPendingTransactions: Failed to watch transaction`,
