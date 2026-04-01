@@ -18,6 +18,7 @@ import {
   RainbowTransaction,
 } from '~/core/types/transactions';
 import { isCustomChain } from '~/core/utils/chains';
+import { ensureTxHashFormat } from '~/core/utils/hex';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import {
@@ -62,9 +63,13 @@ export async function watchPendingTransactions(
         throw new Error('Pending transaction missing chain id or hash');
       }
 
+      const hashNormalized = ensureTxHashFormat(tx.hash);
+
       if (isCustomChain(tx.chainId)) {
         const provider = getProvider({ chainId: tx.chainId });
-        const transactionResponse = await provider.getTransaction(tx.hash);
+        const transactionResponse = await provider.getTransaction(
+          hashNormalized ?? tx.hash,
+        );
         const transactionStatus = await getTransactionReceiptStatus({
           transactionResponse,
           provider,
@@ -72,7 +77,7 @@ export async function watchPendingTransactions(
         updatedTransaction = { ...tx, ...transactionStatus };
       } else {
         const transaction = await fetchTransaction({
-          hash: tx.hash,
+          hash: tx.hash, // do not use normalized hash here, function does exact matches and backend handles malformed hashes well
           chainId: tx.chainId,
           address: addr,
           currency: currentCurrency,
