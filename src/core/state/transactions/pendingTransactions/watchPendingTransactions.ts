@@ -9,6 +9,7 @@ import {
   type MinedTxInfo,
   updateBatchesForMinedTx,
 } from '~/core/state/batches/updateBatchStatus';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { isPendingTxTimedOut } from '~/core/state/networks/timing';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
@@ -19,6 +20,7 @@ import {
 import { isCustomChain } from '~/core/utils/chains';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
+import { isChainNotConfiguredError } from '~/core/viem/error';
 import { RainbowError, logger } from '~/logger';
 
 export interface WatchPendingTransactionsOptions {
@@ -37,7 +39,8 @@ export async function watchPendingTransactions(
   const { skipTimedOutTxs = false } = options ?? {};
   const { pendingTransactions } = usePendingTransactionsStore.getState();
   const { currentCurrency } = useCurrentCurrencyStore.getState();
-  const { updatePendingTransaction } = usePendingTransactionsStore.getState();
+  const { updatePendingTransaction, removePendingTransactionsForAddress } =
+    usePendingTransactionsStore.getState();
   const { addStaleBalance } = useStaleBalancesStore.getState();
   const { addCustomNetworkTransactions } =
     useCustomNetworkTransactionsStore.getState();
@@ -49,6 +52,7 @@ export async function watchPendingTransactions(
     tx: RainbowTransaction,
   ): Promise<MinedTransaction | null> => {
     let updatedTransaction: RainbowTransaction | null = { ...tx };
+    await useNetworkStore.persist.hydrationPromise();
 
     try {
       if (!tx.chainId || !tx.hash) {
@@ -73,7 +77,13 @@ export async function watchPendingTransactions(
         updatedTransaction = { ...tx, ...transaction };
       }
     } catch (e) {
-      const errorMessage = (e as Error)?.message ?? String(e);
+      if (isChainNotConfiguredError(e)) {
+        removePendingTransactionsForAddress({
+          address: addr,
+          transactionsToRemove: [{ hash: tx.hash, chainId: tx.chainId }],
+        });
+        return null;
+      }
       logger.error(
         new RainbowError(
           `watchPendingTransactions: Failed to watch transaction`,
@@ -81,12 +91,6 @@ export async function watchPendingTransactions(
         ),
         { chainId: tx.chainId },
       );
-      if (
-        errorMessage.includes('Failed to create provider') ||
-        errorMessage.includes('Missing active RPC')
-      ) {
-        return null;
-      }
       return null;
     }
 
