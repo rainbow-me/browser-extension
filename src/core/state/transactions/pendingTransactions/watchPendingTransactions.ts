@@ -20,7 +20,10 @@ import {
 import { isCustomChain } from '~/core/utils/chains';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
-import { isChainNotConfiguredError } from '~/core/viem/error';
+import {
+  isChainNotConfiguredError,
+  isTransientEthersNetworkError,
+} from '~/core/viem/error';
 import { RainbowError, logger } from '~/logger';
 
 export interface WatchPendingTransactionsOptions {
@@ -82,6 +85,13 @@ export async function watchPendingTransactions(
           address: addr,
           transactionsToRemove: [{ hash: tx.hash, chainId: tx.chainId }],
         });
+        return null;
+      }
+      if (isTransientEthersNetworkError(e)) {
+        logger.warn(
+          'watchPendingTransactions: transient ethers network error while watching tx (will retry)',
+          { chainId: tx.chainId },
+        );
         return null;
       }
       logger.error(
