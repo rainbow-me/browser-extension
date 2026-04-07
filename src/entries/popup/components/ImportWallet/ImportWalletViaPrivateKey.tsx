@@ -1,8 +1,9 @@
+import { safe } from '@orpc/client';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { Address, isAddress } from 'viem';
+import { isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
@@ -20,6 +21,7 @@ import {
   Text,
   textStyles,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import {
   accentSelectionStyle,
   placeholderStyle,
@@ -28,15 +30,16 @@ import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
+import { popupClient } from '~/entries/popup/handlers/background';
 
 import {
   getImportWalletSecrets,
   removeImportWalletSecrets,
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
-import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { triggerToast } from '../Toast/Toast';
 
 const ImportWalletViaPrivateKey = () => {
   const navigate = useRainbowNavigate();
@@ -113,34 +116,61 @@ const ImportWalletViaPrivateKey = () => {
     if (isAddingWallets) return;
     // If it's only one private key, import it directly and go to wallet screen
     if (secrets.length === 1) {
-      if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
-        try {
-          setIsAddingWallets(true);
-          const address = (await wallet.importWithSecret(
-            secrets[0],
-          )) as Address;
-          setCurrentAddress(address);
-          setIsAddingWallets(false);
+      const secret = secrets[0];
+      const isKeyPairImport = isValidPrivateKey(secret);
+      if (isKeyPairImport || isAddress(secret)) {
+        const goNext = () =>
+          onboarding
+            ? navigate(ROUTES.CREATE_PASSWORD, {
+                state: { backTo: ROUTES.WELCOME },
+              })
+            : navigate(ROUTES.HOME);
+
+        setIsAddingWallets(true);
+        const [error, data, isDefined] = await safe(
+          popupClient.wallet.import({ seed: secret }),
+        );
+
+        if (data) {
+          setCurrentAddress(data.address);
+
+          analytics.track('wallet.added', {
+            type: isKeyPairImport
+              ? KeychainType.KeyPairKeychain
+              : KeychainType.ReadOnlyKeychain,
+          });
+
+          removeImportWalletSecrets();
 
           // workaround for a deeper issue where the keychain status
           // didn't yet updated or synced in the same tick
           setTimeout(() => {
-            if (onboarding)
-              navigate(ROUTES.CREATE_PASSWORD, {
-                state: { backTo: ROUTES.WELCOME },
-              });
-            else navigate(ROUTES.HOME);
+            goNext();
+            setIsAddingWallets(false);
           }, 1);
+          return;
+        }
 
-          analytics.track('wallet.added', {
-            type: KeychainType.ReadOnlyKeychain,
+        setIsAddingWallets(false);
+
+        if (isDefined) {
+          setCurrentAddress(error.data.address);
+          triggerToast({
+            title: i18n.t(
+              isKeyPairImport
+                ? 'import_wallet_via_private_key.duplicate_private_key'
+                : 'import_wallet_via_private_key.duplicate_watched_wallet',
+            ),
           });
-
-          setIsAddingWallets(false);
+          goNext();
           removeImportWalletSecrets();
           return;
-        } catch (e) {
-          //
+        }
+
+        if (error) {
+          triggerAlert({
+            text: i18n.t('import_wallet_via_private_key.import_error'),
+          });
         }
       }
     }

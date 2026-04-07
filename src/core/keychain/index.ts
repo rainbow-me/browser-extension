@@ -29,7 +29,7 @@ import {
   getAtomicSwapsEnabled,
   getDelegationEnabled,
 } from '../resources/delegations/featureStatus';
-import { KeychainType } from '../types/keychainTypes';
+import { DuplicateAccountError, KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
   EthereumWalletSeed,
@@ -38,6 +38,7 @@ import {
   sanitizeTypedData,
 } from '../utils/ethereum';
 import { addHexPrefix } from '../utils/hex';
+import { isLowerCaseMatch } from '../utils/strings';
 
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
@@ -154,6 +155,9 @@ export const importHardwareWallet = async ({
   wallets: Array<{ address: Address; index: number; hdPath?: string }>;
   accountsEnabled: number;
 }) => {
+  if (wallets.length === 0) {
+    throw new Error('No hardware wallet accounts to import');
+  }
   const keychain = await keychainManager.importKeychain({
     vendor,
     type: KeychainType.HardwareWalletKeychain,
@@ -184,11 +188,22 @@ export const importWallet = async (
         privateKey: secret as PrivateKey,
       };
       const newAccount = (await keychainManager.deriveAccounts(opts))[0];
+      const existingAccounts = await keychainManager.getAccounts();
+      const matchingExisting = existingAccounts.find((a) =>
+        isLowerCaseMatch(a, newAccount),
+      );
+      if (matchingExisting) {
+        const existingKeychain =
+          await keychainManager.getKeychain(matchingExisting);
+        if (existingKeychain.type !== KeychainType.ReadOnlyKeychain) {
+          throw new DuplicateAccountError(matchingExisting);
+        }
+      }
 
-      await keychainManager.importKeychain(opts);
-      // returning the derived address instead of the first from the keychain,
-      // because this pk could have been elevated to hd while importing
-      return newAccount;
+      const keychain = await keychainManager.importKeychain(opts);
+      const accounts = await keychain.getAccounts();
+      const resolved = accounts.find((a) => isLowerCaseMatch(a, newAccount));
+      return resolved ?? accounts[0];
     }
     case EthereumWalletType.readOnly: {
       const keychain = await keychainManager.importKeychain({

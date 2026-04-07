@@ -1095,7 +1095,10 @@
     "title": "Import Your Wallet",
     "explanation": "Enter your 64-character Private Key from Rainbow or any Ethereum wallet.",
     "placeholder": "Paste your Private Key from another wallet",
-    "import_wallet": "Import wallet"
+    "import_wallet": "Import wallet",
+    "duplicate_private_key": "This private key is already imported",
+    "duplicate_watched_wallet": "This watched wallet is already imported",
+    "import_error": "Failed to import wallet. Please try again."
   },
   "import_or_connect": {
     "title": "Restore or Connect",
@@ -1822,6 +1825,7 @@
     "connect_wallets_found": "We’ve found %{count} wallets on your %{vendor} with a balance or activity. Select which to connect.",
     "connect_wallets_not_found": "We didn't find any wallets with activity on this %{vendor} but you can still add these.",
     "connect_wallet": "Connect wallet",
+    "wallet_already_imported": "These hardware wallet accounts are already imported",
     "connect_n_wallets": "Connect %{count} wallets",
     "wallets_found": "%{count} wallets found",
     "add_by_index": "Add by index",

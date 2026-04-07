@@ -14,6 +14,7 @@ import {
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
+import { DuplicateAccountError } from '~/core/types/keychainTypes';
 import { delay } from '~/test/utils';
 
 import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
@@ -89,6 +90,10 @@ test('[keychain/index] :: should be able to import a wallet using a private key'
   const accounts = await getAccounts();
   expect(accounts.length).toBe(2);
   expect(isAddress(accounts[1])).toBe(true);
+});
+
+test('[keychain/index] :: should reject duplicate private key import', async () => {
+  await expect(importWallet(privateKey)).rejects.toThrow(DuplicateAccountError);
 });
 
 test('[keychain/index] :: should be able to remove an account from a KeyPair keychain...', async () => {

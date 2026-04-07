@@ -5,11 +5,18 @@ import {
   beforeAll,
   beforeEach,
   describe,
+  expect,
   it,
 } from 'vitest';
 
 import {
   checkWalletName,
+  delayTime,
+  fillPrivateKey,
+  findElementByIdAndClick,
+  findElementByTestId,
+  findElementByTestIdAndClick,
+  findElementByText,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
@@ -52,6 +59,62 @@ describe('Import wallet with a private key flow', () => {
     );
   });
   it('should display account name', async () => {
+    await checkWalletName(
+      driver,
+      rootURL,
+      TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS,
+    );
+  });
+
+  it('should show toast and navigate to home when importing duplicate private key', async () => {
+    await importWalletFlow(
+      driver,
+      rootURL,
+      TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET,
+      true,
+    );
+
+    await checkWalletName(
+      driver,
+      rootURL,
+      TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS,
+    );
+
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'import-via-pkey-option',
+      driver,
+    });
+
+    await fillPrivateKey(driver, TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await delayTime('medium');
+
+    const toastMessage = await findElementByText(
+      driver,
+      'This private key is already imported',
+    );
+    expect(toastMessage).toBeTruthy();
+
+    await delayTime('short');
+    const homeScreen = await findElementByTestId({
+      id: 'home-page-header-right',
+      driver,
+    });
+    expect(homeScreen).toBeTruthy();
+
     await checkWalletName(
       driver,
       rootURL,
