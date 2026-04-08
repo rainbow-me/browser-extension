@@ -1,0 +1,31 @@
+---
+description: oRPC errors — contracts, handlers, popup (safe + defined errors)
+globs: src/entries/background/contracts/**/*.ts,src/entries/background/procedures/**/*.ts,src/entries/popup/handlers/**/*.ts,src/analytics/**/*.ts,src/entries/popup/components/**/*.ts,src/entries/popup/components/**/*.tsx
+alwaysApply: false
+---
+
+# oRPC errors
+
+Docs: https://orpc.dev/docs/client/error-handling
+
+## Server
+
+- Contract: list failures in `.errors({ CODE: { data: z… } })`; keep codes next to that contract.
+- Handler: `throw errors.CODE({ data })` — not raw `Error` for UI-handled cases. Map domain errors (e.g. `DuplicateAccountError`) → `errors.*`.
+- Middleware (`procedures/popup/index.ts`): only log **non**-defined throws; defined `ORPCError` must pass through (no swallow).
+
+## Client
+
+- Use `safe(...)` from `@orpc/client` when branching success vs failure.
+- Pass **`safe(popupClient.wallet.procedureName(input))`** — not `safe(myHelper())` if the helper returns `Promise<Address>` / unwraps output (loses contract error types).
+- `const [err, data, isDefined] = await safe(promise)`. Success ⇒ `data`; failure ⇒ `err`.
+- **One** defined error on that procedure ⇒ `isDefined && err` is enough. **Several** ⇒ also check `err.code` (or `isDefinedError(err) && err.code === Enum.X`).
+- Addresses from RPC/errors: `getAddress(...)` before `setCurrentAddress` / storage — avoid `as Address`.
+
+## Don’t (anti-patterns)
+
+- **Server:** `new ORPCError(...)` / ad-hoc throws for cases not listed on the contract `.errors()` — breaks codes, schemas, and client inference.
+- **Server:** Catching everything in middleware and logging without rethrowing, or treating defined errors like bugs.
+- **Client:** `safe(fn())` where `fn` unwraps `popupClient` to a primitive — TS drops procedure error types; call `safe` on the **procedure promise** instead.
+- **Client:** `as Address` / unchecked casts on RPC or `error.data` — use `getAddress`.
+- **Client:** Using only `isDefined` to pick one scenario when that procedure has **multiple** `.errors()` codes — must branch on `err.code`.

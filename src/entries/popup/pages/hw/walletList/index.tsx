@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'viem';
+import { Address, getAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
   Button,
@@ -23,6 +25,7 @@ import { AddressOrEns } from '../../../components/AddressOrEns/AddressorEns';
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { FullScreenContainer } from '../../../components/FullScreen/FullScreenContainer';
 import { Spinner } from '../../../components/Spinner/Spinner';
+import { triggerToast } from '../../../components/Toast/Toast';
 import { WalletAvatar } from '../../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../../handlers/wallet';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
@@ -71,34 +74,51 @@ const WalletListHW = () => {
     if (isLoading) return;
     if (selectedAccounts === 0) return;
     setIsLoading(true);
-    let defaultAccountChosen = false;
-    // Import all the secrets
-    const filteredAccounts = accountsToImport.filter(
+    const selectedToConnect = accountsToImport.filter(
       (account: { address: Address }) =>
-        !accountsIgnored.includes(account.address) &&
-        !existingWallets.includes(account.address),
+        !accountsIgnored.includes(account.address),
+    );
+    const filteredAccounts = selectedToConnect.filter(
+      (account: { address: Address }) =>
+        !existingWallets.some((ew) => isLowerCaseMatch(ew, account.address)),
     );
 
-    const address = (await wallet.importAccountsFromHW(
-      filteredAccounts,
-      state.accountsEnabled,
-      state.deviceId,
-      state.vendor as Vendor,
-    )) as Address;
-    // Select the first wallet
-    if (!defaultAccountChosen && !accountsIgnored.includes(address)) {
-      defaultAccountChosen = true;
-      setCurrentAddress(address);
-    }
+    try {
+      if (filteredAccounts.length === 0 && selectedToConnect.length > 0) {
+        const canonicalFor = (raw: Address) =>
+          existingWallets.find((ew) => isLowerCaseMatch(ew, raw)) ??
+          getAddress(raw);
+        const { unhideWallet } = useHiddenWalletsStore.getState();
+        for (const { address } of selectedToConnect) {
+          unhideWallet({ address: canonicalFor(address) });
+        }
+        setCurrentAddress(canonicalFor(selectedToConnect[0].address));
+        triggerToast({
+          title: i18n.t('hw.wallet_already_imported'),
+        });
+        navigate(ROUTES.HOME);
+        return;
+      }
 
-    navigate(ROUTES.HW_SUCCESS, {
-      state: {
-        accounts: filteredAccounts.map(
-          (account: { address: Address }) => account.address,
-        ),
-        vendor: state.vendor,
-      },
-    });
+      const address = await wallet.importAccountsFromHW(
+        filteredAccounts,
+        state.accountsEnabled,
+        state.deviceId,
+        state.vendor,
+      );
+      if (!accountsIgnored.includes(address)) setCurrentAddress(address);
+
+      navigate(ROUTES.HW_SUCCESS, {
+        state: {
+          accounts: filteredAccounts.map(
+            (account: { address: Address }) => account.address,
+          ),
+          vendor: state.vendor,
+        },
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }, [
     isLoading,
     selectedAccounts,
