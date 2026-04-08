@@ -1095,7 +1095,10 @@
     "title": "ウォレットのインポート",
     "explanation": "Rainbowや他のEthereumウォレットから64文字のプライベートキーを入力してください。",
     "placeholder": "他のウォレットからプライベートキーを貼り付けてください。",
-    "import_wallet": "ウォレットをインポートする"
+    "import_wallet": "ウォレットをインポートする",
+    "duplicate_private_key": "This private key is already imported",
+    "duplicate_watched_wallet": "This watched wallet is already imported",
+    "import_error": "Failed to import wallet. Please try again."
   },
   "import_or_connect": {
     "title": "復元または接続",
@@ -1822,6 +1825,7 @@
     "connect_wallets_found": "バランスまたはアクティビティがある %{vendor} の %{count} ウォレットが見つかりました。接続するウォレットを選択してください。",
     "connect_wallets_not_found": "この %{vendor} にはアクティビティがあるウォレットは見つかりませんでしたが、それでも追加できます。",
     "connect_wallet": "ウォレットを接続する",
+    "wallet_already_imported": "These hardware wallet accounts are already imported",
     "connect_n_wallets": "%{count} 個のウォレットを接続する",
     "wallets_found": "%{count} 個のウォレットが見つかりました",
     "add_by_index": "インデックスで追加",
