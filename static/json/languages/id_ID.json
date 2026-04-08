@@ -1096,9 +1096,9 @@
     "explanation": "Masukkan Kunci Pribadi Anda berisi 64 karakter dari Rainbow atau dompet Ethereum mana pun.",
     "placeholder": "Tempel Kunci Pribadi Anda dari dompet lain",
     "import_wallet": "Impor dompet",
-    "duplicate_private_key": "This private key is already imported",
-    "duplicate_watched_wallet": "This watched wallet is already imported",
-    "import_error": "Failed to import wallet. Please try again."
+    "duplicate_private_key": "Kunci privat ini sudah diimpor",
+    "duplicate_watched_wallet": "Wallet yang dipantau ini sudah diimpor",
+    "import_error": "Gagal mengimpor wallet. Silakan coba lagi."
   },
   "import_or_connect": {
     "title": "Pulihkan atau Hubungkan",
@@ -1825,7 +1825,7 @@
     "connect_wallets_found": "Kami telah menemukan %{count} dompet di %{vendor} Anda dengan saldo atau aktivitas. Pilih mana yang akan dihubungkan",
     "connect_wallets_not_found": "Kami tidak menemukan dompet dengan aktivitas pada %{vendor} ini tetapi Anda masih bisa menambahkan yang ini",
     "connect_wallet": "Hubungkan dompet",
-    "wallet_already_imported": "These hardware wallet accounts are already imported",
+    "wallet_already_imported": "Akun wallet hardware ini sudah diimpor",
     "connect_n_wallets": "Hubungkan %{count} dompet",
     "wallets_found": "%{count} dompet ditemukan",
     "add_by_index": "Tambah berdasarkan indeks",
