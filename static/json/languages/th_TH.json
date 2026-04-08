@@ -1095,7 +1095,10 @@
     "title": "นำกระเป๋าเงินของคุณเข้า",
     "explanation": "ใส่คีย์ส่วนตัว 64 ตัวอักษร จาก Rainbow หรือกระเป๋า Ethereum ของคุณ",
     "placeholder": "วางคีย์ส่วนตัวของคุณจากกระเป๋าอื่น ๆ",
-    "import_wallet": "นำเข้ากระเป๋า"
+    "import_wallet": "นำเข้ากระเป๋า",
+    "duplicate_private_key": "This private key is already imported",
+    "duplicate_watched_wallet": "This watched wallet is already imported",
+    "import_error": "Failed to import wallet. Please try again."
   },
   "import_or_connect": {
     "title": "กู้คืนหรือเชื่อมต่อ",
@@ -1822,6 +1825,7 @@
     "connect_wallets_found": "พบ %{count} กระเป๋าเงินใน %{vendor} ที่มียอดเงินหรือการทำธุรกรรม กรุณาเลือกเพื่อเชื่อมต่อ",
     "connect_wallets_not_found": "เราไม่พบกระเป๋าเงินที่มีหรือทำธุรกรรมใด ๆ ในสิ่งนี้ %{vendor} แต่คุณยังสามารถเพิ่มเหล่านี้ได้",
     "connect_wallet": "เชื่อมต่อกระเป๋าเงิน",
+    "wallet_already_imported": "These hardware wallet accounts are already imported",
     "connect_n_wallets": "เชื่อมต่อ %{count} กระเป๋าเงิน",
     "wallets_found": "พบ %{count} กระเป๋าเงิน",
     "add_by_index": "เพิ่มตามดัชนี",
