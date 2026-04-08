@@ -1095,7 +1095,10 @@
     "title": "导入您的钱包",
     "explanation": "输入来自彩虹或任何以太坊钱包的64个字符的私钥",
     "placeholder": "粘贴来自其他钱包的私钥",
-    "import_wallet": "导入钱包"
+    "import_wallet": "导入钱包",
+    "duplicate_private_key": "该私钥已被导入",
+    "duplicate_watched_wallet": "该观察钱包已被导入",
+    "import_error": "导入钱包失败。请再试一次。"
   },
   "import_or_connect": {
     "title": "恢复或连接",
@@ -1822,6 +1825,7 @@
     "connect_wallets_found": "在您的 %{vendor} 上，我们找到了 %{count} 个拥有余额或活动的钱包。请选择要连接的钱包。",
     "connect_wallets_not_found": "我们在此 %{vendor} 上没有找到任何活跃的钱包，但您仍然可以添加它们。",
     "connect_wallet": "连接钱包",
+    "wallet_already_imported": "这些硬件钱包账户已被导入",
     "connect_n_wallets": "连接 %{count} 个钱包",
     "wallets_found": "找到%{count} 个钱包",
     "add_by_index": "按索引添加",
