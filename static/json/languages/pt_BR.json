@@ -1096,9 +1096,9 @@
     "explanation": "Insira sua Chave Privada de 64 caracteres do Rainbow ou de qualquer carteira Ethereum.",
     "placeholder": "Cole sua Chave Privada de outra carteira",
     "import_wallet": "Importar carteira",
-    "duplicate_private_key": "This private key is already imported",
-    "duplicate_watched_wallet": "This watched wallet is already imported",
-    "import_error": "Failed to import wallet. Please try again."
+    "duplicate_private_key": "Esta chave privada já foi importada",
+    "duplicate_watched_wallet": "Esta carteira monitorada já foi importada",
+    "import_error": "Falha ao importar a carteira. Por favor, tente novamente."
   },
   "import_or_connect": {
     "title": "Restaurar ou Conectar",
@@ -1825,7 +1825,7 @@
     "connect_wallets_found": "Encontramos %{count} carteiras na sua %{vendor} com saldo ou atividade. Selecione qual conectar.",
     "connect_wallets_not_found": "Não encontramos nenhuma carteira com atividade nesta %{vendor} , mas você ainda pode adicioná-las.",
     "connect_wallet": "Conectar carteira",
-    "wallet_already_imported": "These hardware wallet accounts are already imported",
+    "wallet_already_imported": "Estas contas de carteira de hardware já foram importadas",
     "connect_n_wallets": "Conectar %{count} carteiras",
     "wallets_found": "Encontradas  %{count} carteiras",
     "add_by_index": "Adicionar por índice",
