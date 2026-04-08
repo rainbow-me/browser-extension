@@ -1096,9 +1096,9 @@
     "explanation": "Rainbow 또는 다른 Ethereum 지갑에서 64자리 Private Key를 입력하세요.",
     "placeholder": "다른 지갑에서 Private Key를 붙여넣기하세요",
     "import_wallet": "지갑 가져오기",
-    "duplicate_private_key": "This private key is already imported",
-    "duplicate_watched_wallet": "This watched wallet is already imported",
-    "import_error": "Failed to import wallet. Please try again."
+    "duplicate_private_key": "이 개인 키는 이미 가져왔습니다",
+    "duplicate_watched_wallet": "이 감시 지갑은 이미 가져왔습니다",
+    "import_error": "지갑을 가져오는 데 실패했습니다. 다시 시도해 주세요."
   },
   "import_or_connect": {
     "title": "복원 또는 연결",
@@ -1825,7 +1825,7 @@
     "connect_wallets_found": "잔액 또는 활동이 있는 %{count} 지갑을 %{vendor} 에서 발견했습니다. 연결할 지갑을 선택하세요",
     "connect_wallets_not_found": "이 %{vendor} 에서 활동이 있는 지갑을 찾지 못했지만 여전히 추가할 수 있습니다",
     "connect_wallet": "지갑 연결",
-    "wallet_already_imported": "These hardware wallet accounts are already imported",
+    "wallet_already_imported": "이 하드웨어 지갑 계정은 이미 가져왔습니다",
     "connect_n_wallets": "%{count} 지갑 연결",
     "wallets_found": "%{count} 지갑 발견",
     "add_by_index": "인덱스로 추가",
