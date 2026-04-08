@@ -172,7 +172,10 @@ function handlePendingTransactionsChange() {
  * transaction and asset data, this module can be removed.
  */
 export async function setupPendingTransactionCleanup() {
-  await useCurrentAddressStore.persist.hydrationPromise();
+  await Promise.all([
+    useCurrentAddressStore.persist.hydrationPromise(),
+    useNetworkStore.persist.hydrationPromise(),
+  ]);
   handlePendingTransactionsChange();
 
   const unsubPending = usePendingTransactionsStore.subscribe(
