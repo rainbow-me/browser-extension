@@ -1095,7 +1095,10 @@
     "title": "Importar tu billetera",
     "explanation": "Ingresa tu clave privada de 64 caracteres de Rainbow u otra billetera Ethereum.",
     "placeholder": "Pega tu clave privada de otra billetera",
-    "import_wallet": "Importar billetera"
+    "import_wallet": "Importar billetera",
+    "duplicate_private_key": "This private key is already imported",
+    "duplicate_watched_wallet": "This watched wallet is already imported",
+    "import_error": "Failed to import wallet. Please try again."
   },
   "import_or_connect": {
     "title": "Restaurar o Conectar",
@@ -1822,6 +1825,7 @@
     "connect_wallets_found": "Hemos encontrado %{count} billeteras en tu %{vendor} con un saldo o actividad. Selecciona cuál conectar.",
     "connect_wallets_not_found": "No encontramos ninguna billetera con actividad en este %{vendor} pero aún así puedes agregarlas.",
     "connect_wallet": "Conectar billetera",
+    "wallet_already_imported": "These hardware wallet accounts are already imported",
     "connect_n_wallets": "Conectar %{count} billeteras",
     "wallets_found": "Se encontraron  %{count} billeteras",
     "add_by_index": "Agregar por índice",
