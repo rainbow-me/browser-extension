@@ -1096,9 +1096,9 @@
     "explanation": "Введите свой 64-значный приватный ключ из Rainbow или любого другого Ethereum кошелька.",
     "placeholder": "Вставьте свой приватный ключ из другого кошелька",
     "import_wallet": "Импортировать кошелек",
-    "duplicate_private_key": "This private key is already imported",
-    "duplicate_watched_wallet": "This watched wallet is already imported",
-    "import_error": "Failed to import wallet. Please try again."
+    "duplicate_private_key": "Этот приватный ключ уже импортирован",
+    "duplicate_watched_wallet": "Этот кошелек в режиме просмотра уже импортирован",
+    "import_error": "Не удалось импортировать кошелек. Пожалуйста, попробуйте еще раз."
   },
   "import_or_connect": {
     "title": "Восстановить или подключить",
@@ -1825,7 +1825,7 @@
     "connect_wallets_found": "Мы нашли %{count} кошельков на вашем %{vendor} с балансом или активностью. Выберите, с какими подключиться.",
     "connect_wallets_not_found": "Мы не нашли ни одного кошелька с активностью на этом %{vendor} , но вы все равно можете их добавить.",
     "connect_wallet": "Подключить кошелек",
-    "wallet_already_imported": "These hardware wallet accounts are already imported",
+    "wallet_already_imported": "Эти аккаунты аппаратного кошелька уже импортированы",
     "connect_n_wallets": "Подключить %{count} кошельков",
     "wallets_found": "Найдено %{count} кошельков",
     "add_by_index": "Добавить по индексу",
