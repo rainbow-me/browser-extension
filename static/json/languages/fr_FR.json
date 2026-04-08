@@ -1095,7 +1095,10 @@
     "title": "Importer votre portefeuille",
     "explanation": "Entrez votre clé privée de 64 caractères provenant de Rainbow ou de tout autre portefeuille Ethereum.",
     "placeholder": "Collez votre clé privée provenant d'un autre portefeuille",
-    "import_wallet": "Importer le portefeuille"
+    "import_wallet": "Importer le portefeuille",
+    "duplicate_private_key": "This private key is already imported",
+    "duplicate_watched_wallet": "This watched wallet is already imported",
+    "import_error": "Failed to import wallet. Please try again."
   },
   "import_or_connect": {
     "title": "Restaurer ou Connecter",
@@ -1822,6 +1825,7 @@
     "connect_wallets_found": "Nous avons trouvé %{count} portefeuilles sur votre %{vendor} avec un solde ou une activité. Sélectionnez celui que vous souhaitez connecter.",
     "connect_wallets_not_found": "Nous n'avons trouvé aucun portefeuille avec une activité sur ce %{vendor} , mais vous pouvez toujours les ajouter.",
     "connect_wallet": "Connecter le portefeuille",
+    "wallet_already_imported": "These hardware wallet accounts are already imported",
     "connect_n_wallets": "Connecter %{count} portefeuilles",
     "wallets_found": "%{count} portefeuilles trouvés",
     "add_by_index": "Ajouter par indice",
