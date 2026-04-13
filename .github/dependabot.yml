@@ -6,9 +6,9 @@ updates:
       interval: "daily"
     allow:
       - dependency-name: "@rainbow-me/*"
-  - package-ecosystem: "npm"
-    directory: "/src/design-system/docs"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
+    versioning-strategy: lockfile-only
+    groups:
+      all-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
