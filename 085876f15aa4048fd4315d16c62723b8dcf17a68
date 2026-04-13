@@ -1,0 +1,36 @@
+.github/workflows/publish-internal.yml
+  23d0dc244452cded 24-26,28-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "085876f15aa4048fd4315d16c62723b8dcf17a68",
+  "prompts": {
+    "0ae015f32e895176": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cfe7dd6b-15c5-4996-b926-384b23fa57ae",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 278,
+      "total_deletions": 0,
+      "accepted_lines": 278,
+      "overriden_lines": 0
+    },
+    "23d0dc244452cded": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "33d270a9-c49e-4a87-ba4d-146ebc1ddf21",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 2,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
