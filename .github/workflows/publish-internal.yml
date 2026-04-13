@@ -21,9 +21,12 @@ jobs:
         run: |
           last_commit=$(git log -1 --pretty=%B)
           if [[ "$last_commit" == *"Version Bump (Internal)"* ]]; then
-            echo "No new commits. Canceling publish..."
-            exit 1
+            echo "No new commits. Skipping publish."
+            gh run cancel ${{ github.run_id }}
+            gh run watch ${{ github.run_id }}
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
           node-version: "22.17.0"
