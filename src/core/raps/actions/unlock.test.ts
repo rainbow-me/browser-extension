@@ -129,7 +129,7 @@ test('[rap/unlock] :: should execute approve', async () => {
     spender: getRainbowRouterContractAddress(mainnet.id),
     tokenAddress: USDC_MAINNET_ASSET.address as Address,
     wallet,
-    approvalAmount: maxUint256.toString(),
+    approvalAmount: maxUint256,
   });
   expect(approvalTx.hash).toBeDefined();
 });

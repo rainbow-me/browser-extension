@@ -51,8 +51,7 @@ type BaseTransaction = {
   description?: string;
 
   asset?: ParsedAsset; // this is the relevant tx asset, like the asset being sold/approved/withdrawn etc
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  approvalAmount?: 'UNLIMITED' | (string & {}); // `& {}` prevents TS from collapsing the union into just `string`
+  approvalAmount?: 'UNLIMITED' | bigint;
   contract?: {
     name: string;
     iconUrl?: string;

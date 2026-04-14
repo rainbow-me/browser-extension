@@ -7,6 +7,10 @@ import {
 } from './createMessenger';
 import { isValidReply } from './isValidReply';
 import { isValidSend } from './isValidSend';
+import {
+  decodeExtensionRpcPayload,
+  encodeExtensionRpcPayload,
+} from './rpcPayloadCodec';
 
 /**
  * Creates a "window messenger" that can be used to communicate between
@@ -28,7 +32,14 @@ export const windowMessenger = createMessenger({
   _listeners: {},
   async send(topic, payload, { id } = {}) {
     // Since the window messenger cannot reply asynchronously, we must include the direction in our message ('> {topic}')...
-    window.postMessage({ topic: `> ${topic}`, payload, id }, '*');
+    window.postMessage(
+      {
+        topic: `> ${topic}`,
+        payload: encodeExtensionRpcPayload(payload),
+        id,
+      },
+      '*',
+    );
     // ... and also set up an event listener to listen for the response ('< {topic}').
     return new Promise((resolve, reject) => {
       const listener = (event: MessageEvent) => {
@@ -39,7 +50,7 @@ export const windowMessenger = createMessenger({
 
         const { response, error } = event.data.payload;
         if (error) reject(new Error(error.message));
-        resolve(response);
+        resolve(decodeExtensionRpcPayload(response));
       };
       window.addEventListener('message', listener);
     });
@@ -66,7 +77,8 @@ export const windowMessenger = createMessenger({
       let error;
       let response;
       try {
-        response = await callback(event.data.payload, {
+        const payload = decodeExtensionRpcPayload<TPayload>(event.data.payload);
+        response = await callback(payload, {
           topic: event.data.topic,
           sender: event.source as IMessageSender,
           id: event.data.id,
@@ -78,7 +90,13 @@ export const windowMessenger = createMessenger({
       const repliedTopic = event.data.topic.replace('>', '<');
       window.postMessage({
         topic: repliedTopic,
-        payload: { error, response },
+        payload: {
+          error,
+          response:
+            error === undefined
+              ? encodeExtensionRpcPayload(response)
+              : undefined,
+        },
         id: event.data.id,
       });
     };

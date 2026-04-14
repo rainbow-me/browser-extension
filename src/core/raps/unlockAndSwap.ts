@@ -41,7 +41,7 @@ function isNativeSellToken(sellTokenAddress: string): boolean {
 export const estimateUnlockAndSwap = async (
   swapParameters: RapSwapActionParameters<'swap'>,
 ) => {
-  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
+  const { sellAmount, quote, chainId } = swapParameters;
 
   const allowanceTargetAddress = resolveAllowanceTargetAddress(quote);
 
@@ -59,7 +59,6 @@ export const estimateUnlockAndSwap = async (
       spender: allowanceTargetAddress,
       amount: sellAmount,
       chainId,
-      decimals: assetToSell.decimals,
     });
   }
 
@@ -121,7 +120,6 @@ export const createUnlockAndSwapRap = async (
       spender: allowanceTargetAddress,
       amount: sellAmount,
       chainId,
-      decimals: assetToSell.decimals,
     });
   }
 
@@ -143,7 +141,6 @@ export const createUnlockAndSwapRap = async (
     requiresApprove,
     quote,
     gasParams: swapParameters.gasParams,
-    meta: swapParameters.meta,
     assetToSell,
     assetToBuy,
   } satisfies RapSwapActionParameters<'swap'>);
