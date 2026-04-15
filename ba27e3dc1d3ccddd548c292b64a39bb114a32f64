@@ -1,0 +1,36 @@
+zensical.toml
+  23dd8e8f6474c8a2 79,95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "ba27e3dc1d3ccddd548c292b64a39bb114a32f64",
+  "prompts": {
+    "23dd8e8f6474c8a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7e1306d9-0de7-4468-b818-6b16d353be08",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 1727,
+      "total_deletions": 2509,
+      "accepted_lines": 1719,
+      "overriden_lines": 7
+    },
+    "83549b85ba3528f5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4b39c0de-6c9a-4496-a490-83df8fe72316",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 176,
+      "total_deletions": 28,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
