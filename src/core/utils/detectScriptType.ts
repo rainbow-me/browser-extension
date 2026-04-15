@@ -2,7 +2,11 @@
  * Detects and returns what context the script is in.
  */
 export function detectScriptType() {
-  const hasChromeRuntime = typeof chrome !== 'undefined' && chrome.runtime;
+  // Gate on `chrome.runtime?.id` (only set in this extension's own
+  // contexts) rather than `chrome.runtime`, which other extensions'
+  // externally_connectable can expose to page context. Fixes #1381.
+  const hasChromeRuntime =
+    typeof chrome !== 'undefined' && Boolean(chrome.runtime?.id);
   const hasWindow = typeof window !== 'undefined';
 
   if (hasChromeRuntime && hasWindow) {
