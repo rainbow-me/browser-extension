@@ -1,0 +1,204 @@
+docs/keychain.md
+  23dd8e8f6474c8a2 576-577
+site/hardware-wallets.md
+  fae25deee4074764 62,241,286,288,290-295
+site/activity-history.md
+  fae25deee4074764 9-12,14,121-126,250
+docs/onboarding-auth.md
+  23dd8e8f6474c8a2 180
+docs/transactions.md
+  23dd8e8f6474c8a2 133
+site/send-flow.md
+  fae25deee4074764 104-105,361,363,365-367,585,587
+site/future-critical-path/index.html
+  23dd8e8f6474c8a2 1565
+docs/codebase-evolution.md
+  23dd8e8f6474c8a2 34
+docs/onboarding-presentation.md
+  fae25deee4074764 1-449
+docs/mental-model.md
+  23dd8e8f6474c8a2 42,48,83
+site/delegation-smart-wallet.md
+  fae25deee4074764 9,11
+site/raps.md
+  fae25deee4074764 29,284,286-289
+docs/dapp-connect-approval.md
+  23dd8e8f6474c8a2 430
+docs/future-handler-phaseout.md
+  23dd8e8f6474c8a2 60-61
+site/dapp-connect-approval.md
+  fae25deee4074764 430
+docs/future-react-query-phaseout.md
+  23dd8e8f6474c8a2 47,49-51
+docs/extension-anatomy.md
+  23dd8e8f6474c8a2 13
+docs/gas.md
+  23dd8e8f6474c8a2 1-270
+site/gas/index.html
+  23dd8e8f6474c8a2 1-15,17-18,22-207,210-217,220-222,224-382,388-389,395-396,626,643,1109,1533,1535,1537,1539,1547,1555-1568,1572-1573,1575,1577,1579-1581,1590,1602,1607,1609,1616-1619,1627-1629,1631-1637,1640-1641,1646-1649,1654-1666,1670-1672,1676-1679,1682-1683,1693,1698,1705,1725,1731,1755-1759,1761,1764,1768-1769,1779-1780,1790-1792,1794-1800,1803-1804,1811-1812,1817-2612,2659,2662,2675,2679-2680,2684-2996,3035-3070
+site/keychain.md
+  fae25deee4074764 576-577
+site/extension-anatomy.md
+  fae25deee4074764 13
+docs/index.md
+  23dd8e8f6474c8a2 34
+site/ui-systems.md
+  23dd8e8f6474c8a2 51,53,69,73
+site/transactions.md
+  23dd8e8f6474c8a2 133
+docs/swap-bridge.md
+  23dd8e8f6474c8a2 174,176-180,206-207
+docs/send-flow.md
+  23dd8e8f6474c8a2 104-105,361,363,365-367,585,587
+site/custom-networks.md
+  23dd8e8f6474c8a2 13,27,31
+  fae25deee4074764 28
+docs/delegation-smart-wallet.md
+  23dd8e8f6474c8a2 9,11
+docs/ui-systems.md
+  23dd8e8f6474c8a2 51,53,69,73
+site/onboarding-auth.md
+  fae25deee4074764 180
+site/design-system.md
+  fae25deee4074764 51
+site/codebase-evolution/index.html
+  23dd8e8f6474c8a2 2953
+docs/future-critical-path.md
+  23dd8e8f6474c8a2 11,141-142
+docs/messaging-orpc.md
+  23dd8e8f6474c8a2 9
+site/codebase-evolution.md
+  23dd8e8f6474c8a2 34
+site/future-provider.md
+  fae25deee4074764 93-94
+docs/activity-history.md
+  23dd8e8f6474c8a2 9-12,14,250
+docs/hardware-wallets.md
+  23dd8e8f6474c8a2 62,241,286,288,290-295
+docs/future-provider.md
+  23dd8e8f6474c8a2 93-94
+site/activity-history/index.html
+  23dd8e8f6474c8a2 3479-3483,3635
+zensical.toml
+  23dd8e8f6474c8a2 81
+site/raps/index.html
+  e3a33a4b4e67682b 2866,2868-2871
+site/mental-model.md
+  23dd8e8f6474c8a2 42,48,83
+site/dapp-provider.md
+  fae25deee4074764 9
+docs/raps.md
+  23dd8e8f6474c8a2 29
+  e3a33a4b4e67682b 284,286-289
+site/future-react-query-phaseout.md
+  fae25deee4074764 47,49-51
+site/future-critical-path.md
+  fae25deee4074764 11,141-142
+site/future-handler-phaseout.md
+  fae25deee4074764 60-61
+site/messaging-orpc.md
+  fae25deee4074764 9
+site/ui-systems/index.html
+  23dd8e8f6474c8a2 832,835,1745,1748,2385,2397
+site/onboarding-presentation/index.html
+  e3a33a4b4e67682b 26,84,120,953,956,964,967,975,978,986,989,997,1000-1133,1141,1144-1238,1268-1454,1456-1576,1578-1634
+site/extension-anatomy/index.html
+  23dd8e8f6474c8a2 1553
+site/send-flow/index.html
+  23dd8e8f6474c8a2 1523,1526,3253,3256,3934-3935
+docs/custom-networks.md
+  23dd8e8f6474c8a2 13,27-28,31
+docs/dapp-provider.md
+  23dd8e8f6474c8a2 9
+site/swap-bridge.md
+  fae25deee4074764 174,176-180,206-207
+site/hardware-wallets/index.html
+  23dd8e8f6474c8a2 1541,1544,3158,3161,3993-4025
+site/messaging-orpc/index.html
+  23dd8e8f6474c8a2 3224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "280dad4e326395735c0ef6ccfedac945c311e0f7",
+  "prompts": {
+    "22354297950edd9d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d8e57-caf6-7191-b058-c6013e830e98",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 618,
+      "overriden_lines": 0
+    },
+    "23dd8e8f6474c8a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7e1306d9-0de7-4468-b818-6b16d353be08",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 7967,
+      "total_deletions": 46223,
+      "accepted_lines": 7824,
+      "overriden_lines": 46
+    },
+    "7937dd9d25768a29": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d8e62-daed-7182-8ea2-63417618e089",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 98,
+      "overriden_lines": 0
+    },
+    "e3a33a4b4e67682b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f02234a4-6942-4bde-b565-293fa56b18fc",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 4710,
+      "total_deletions": 1158,
+      "accepted_lines": 1715,
+      "overriden_lines": 0
+    },
+    "ebfd611383c83999": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c8d79f-bb86-45b7-a822-577b4f91c9ae",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 29,
+      "overriden_lines": 0
+    },
+    "fae25deee4074764": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7bf08754-9d34-4a13-a7b9-21b33e00fbec",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 38265,
+      "total_deletions": 0,
+      "accepted_lines": 38258,
+      "overriden_lines": 1
+    }
+  }
+}
