@@ -1,0 +1,100 @@
+site/storage/index.html
+  23dd8e8f6474c8a2 1179-1199,3078-3098,4376,4378-4434
+docs/storage.md
+  23dd8e8f6474c8a2 426-456
+site/future-react-query-phaseout.md
+  23dd8e8f6474c8a2 7,13,15,17,34-36,40-41,43,50-51,57,61-62,70,72
+site/search.json
+  23dd8e8f6474c8a2 1
+docs/future-react-query-phaseout.md
+  23dd8e8f6474c8a2 7,13,15-17,34-36,40-41,43,50-51,57,61-62,70,72
+site/storage.md
+  23dd8e8f6474c8a2 426-456
+site/future-react-query-phaseout/index.html
+  23dd8e8f6474c8a2 1020,1023,1405,1408,1496,1500-1502,1557-1559,1563-1566,1571-1572,1577,1581-1582,1590-1591
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "75a3dbf54e2473088989f6af4d20040cfc0995b8",
+  "prompts": {
+    "22354297950edd9d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d8e57-caf6-7191-b058-c6013e830e98",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 2062,
+      "overriden_lines": 0
+    },
+    "23dd8e8f6474c8a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7e1306d9-0de7-4468-b818-6b16d353be08",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 223,
+      "total_deletions": 51,
+      "accepted_lines": 344,
+      "overriden_lines": 0
+    },
+    "28d1128ef357c248": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d8e58-83dd-7791-adf2-ba383b8fca9d",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    },
+    "7937dd9d25768a29": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d8e62-daed-7182-8ea2-63417618e089",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 98,
+      "overriden_lines": 0
+    },
+    "a07b618738d8666b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d8e69-d6d4-7b23-b6af-89265e1adc4e",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 6508,
+      "overriden_lines": 0
+    },
+    "ebfd611383c83999": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c8d79f-bb86-45b7-a822-577b4f91c9ae",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 29,
+      "overriden_lines": 0
+    }
+  }
+}
