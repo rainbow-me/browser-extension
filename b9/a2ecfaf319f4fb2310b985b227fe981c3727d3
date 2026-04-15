@@ -1,0 +1,34 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "b9a2ecfaf319f4fb2310b985b227fe981c3727d3",
+  "prompts": {
+    "1e9b79aeb2ce86c1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6f5371f8-6d1d-4d43-8f68-61f09778022f",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "660e78c2eaaeaf6f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01b0a783-4b8f-4919-bee3-7326e3b86900",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 91,
+      "total_deletions": 60,
+      "accepted_lines": 91,
+      "overriden_lines": 0
+    }
+  }
+}
