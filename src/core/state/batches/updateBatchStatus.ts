@@ -47,9 +47,15 @@ export async function updateBatchesForMinedTx(
   tx: MinedTxInfo,
 ): Promise<number> {
   const batchKeys = getBatchKeysForNonce(tx.nonce, tx.chainId, tx.sender);
+  if (batchKeys.length === 0) return 0;
+
+  // Fetch the receipt once for all matching batches instead of per-batch
+  const provider = getProvider({ chainId: tx.chainId });
+  const receipt = await fetchReceipt(tx.hash, provider);
+
   await Promise.all(
     batchKeys.map((key) =>
-      updateBatchStatusFromReceipt(key, tx).catch(() => undefined),
+      updateBatchStatusFromReceipt(key, tx, receipt).catch(() => undefined),
     ),
   );
   return batchKeys.length;
@@ -63,12 +69,10 @@ export async function updateBatchesForMinedTx(
 async function updateBatchStatusFromReceipt(
   batchKey: string,
   minedTx: MinedTxInfo,
+  receipt: TransactionReceipt | null,
 ): Promise<void> {
   const batch = useBatchStore.getState().batches[batchKey];
   if (!batch) return;
-
-  const provider = getProvider({ chainId: batch.chainId });
-  const receipt = await fetchReceipt(minedTx.hash, provider);
 
   let newStatus: BatchStatusValue;
   let callReceipt: WalletCallReceipt | undefined;
