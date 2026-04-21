@@ -1,0 +1,27 @@
+src/core/graphql/config.js
+  1637d1e5fe56b926 12
+src/core/network/meteorology.ts
+  1637d1e5fe56b926 4
+src/core/resources/networks/networks.ts
+  1637d1e5fe56b926 8,22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "d2d514fb5f5f613cd4b9f135652946fbb902d897",
+  "prompts": {
+    "1637d1e5fe56b926": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42ca9a4d-eacf-4ba5-a7a3-ba0eb7002fd8",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 4,
+      "accepted_lines": 4,
+      "overriden_lines": 0
+    }
+  }
+}
