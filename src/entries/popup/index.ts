@@ -4,6 +4,7 @@ import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { setupDelegationClient } from '~/core/resources/delegations/setup';
+import { setupSwapsClient } from '~/core/resources/swaps/setup';
 import { initThemingLocal } from '~/design-system/styles/initThemingLocal';
 
 import { App } from './App';
@@ -19,6 +20,9 @@ if (process.env.IS_TESTING === 'true') {
 
 // Configure delegation SDK before render
 setupDelegationClient();
+
+// Point swaps SDK at staging for this test build
+setupSwapsClient();
 
 setupPendingTransactionCleanup();
 
