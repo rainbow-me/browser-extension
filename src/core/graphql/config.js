@@ -9,7 +9,7 @@ exports.config = {
   metadata: {
     schema: {
       method: 'GET',
-      url: 'https://metadata.p.rainbow.me/v1/graph',
+      url: 'https://metadata.s.rainbow.me/v1/graph',
     },
     document: './queries/metadata.graphql',
   },

@@ -5,7 +5,7 @@ import {
 import { BackendNetworks, CustomNetworks, Networks } from '~/core/types/chains';
 
 async function fetchBackendNetworks(): Promise<BackendNetworks> {
-  const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
+  const response = await fetch('https://metadata.s.rainbow.me/v1/graph', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -19,7 +19,7 @@ async function fetchBackendNetworks(): Promise<BackendNetworks> {
 }
 
 async function fetchCustomNetworks(): Promise<CustomNetworks> {
-  const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
+  const response = await fetch('https://metadata.s.rainbow.me/v1/graph', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
