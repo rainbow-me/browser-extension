@@ -1,11 +1,7 @@
+import { wait } from '~/core/utils/time';
 import { logger } from '~/logger';
 
 type AllowPromise<T> = T | Promise<T>;
-
-export const wait = (ms: number) =>
-  new Promise<void>((resolve) => {
-    setTimeout(resolve, ms);
-  });
 
 export async function retry<T>(
   fn: () => AllowPromise<T>,

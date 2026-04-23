@@ -12,8 +12,7 @@ import {
   MinedTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
-
-import { wait } from './handlers/retry';
+import { wait } from '~/core/utils/time';
 
 type ConsolidatedPage = { transactions: RainbowTransaction[] };
 

@@ -2,6 +2,11 @@ import parseMilliseconds from 'parse-ms';
 
 import { i18n } from '../languages';
 
+export const wait = (ms: number) =>
+  new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
 const buildLocalizedTimeUnitString = ({
   plural,
   short,

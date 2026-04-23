@@ -39,6 +39,7 @@ import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import { getProvider } from '~/core/viem/clientToProvider';
+import { runApprovedProviderRequestHooks } from '~/entries/background/dapps/hooks';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 
 const MAX_REQUEST_PER_SECOND = 10;
@@ -162,6 +163,8 @@ const messengerProviderRequest = async (request: ProviderRequestPayload) => {
   if (status === 'REJECTED') {
     throw new UserRejectedRequestError(Error('User rejected the request.'));
   }
+  void runApprovedProviderRequestHooks(request);
+
   return payload as object;
 };
 
