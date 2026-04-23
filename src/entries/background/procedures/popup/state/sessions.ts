@@ -7,6 +7,7 @@ import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionW
 import { useAppSessionsStore } from '~/core/state/appSessions';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { toHex } from '~/core/utils/hex';
+import { runDappSessionAddedHooks } from '~/entries/background/dapps/hooks';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
@@ -56,6 +57,8 @@ const addSessionHandler = os
     const sessions = useAppSessionsStore
       .getState()
       .addSession({ host, address, chainId, url });
+
+    void runDappSessionAddedHooks({ address, host });
 
     // Forward events to inpage
     messenger.send(`accountsChanged:${host}`, address);
