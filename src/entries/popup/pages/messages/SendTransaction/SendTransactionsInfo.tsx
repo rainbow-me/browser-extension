@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, memo, useState } from 'react';
-import { Address } from 'viem';
+import { Address, Hex } from 'viem';
 
 import {
   DAppStatus,
@@ -82,6 +82,8 @@ interface SendTransactionProps {
   }: {
     preventWindowClose?: boolean;
   }) => void;
+  /** Hex wei for tx `value`; aligns insufficient-balance UI with `sendTransaction` preflight. */
+  nativeValueHex?: Hex;
 }
 
 const InfoRow = ({
@@ -734,6 +736,7 @@ export function SendTransactionInfo({
   dappStatusForUi,
   simulationResult,
   onRejectRequest,
+  nativeValueHex,
 }: SendTransactionProps) {
   const dappUrl = request?.meta?.sender?.url || '';
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
@@ -748,8 +751,10 @@ export function SendTransactionInfo({
   const statusForUi = dappStatusForUi ?? dappMetadata?.status;
   const isScamDapp = statusForUi === DAppStatus.Scam;
 
-  const { hasEnough: hasEnoughGas, isLoading: isGasLoading } =
-    useHasEnoughGas(activeSession);
+  const { hasEnough: hasEnoughGas, isLoading: isGasLoading } = useHasEnoughGas(
+    activeSession,
+    { nativeValueHex },
+  );
 
   return (
     <Box

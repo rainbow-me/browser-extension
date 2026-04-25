@@ -1398,6 +1398,7 @@
     "error_encountered": "Something went wrong. Please share the issue with our team and we'll get that fixed!",
     "no_wallet_name_set": "No wallet name set",
     "report_error": "Report issue",
+    "insufficient_native_funds_description": "The total amount plus network fee exceeds your balance.",
     "sending_transaction": "Error sending transaction",
     "executing_swap": "Error executing swap"
   },
