@@ -138,7 +138,8 @@ Key stores include: `currentSettings`, `wallets`, `transactions`, `assets`, `net
 
 - **Node.js v22.17.0** is required (specified in `.nvmrc`). Load it with `export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"`.
 - **Yarn 4.2.2** is provided via corepack (`corepack enable`). The project uses Yarn Berry with `nodeLinker: node-modules`.
-- A `.env` file must exist in the repo root. If missing, copy from `.env.example`. The actual API keys come from the private `browser-extension-env` repo and are not available in cloud environments — the extension will build and load without them but the popup UI will show errors due to missing service keys.
+- A `.env` file must exist in the repo root. If missing, copy from `.env.example` and populate API keys from environment variables. Critical: `SECURE_WALLET_HASH_KEY` (a hex string) is required but absent from `.env.example` — without it the extension throws on init and the popup renders blank.
+- **Chrome for Testing 139** must be installed to match the pinned chromedriver 139 (see `e2e/browsers.json`). The system Chrome 147 does NOT work with `--load-extension`. Install via: `npx @puppeteer/browsers install chrome@139.0.7258.138` then symlink to `/opt/google/chrome/chrome`.
 
 ### Key gotchas
 
@@ -147,5 +148,5 @@ Key stores include: `currentSettings`, `wallets`, `transactions`, `assets`, `net
 - **LavaMoat policy warnings** during `yarn policy` about "dynamic require" in typescript are expected and non-blocking.
 - **`enableScripts: false`** in `.yarnrc.yml` means most dependency lifecycle scripts are disabled. The `lavamoat.allowScripts` section in `package.json` controls which packages are allowed to run scripts (chromedriver and geckodriver are allowed).
 - **Unit tests** (`yarn test --run`) use vitest with happy-dom and MSW mocks — no external services required.
-- **E2E tests** require Chrome, chromedriver, Foundry/Anvil, and an `ALCHEMY_DEV_KEY` env var. Chrome v147 is installed in the cloud VM but chromedriver v139 is pinned in devDependencies — this version mismatch may cause E2E failures.
-- **Husky pre-commit hook** runs `yarn lint-staged`. This is set up by `husky install` (the `prepare` script).
+- **E2E tests** require Chrome for Testing 139, chromedriver 139, Foundry/Anvil, and an `ALCHEMY_DEV_KEY` env var.
+- **Husky pre-commit hook** runs `yarn lint-staged`. Ensure nvm is loaded in the shell so `yarn` is on PATH when committing.
