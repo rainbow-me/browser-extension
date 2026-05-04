@@ -1,0 +1,23 @@
+src/design-system/docs/package.json
+  f47e43f22ebcd556 31,59-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "5f779992f3d4c80ae5a2314db7e87674c9f2fb6e",
+  "prompts": {
+    "f47e43f22ebcd556": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019df3b2-4b42-75e1-a0a4-a5c8ed073c2a",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 18,
+      "total_deletions": 16,
+      "accepted_lines": 22181,
+      "overriden_lines": 0
+    }
+  }
+}
