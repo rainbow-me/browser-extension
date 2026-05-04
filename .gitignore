@@ -19,6 +19,9 @@ node_modules/
 # Anvil logs
 anvil*.log
 
+# Chrome for Testing (e.g. npx @puppeteer/browsers install; do not commit)
+chrome/
+
 # Build artifacts
 rainbowbx.xpi
 build/
