@@ -58,7 +58,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.13.10":
+"@babel/core@npm:7.19.3, @babel/core@npm:^7.13.10":
   version: 7.19.3
   resolution: "@babel/core@npm:7.19.3"
   dependencies:
@@ -4307,6 +4307,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "docs@workspace:."
   dependencies:
+    "@babel/core": "npm:7.19.3"
     "@babel/generator": "npm:7.16.0"
     "@lavamoat/preinstall-always-fail": "npm:3.0.0"
     "@types/babel-plugin-macros": "npm:2.8.5"
@@ -4347,6 +4348,7 @@ __metadata:
     tsup: "npm:6.3.0"
     typescript: "npm:4.8.4"
     url-loader: "npm:4.1.1"
+    webpack: "npm:5.76.1"
   languageName: unknown
   linkType: soft
 
@@ -10430,7 +10432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.26.0":
+"webpack@npm:5.76.1, webpack@npm:^5.26.0":
   version: 5.76.1
   resolution: "webpack@npm:5.76.1"
   dependencies:
