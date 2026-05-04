@@ -10,41 +10,9 @@
         "path": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>loader-utils": true,
-        "@vanilla-extract/webpack-plugin>chalk": true,
         "file-loader>loader-utils": true,
         "eslint>debug": true,
-        "eslint>chalk": true,
-        "vitest>debug": true,
-        "chalk": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin>chalk": {
-      "builtin": {
-        "path": true
-      },
-      "packages": {
-        "@vanilla-extract/webpack-plugin>chalk>ansi-styles": true,
-        "@vanilla-extract/webpack-plugin>chalk>supports-color": true,
-        "supports-color": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin>chalk>supports-color": {
-      "builtin": {
-        "os": true,
-        "tty": true
-      },
-      "packages": {
-        "msw>chalk>supports-color>has-flag": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin>loader-utils": {
-      "builtin": {
-        "path": true
-      },
-      "packages": {
-        "@vanilla-extract/webpack-plugin>loader-utils>json5": true,
-        "@vanilla-extract/webpack-plugin>loader-utils>emojis-list": true
+        "eslint>chalk": true
       }
     },
     "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {

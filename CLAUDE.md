@@ -136,8 +136,8 @@ Key stores include: `currentSettings`, `wallets`, `transactions`, `assets`, `net
 
 ### Environment prerequisites
 
-- **Node.js v22.17.0** is required (specified in `.nvmrc`). Load it with `export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"`.
-- **Yarn 4.2.2** is provided via corepack (`corepack enable`). The project uses Yarn Berry with `nodeLinker: node-modules`.
+- **Node.js v24 (24.15.0)** is required (specified in `.nvmrc`). Load it with `export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"`.
+- **Yarn 4.14.1** is provided via corepack (`corepack enable`). The project uses Yarn Berry with `nodeLinker: node-modules`.
 - A `.env` file must exist in the repo root. If missing, copy from `.env.example` and populate API keys from environment variables. Critical: `SECURE_WALLET_HASH_KEY` (a hex string) is required but absent from `.env.example` — without it the extension throws on init and the popup renders blank.
 - **Chrome for Testing 139** must be installed to match the pinned chromedriver 139 (see `e2e/browsers.json`). The system Chrome 147 does NOT work with `--load-extension`. Install via: `npx @puppeteer/browsers install chrome@139.0.7258.138` then symlink to `/opt/google/chrome/chrome`.
 

@@ -9,21 +9,21 @@ jobs:
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.ORG_ACCESS_TOKEN }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "22.17.0"
+          node-version: "24.15.0"
       - name: Enable Corepack
         run: corepack enable
       - name: Install deps via Yarn
         run: |
           yarn install --immutable
           yarn setup
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: 'rainbow-me/browser-extension-env'
           token: ${{ secrets.ORG_ACCESS_TOKEN }}
@@ -39,14 +39,14 @@ jobs:
       - name: Zip source
         run: yarn zip:source
       - name: Archive the source artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rainbowbx-firefox-v${{ env.release_version }}-source
           path: ./rainbowbx-source.zip
       - name: Zip build
         run: yarn firefox:zip
       - name: Archive the build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rainbowbx-firefox-v${{ env.release_version }}
           path: build/

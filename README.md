@@ -60,7 +60,7 @@ Additionally, we're using some well known tools engineered by the MetaMask team:
 
 ### 1. Set up Node
 
-Use node v22 or if you use nvm follow the instructions below
+Use Node.js v24 (24.15.0) or, if you use nvm, follow the instructions below.
 
 ```bash
 nvm install && nvm use

@@ -9,7 +9,7 @@
 
 ### 1. Set up Node
 
-Use node v22 (22.17.0) or if you use nvm follow the instructions below
+Use Node.js v24 (24.15.0) or, if you use nvm, follow the instructions below.
 
 ```bash
 nvm install && nvm use
