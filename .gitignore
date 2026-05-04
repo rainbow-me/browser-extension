@@ -25,6 +25,9 @@ build/
 screenshots/
 .eslintcache
 
+# Chrome for Testing (system-level install, not part of the repo)
+chrome/
+
 # IDEs
 .idea/**
 
