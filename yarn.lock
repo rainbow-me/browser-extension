@@ -9744,6 +9744,7 @@ __metadata:
     fs-extra: "npm:10.1.0"
     geckodriver: "npm:4.3.0"
     globby: "npm:11.0.4"
+    graphql: "npm:16.8.1"
     graphql-request: "npm:5.2.0"
     graphql-tag: "npm:^2.11.0"
     happy-dom: "npm:20.0.10"
