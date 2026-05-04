@@ -8,13 +8,32 @@ const POPUP_INSTANCE_DATA_EXPIRY = 180000; // 3 minutes
 
 // Track active popup ports
 const activePopupPorts = new Set<chrome.runtime.Port>();
+const popupPortLifecycleListeners = new Set<() => void>();
+
+const notifyPopupPortLifecycleListeners = () => {
+  for (const listener of popupPortLifecycleListeners) {
+    try {
+      listener();
+    } catch (error) {
+      logger.error(
+        new RainbowError('Error notifying popup port lifecycle listener', {
+          cause: error,
+        }),
+      );
+    }
+  }
+};
 
 /**
  * Handles popup port disconnect - sets expiry and checks for immediate lock
  */
 const handlePopupDisconnect = async (port: chrome.runtime.Port) => {
   // Remove from active ports
-  activePopupPorts.delete(port);
+  const didDeletePort = activePopupPorts.delete(port);
+
+  if (didDeletePort) {
+    notifyPopupPortLifecycleListeners();
+  }
 
   // Set expiry timestamp for popup instance data cleanup
   await SessionStorage.set('expiry', Date.now() + POPUP_INSTANCE_DATA_EXPIRY);
@@ -53,6 +72,7 @@ export const registerPopupPort = (port: chrome.runtime.Port) => {
   }
 
   activePopupPorts.add(port);
+  notifyPopupPortLifecycleListeners();
 
   port.onDisconnect.addListener(() => {
     void handlePopupDisconnect(port);
@@ -63,3 +83,19 @@ export const registerPopupPort = (port: chrome.runtime.Port) => {
  * Gets the count of active popup ports
  */
 export const getActivePopupPortCount = () => activePopupPorts.size;
+
+/**
+ * Whether at least one popup port is currently connected
+ */
+export const isPopupOpen = () => getActivePopupPortCount() > 0;
+
+/**
+ * Subscribes to popup port open/close lifecycle changes
+ */
+export const addPopupPortLifecycleListener = (listener: () => void) => {
+  popupPortLifecycleListeners.add(listener);
+
+  return () => {
+    popupPortLifecycleListeners.delete(listener);
+  };
+};
