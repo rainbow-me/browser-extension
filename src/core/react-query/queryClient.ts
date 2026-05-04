@@ -4,8 +4,6 @@ import {
   persistQueryClientSave,
 } from '@tanstack/react-query-persist-client';
 
-import { isTokenSearchQueryKey } from '~/core/resources/search/tokenSearch';
-
 import { queryClientPersister } from './queryClientStorage';
 
 /** Bump to invalidate persisted cache on schema/format changes */
@@ -40,7 +38,8 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
       return Boolean(
         query.gcTime !== 0 &&
           !isOrpcQueryKey(query.queryKey) &&
-          !isTokenSearchQueryKey(query.queryKey),
+          query.queryKey[1] !== 'TokenSearch' &&
+          query.queryKey[0] !== 'TokenSearchAllNetworks',
       );
     },
   },
