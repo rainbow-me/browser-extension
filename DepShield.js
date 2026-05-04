@@ -2,20 +2,17 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable @typescript-eslint/no-this-alias */
 const path = require('path');
-const extend = require('util')._extend;
 const BASE_ERROR = 'Unauthorized dependency detected:\r\n';
 const PluginTitle = 'DepShieldPlugin';
 const reportedErrors = [];
 class DepShieldPlugin {
   constructor(options) {
-    this.options = extend(
-      {
-        failOnError: false,
-        onDetected: false,
-        cwd: process.cwd(),
-      },
-      options,
-    );
+    this.options = {
+      failOnError: false,
+      onDetected: false,
+      cwd: process.cwd(),
+      ...options,
+    };
   }
 
   apply(compiler) {
