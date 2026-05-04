@@ -1,0 +1,27 @@
+src/core/keychain/keychainTypes/hdKeychain.ts
+  f47e43f22ebcd556 22-28,95
+src/core/keychain/KeychainManager.ts
+  f47e43f22ebcd556 28-31,715-729
+src/core/react-query/queryClient.ts
+  f47e43f22ebcd556 33-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "c1db4706a0672a30ffa8381cedfad29ce220e334",
+  "prompts": {
+    "f47e43f22ebcd556": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019df3b2-4b42-75e1-a0a4-a5c8ed073c2a",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 35,
+      "total_deletions": 25,
+      "accepted_lines": 22213,
+      "overriden_lines": 0
+    }
+  }
+}
