@@ -131,3 +131,22 @@ Key stores include: `currentSettings`, `wallets`, `transactions`, `assets`, `net
 - Prefix commits and PR titles with a type such as fix, feat, or chore, for example: fix: resolve login bug.
 - Never modify any CHANGELOG.md files. These are managed automatically.
 - Only modify en-US.json locale files; never adjust other locale JSON files.
+
+## Cursor Cloud specific instructions
+
+### Environment prerequisites
+
+- **Node.js v22.17.0** is required (specified in `.nvmrc`). Load it with `export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"`.
+- **Yarn 4.2.2** is provided via corepack (`corepack enable`). The project uses Yarn Berry with `nodeLinker: node-modules`.
+- A `.env` file must exist in the repo root. If missing, copy from `.env.example` and populate API keys from environment variables. Critical: `SECURE_WALLET_HASH_KEY` (a hex string) is required but absent from `.env.example` — without it the extension throws on init and the popup renders blank.
+- **Chrome for Testing 139** must be installed to match the pinned chromedriver 139 (see `e2e/browsers.json`). The system Chrome 147 does NOT work with `--load-extension`. Install via: `npx @puppeteer/browsers install chrome@139.0.7258.138` then symlink to `/opt/google/chrome/chrome`.
+
+### Key gotchas
+
+- **`yarn dev` requires a prior `yarn build`**: The dev webpack config (`webpack.config.dev.js`) requires `build/manifest.json` to exist. Always run `yarn build` before `yarn dev` the first time.
+- **`yarn setup`** is the canonical setup command. It runs: `yarn install`, `yarn ds:install`, `yarn ds:generate-symbols`, `yarn patch-package`, and `yarn policy`. If `yarn setup` fails with "Couldn't find the node_modules state file", run `yarn install` first, then re-run `yarn setup`.
+- **LavaMoat policy warnings** during `yarn policy` about "dynamic require" in typescript are expected and non-blocking.
+- **`enableScripts: false`** in `.yarnrc.yml` means most dependency lifecycle scripts are disabled. The `lavamoat.allowScripts` section in `package.json` controls which packages are allowed to run scripts (chromedriver and geckodriver are allowed).
+- **Unit tests** (`yarn test --run`) use vitest with happy-dom and MSW mocks — no external services required.
+- **E2E tests** require Chrome for Testing 139, chromedriver 139, Foundry/Anvil, and an `ALCHEMY_DEV_KEY` env var.
+- **Husky pre-commit hook** runs `yarn lint-staged`. Ensure nvm is loaded in the shell so `yarn` is on PATH when committing.
