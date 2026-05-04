@@ -1,0 +1,23 @@
+src/core/react-query/queryClient.ts
+  f47e43f22ebcd556 33-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "00a907e847762dc03688d904a7a2e1a17a432901",
+  "prompts": {
+    "f47e43f22ebcd556": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019df3b2-4b42-75e1-a0a4-a5c8ed073c2a",
+        "model": "gpt-5.5"
+      },
+      "human_author": null,
+      "messages": [],
+      "total_additions": 1029,
+      "total_deletions": 83,
+      "accepted_lines": 23147,
+      "overriden_lines": 0
+    }
+  }
+}
