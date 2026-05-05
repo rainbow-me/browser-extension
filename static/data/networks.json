@@ -3562,10 +3562,10 @@
         "internal": false,
         "opStack": true,
         "defaultExplorer": {
-          "url": "https://megaexplorer.xyz",
+          "url": "https://mega.etherscan.io",
           "label": "MegaETH",
-          "transactionURL": "https://megaexplorer.xyz/tx/",
-          "tokenURL": "https://megaexplorer.xyz/token/"
+          "transactionURL": "https://mega.etherscan.io/tx/",
+          "tokenURL": "https://mega.etherscan.io/token/"
         },
         "defaultRPC": {
           "enabledDevices": [
