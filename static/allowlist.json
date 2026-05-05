@@ -23,6 +23,7 @@
     "https://*.live.ledger.com",
     "https://nftp.rainbow.me/",
     "https://gateway-arbitrum.network.thegraph.com",
-    "https://ccip-v2.ens.xyz"
+    "https://ccip-v2.ens.xyz",
+    "https://api.hyperliquid.xyz"
   ]
 }
