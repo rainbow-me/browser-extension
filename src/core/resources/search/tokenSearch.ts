@@ -26,13 +26,6 @@ import {
 export const tokenSearchQueryKey = (args: TokenSearchArgs) =>
   createQueryKey('TokenSearch', args, { persisterVersion: 2 });
 
-/** Used by queryClient to exclude TokenSearch from main RQ persist (1–3.5 MB each). */
-export function isTokenSearchQueryKey(queryKey: readonly unknown[]): boolean {
-  return (
-    queryKey[1] === 'TokenSearch' || queryKey[0] === 'TokenSearchAllNetworks'
-  );
-}
-
 type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 
 // ///////////////////////////////////////////////

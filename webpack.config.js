@@ -125,15 +125,15 @@ module.exports = {
     {
       apply: (compiler) => {
         compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
-          if (
+          try {
             fs.writeFileSync(
               manifestFilePath,
               JSON.stringify(manifestOverride, null, 2),
-            )
-          ) {
-            process.stdout.write('manifest overwritten successfuly');
-          } else {
-            process.stderr.write('manifest override failed');
+            );
+            process.stdout.write('manifest overwritten successfully');
+          } catch (error) {
+            process.stderr.write(`manifest override failed: ${error}\n`);
+            throw error;
           }
         });
       },

@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10c0
 
 "@ampproject/remapping@npm:^2.1.0":
@@ -58,7 +58,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.13.10":
+"@babel/core@npm:7.19.3, @babel/core@npm:^7.13.10":
   version: 7.19.3
   resolution: "@babel/core@npm:7.19.3"
   dependencies:
@@ -1668,10 +1668,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/preinstall-always-fail@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@lavamoat/preinstall-always-fail@npm:2.0.0"
-  checksum: 10c0/edd25b0b879bf50416b87eb40ef6e3918abb0e1a71bed5218e18d553deebccdddefb83dbf14eb071d55457e3ff1dd2e6d58f96e033eed2f205964ab8a29c5763
+"@lavamoat/preinstall-always-fail@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@lavamoat/preinstall-always-fail@npm:3.0.0"
+  checksum: 10c0/9f6b25e852aa81827d1aaa0e66694f73e2e2a8c7397af64461bd51d9826ce9d60812db26f918d7519777076b83ca09f6c024a2b527e30da82032cf1fd3f74290
   languageName: node
   linkType: hard
 
@@ -4307,8 +4307,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "docs@workspace:."
   dependencies:
+    "@babel/core": "npm:7.19.3"
     "@babel/generator": "npm:7.16.0"
-    "@lavamoat/preinstall-always-fail": "npm:2.0.0"
+    "@lavamoat/preinstall-always-fail": "npm:3.0.0"
     "@types/babel-plugin-macros": "npm:2.8.5"
     "@types/node": "npm:18.11.2"
     "@types/react": "npm:18.0.21"
@@ -4347,6 +4348,7 @@ __metadata:
     tsup: "npm:6.3.0"
     typescript: "npm:4.8.4"
     url-loader: "npm:4.1.1"
+    webpack: "npm:5.76.1"
   languageName: unknown
   linkType: soft
 
@@ -10430,7 +10432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.26.0":
+"webpack@npm:5.76.1, webpack@npm:^5.26.0":
   version: 5.76.1
   resolution: "webpack@npm:5.76.1"
   dependencies:

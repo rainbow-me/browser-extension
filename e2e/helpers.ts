@@ -249,48 +249,55 @@ export async function getExtensionIdByName(
   } else {
     await driver.get('chrome://extensions');
 
-    const result = (await driver.executeScript(`
-    return new Promise((resolve) => {
-      const extensions = document.querySelector("extensions-manager")?.shadowRoot
-        ?.querySelector("extensions-item-list")?.shadowRoot
-        ?.querySelectorAll("extensions-item");
+    let result: ExtensionsResponse | ErrorResponse = {
+      error: 'Extension list was not queried',
+    };
 
-      if (!extensions) {
-        resolve({ error: "No extensions found" });
-        return;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      result = (await driver.executeScript(`
+        return new Promise((resolve) => {
+          const extensions = document.querySelector("extensions-manager")?.shadowRoot
+            ?.querySelector("extensions-item-list")?.shadowRoot
+            ?.querySelectorAll("extensions-item");
+
+          if (!extensions) {
+            resolve({ error: "No extensions found" });
+            return;
+          }
+
+          const extensionsList = Array.from(extensions).map(extension => ({
+            name: extension.shadowRoot?.querySelector('#name')?.textContent?.trim(),
+            id: extension.getAttribute("id"),
+            rawName: extension.shadowRoot?.querySelector('#name')?.textContent
+          }));
+
+          resolve({
+            extensionsFound: extensionsList,
+            searchingFor: "${extensionName}"
+          });
+        });
+      `)) as ExtensionsResponse | ErrorResponse;
+
+      if (!('error' in result)) {
+        const matchingExtension = result.extensionsFound.find(
+          (ext) =>
+            ext.name?.toLowerCase().includes(extensionName.toLowerCase()),
+        );
+
+        if (matchingExtension) {
+          console.log('Debug info:', JSON.stringify(result, null, 2));
+          console.log(
+            `Found matching extension: "${matchingExtension.name}" with ID: ${matchingExtension.id}`,
+          );
+          return matchingExtension.id;
+        }
       }
 
-      const extensionsList = Array.from(extensions).map(extension => ({
-        name: extension.shadowRoot?.querySelector('#name')?.textContent?.trim(),
-        id: extension.getAttribute("id"),
-        rawName: extension.shadowRoot?.querySelector('#name')?.textContent
-      }));
-
-      resolve({
-        extensionsFound: extensionsList,
-        searchingFor: "${extensionName}"
-      });
-    });
-  `)) as ExtensionsResponse | ErrorResponse;
+      await delay(500);
+    }
 
     console.log('Debug info:', JSON.stringify(result, null, 2));
-
-    if ('error' in result) {
-      console.log('Error:', result.error);
-      return undefined;
-    }
-
-    const matchingExtension = result.extensionsFound.find(
-      (ext) => ext.name?.toLowerCase().includes(extensionName.toLowerCase()),
-    );
-
-    if (matchingExtension) {
-      console.log(
-        `Found matching extension: "${matchingExtension.name}" with ID: ${matchingExtension.id}`,
-      );
-      return matchingExtension.id;
-    }
-
+    if ('error' in result) console.log('Error:', result.error);
     console.log('No matching extension found');
     return undefined;
   }

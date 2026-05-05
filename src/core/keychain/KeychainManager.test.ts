@@ -70,24 +70,58 @@ const KEYCHAIN_STORAGE_KEYS = {
   session: ['salt', 'encryptionKey'],
 } as const;
 
-const captureStorageSnapshot = async () => ({
-  local: Object.fromEntries(
+function normalizeEncryptionKeySnapshot(value: string | null) {
+  if (!value) return value;
+
+  try {
+    const parsed = JSON.parse(value) as {
+      key?: Record<string, unknown>;
+      derivationOptions?: unknown;
+    };
+    const key = parsed.key;
+    if (!key) return value;
+
+    return JSON.stringify({
+      key: {
+        key_ops: key.key_ops,
+        ext: key.ext,
+        kty: key.kty,
+        k: key.k,
+        alg: key.alg,
+      },
+      derivationOptions: parsed.derivationOptions,
+    });
+  } catch {
+    return value;
+  }
+}
+
+const captureStorageSnapshot = async () => {
+  const local = Object.fromEntries(
     await Promise.all(
       KEYCHAIN_STORAGE_KEYS.local.map(async (key) => [
         key,
         (await LocalStorage.get(key)) ?? null,
       ]),
     ),
-  ),
-  session: Object.fromEntries(
+  );
+  const session = Object.fromEntries(
     await Promise.all(
       KEYCHAIN_STORAGE_KEYS.session.map(async (key) => [
         key,
         (await SessionStorage.get(key)) ?? null,
       ]),
     ),
-  ),
-});
+  ) as Record<(typeof KEYCHAIN_STORAGE_KEYS.session)[number], string | null>;
+
+  return {
+    local,
+    session: {
+      ...session,
+      encryptionKey: normalizeEncryptionKeySnapshot(session.encryptionKey),
+    },
+  };
+};
 
 const expectStorageSnapshot = async () => {
   expect(await captureStorageSnapshot()).toMatchSnapshot();
