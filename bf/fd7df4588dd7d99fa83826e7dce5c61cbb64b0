@@ -1,0 +1,23 @@
+e2e/helpers.ts
+  f47e43f22ebcd556 252-293,296,299-300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "bffd7df4588dd7d99fa83826e7dce5c61cbb64b0",
+  "prompts": {
+    "f47e43f22ebcd556": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019df3b2-4b42-75e1-a0a4-a5c8ed073c2a",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Daniel Sinclair",
+      "messages": [],
+      "total_additions": 45,
+      "total_deletions": 38,
+      "accepted_lines": 23557,
+      "overriden_lines": 0
+    }
+  }
+}
