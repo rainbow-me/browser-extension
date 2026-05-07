@@ -1,7 +1,7 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
 // eslint-disable-next-line boundaries/element-types
-import { useIsDefaultWalletStore } from '~/core/state';
+import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 require('../../core/utils/lockdown');
 
 // TODO: Remove state usage within the content script; this is vulnerable.
