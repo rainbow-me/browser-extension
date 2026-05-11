@@ -1,4 +1,4 @@
-import { Address } from 'viem';
+import type { Address } from 'viem';
 
 import { fetchTransaction } from '~/core/resources/transactions/transaction';
 import {
@@ -13,7 +13,7 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { isPendingTxTimedOut } from '~/core/state/networks/timing';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
-import {
+import type {
   MinedTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
@@ -37,10 +37,10 @@ export interface WatchPendingTransactionsOptions {
  * after React Query cache is updated. Runs in background service worker.
  */
 export async function watchPendingTransactions(
+  pendingTransactions: Record<Address, RainbowTransaction[]>,
   options?: WatchPendingTransactionsOptions,
 ): Promise<void> {
   const { skipTimedOutTxs = false } = options ?? {};
-  const { pendingTransactions } = usePendingTransactionsStore.getState();
   const { currentCurrency } = useCurrentCurrencyStore.getState();
   const { updatePendingTransaction, removePendingTransactionsForAddress } =
     usePendingTransactionsStore.getState();
