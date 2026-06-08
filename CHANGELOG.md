@@ -21,6 +21,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.6.11](https://github.com/rainbow-me/browser-extension/releases/tag/v1.6.11)
+
+### Added
+
+- New Crowdin updates (https://github.com/rainbow-me/browser-extension/pull/2264)
+
+### Changed
+
+- Version Bump (Internal) - v1.6.11 (https://github.com/rainbow-me/browser-extension/commit/5caa9e2a)
+- Version Bump (Internal) - v1.6.10 (https://github.com/rainbow-me/browser-extension/commit/e6f726dc)
+- Version Bump (Internal) - v1.6.9 (https://github.com/rainbow-me/browser-extension/commit/27fb3319)
+- Removed expired cursor snapshots (https://github.com/rainbow-me/browser-extension/pull/2275)
+- Added Cursor Cloud specific instructions to CLAUDE.md (https://github.com/rainbow-me/browser-extension/pull/2274)
+- Version Bump (Internal) - v1.6.8 (https://github.com/rainbow-me/browser-extension/commit/11221ab4)
+- Version Bump (Internal) - v1.6.7 (https://github.com/rainbow-me/browser-extension/commit/1b234d92)
+- Consolidated Dependabot security updates into a single grouped PR (https://github.com/rainbow-me/browser-extension/pull/2266)
+- Version Bump (Internal) - v1.6.6 (https://github.com/rainbow-me/browser-extension/commit/43974796)
+- Removed Claude Code GitHub Action workflows (https://github.com/rainbow-me/browser-extension/pull/2267)
+- Gracefully cancel internal publish when there are no new commits (https://github.com/rainbow-me/browser-extension/pull/2265)
+- Version Bump (Internal) - v1.6.5 (https://github.com/rainbow-me/browser-extension/commit/3bf2be0c)
+- Added Cursor rule for oRPC error handling (https://github.com/rainbow-me/browser-extension/pull/2263)
+
+### Fixed
+
+- Only poll EIP-5792 transactions in the background (https://github.com/rainbow-me/browser-extension/pull/2269)
+- Avoid content script storage migration warning (https://github.com/rainbow-me/browser-extension/pull/2277)
+- Gate script-type detection on `chrome.runtime.id`, not `chrome.runtime` (https://github.com/rainbow-me/browser-extension/pull/2268)
+- Persist testnet pending transactions (https://github.com/rainbow-me/browser-extension/pull/2186)
+
 ## [v1.5.103](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.103)
 
 ### Fixed
