@@ -6,7 +6,6 @@ declare global {
       DATA_API_KEY: string;
       DATA_ENDPOINT: string;
       ETHERSCAN_API_KEY: string;
-      IMGIX_DOMAIN: string;
       IMGIX_TOKEN: string;
       NFT_API_KEY: string;
       NFT_API_URL: string;
