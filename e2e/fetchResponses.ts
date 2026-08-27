@@ -9,7 +9,7 @@
 // Usage: npx ts-node e2e/fetchResponses.ts
 //
 // Prerequisites:
-// - ALCHEMY_DEV_KEY must be set in .env
+// - RPC_PROXY_BASE_URL / RPC_PROXY_API_KEY must be set in .env
 // - No need to run Anvil locally (connects to live mainnet)
 
 require('dotenv').config();
@@ -80,13 +80,13 @@ async function removeUnusedMocks(expectedHashes: Set<string>) {
 
 (async () => {
   // Connect to live mainnet to get current block
-  const alchemyKey = process.env.ALCHEMY_DEV_KEY;
-  if (!alchemyKey) {
-    console.error('❌ ALCHEMY_DEV_KEY not set in .env');
+  const { RPC_PROXY_BASE_URL, RPC_PROXY_API_KEY } = process.env;
+  if (!RPC_PROXY_BASE_URL || !RPC_PROXY_API_KEY) {
+    console.error('❌ RPC_PROXY_BASE_URL / RPC_PROXY_API_KEY not set in .env');
     process.exit(1);
   }
 
-  const rpcUrl = `https://eth-mainnet.g.alchemy.com/v2/${alchemyKey}`;
+  const rpcUrl = `${RPC_PROXY_BASE_URL}/1/${RPC_PROXY_API_KEY}`;
   const client = createClient({
     chain: mainnet,
     transport: http(rpcUrl),
