@@ -6,7 +6,7 @@
 // that signed orders (which embed chain-specific EIP-712 signatures)
 // don't fail verification on the fork (chain ID 1337 vs mainnet 1).
 //
-// Usage: npx ts-node e2e/fetchResponses.ts
+// Usage: node -r esbuild-register e2e/fetchResponses.ts
 //
 // Prerequisites:
 // - RPC_PROXY_BASE_URL / RPC_PROXY_API_KEY must be set in .env
