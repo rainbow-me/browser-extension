@@ -19,6 +19,7 @@ const { createClient, http, sha256 } = require('viem');
 const { getBlock, getBlockNumber } = require('viem/actions');
 const { mainnet } = require('viem/chains');
 
+const { proxyForkUrl } = require('./anvilConfig');
 const urls = require('./mocks/mock_swap_quotes_urls.json');
 const FETCH_TIMEOUT = 30000; // 30 seconds for quote requests
 const MOCKS_DIR = 'e2e/mocks/swap_quotes';
@@ -80,13 +81,7 @@ async function removeUnusedMocks(expectedHashes: Set<string>) {
 
 (async () => {
   // Connect to live mainnet to get current block
-  const { RPC_PROXY_BASE_URL, RPC_PROXY_API_KEY } = process.env;
-  if (!RPC_PROXY_BASE_URL || !RPC_PROXY_API_KEY) {
-    console.error('❌ RPC_PROXY_BASE_URL / RPC_PROXY_API_KEY not set in .env');
-    process.exit(1);
-  }
-
-  const rpcUrl = `${RPC_PROXY_BASE_URL}/1/${RPC_PROXY_API_KEY}`;
+  const rpcUrl = proxyForkUrl(1);
   const client = createClient({
     chain: mainnet,
     transport: http(rpcUrl),

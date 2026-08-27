@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-function proxyForkUrl(chainId: number): string {
+export function proxyForkUrl(chainId: number): string {
   const { RPC_PROXY_BASE_URL, RPC_PROXY_API_KEY } = process.env;
   if (!RPC_PROXY_BASE_URL || !RPC_PROXY_API_KEY) {
     throw new Error('RPC_PROXY_BASE_URL / RPC_PROXY_API_KEY missing from .env');
