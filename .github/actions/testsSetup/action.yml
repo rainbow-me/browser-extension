@@ -2,8 +2,8 @@
 name: 'Tests setup'
 description: 'runs tests setup'
 inputs:
-  gh-access-token:
-    description: 'Github Access Token'
+  env-repo-deploy-key:
+    description: 'Read-only deploy key for browser-extension-env'
     required: true
 runs:
   using: 'composite'
@@ -39,7 +39,7 @@ runs:
   - uses: actions/checkout@v4
     with:
          repository: 'rainbow-me/browser-extension-env'
-         token: ${{ inputs.gh-access-token }}
+         ssh-key: ${{ inputs.env-repo-deploy-key }}
          path: tmp
   - name: Copy dotenv
     shell: 'bash'

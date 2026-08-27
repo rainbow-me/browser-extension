@@ -1,15 +1,15 @@
 name: 'Chrome tests setup'
 description: 'runs Chrome tests setup'
 inputs:
-  gh-access-token:
-    description: 'Github Access Token'
+  env-repo-deploy-key:
+    description: 'Read-only deploy key for browser-extension-env'
     required: true
 runs:
   using: 'composite'
   steps:
   - uses: ./.github/actions/testsSetup
     with:
-      gh-access-token: ${{ inputs.gh-access-token }}
+      env-repo-deploy-key: ${{ inputs.env-repo-deploy-key }}
   - name: Install chrome
     shell: 'bash'
     run: |

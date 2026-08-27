@@ -1,15 +1,15 @@
 name: 'Custom Firefox Developer Edition Setup'
 description: 'Setup a specific version of Firefox Developer Edition for testing'
 inputs:
-  gh-access-token:
-    description: 'GitHub Access Token'
+  env-repo-deploy-key:
+    description: 'Read-only deploy key for browser-extension-env'
     required: true
 runs:
   using: 'composite'
   steps:
     - uses: ./.github/actions/testsSetup
       with:
-        gh-access-token: ${{ inputs.gh-access-token }}
+        env-repo-deploy-key: ${{ inputs.env-repo-deploy-key }}
 
     - name: Download and Setup Firefox Developer Edition
       shell: bash

@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: 'rainbow-me/browser-extension-env'
-          token: ${{ secrets.ORG_ACCESS_TOKEN }}
+          ssh-key: ${{ secrets.ENV_REPO_DEPLOY_KEY }}
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
