@@ -1,9 +1,5 @@
 import 'dotenv/config';
 
-/**
- * Fork through our own RPC proxy rather than a provider directly, so a provider
- * migration can't silently break the suite the way the Alchemy one did.
- */
 function proxyForkUrl(chainId: number): string {
   const { RPC_PROXY_BASE_URL, RPC_PROXY_API_KEY } = process.env;
   if (!RPC_PROXY_BASE_URL || !RPC_PROXY_API_KEY) {

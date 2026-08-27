@@ -148,5 +148,5 @@ Key stores include: `currentSettings`, `wallets`, `transactions`, `assets`, `net
 - **LavaMoat policy warnings** during `yarn policy` about "dynamic require" in typescript are expected and non-blocking.
 - **`enableScripts: false`** in `.yarnrc.yml` means most dependency lifecycle scripts are disabled. The `lavamoat.allowScripts` section in `package.json` controls which packages are allowed to run scripts (chromedriver and geckodriver are allowed).
 - **Unit tests** (`yarn test --run`) use vitest with happy-dom and MSW mocks — no external services required.
-- **E2E tests** require Chrome for Testing 139, chromedriver 139, Foundry/Anvil, and an `ALCHEMY_DEV_KEY` env var.
+- **E2E tests** require Chrome for Testing 139, chromedriver 139, Foundry/Anvil, and `RPC_PROXY_BASE_URL` / `RPC_PROXY_API_KEY` env vars.
 - **Husky pre-commit hook** runs `yarn lint-staged`. Ensure nvm is loaded in the shell so `yarn` is on PATH when committing.
