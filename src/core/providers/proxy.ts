@@ -21,8 +21,8 @@ const isRainbowEndpoint = (endpoint: string) =>
 export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
   if (
     endpoint &&
-    !endpoint.startsWith('http://127.0.0.1:') &&
-    !endpoint.startsWith('http://localhost:') &&
+    !endpoint.match(/^http:\/\/127\.0\.0\.1:\d+$/) &&
+    !endpoint.match(/^http:\/\/localhost:\d+$/) &&
     !endpoint.includes('http://10.') &&
     !endpoint.includes('http://192.168') &&
     !endpoint.match(/http:\/\/172.(1[6-9]|2[0-9]|3[0-1])./) &&
