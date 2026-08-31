@@ -6,10 +6,10 @@
 // that signed orders (which embed chain-specific EIP-712 signatures)
 // don't fail verification on the fork (chain ID 1337 vs mainnet 1).
 //
-// Usage: npx ts-node e2e/fetchResponses.ts
+// Usage: node -r esbuild-register e2e/fetchResponses.ts
 //
 // Prerequisites:
-// - ALCHEMY_DEV_KEY must be set in .env
+// - RPC_PROXY_BASE_URL / RPC_PROXY_API_KEY must be set in .env
 // - No need to run Anvil locally (connects to live mainnet)
 
 require('dotenv').config();
@@ -19,6 +19,7 @@ const { createClient, http, sha256 } = require('viem');
 const { getBlock, getBlockNumber } = require('viem/actions');
 const { mainnet } = require('viem/chains');
 
+const { proxyForkUrl } = require('./anvilConfig');
 const urls = require('./mocks/mock_swap_quotes_urls.json');
 const FETCH_TIMEOUT = 30000; // 30 seconds for quote requests
 const MOCKS_DIR = 'e2e/mocks/swap_quotes';
@@ -80,13 +81,7 @@ async function removeUnusedMocks(expectedHashes: Set<string>) {
 
 (async () => {
   // Connect to live mainnet to get current block
-  const alchemyKey = process.env.ALCHEMY_DEV_KEY;
-  if (!alchemyKey) {
-    console.error('❌ ALCHEMY_DEV_KEY not set in .env');
-    process.exit(1);
-  }
-
-  const rpcUrl = `https://eth-mainnet.g.alchemy.com/v2/${alchemyKey}`;
+  const rpcUrl = proxyForkUrl(1);
   const client = createClient({
     chain: mainnet,
     transport: http(rpcUrl),
