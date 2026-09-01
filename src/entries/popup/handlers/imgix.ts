@@ -4,7 +4,8 @@ import LRUCache from 'mnemonist/lru-cache';
 
 import { RainbowError, logger } from '~/logger';
 
-const domain = process.env.IMGIX_DOMAIN;
+const IMAGE_CDN_HOST = 'img.p.rainbow.me';
+
 const secureURLToken = process.env.IMGIX_TOKEN;
 
 export const getPixelSizeForLayoutSize = (size: number) => {
@@ -13,21 +14,16 @@ export const getPixelSizeForLayoutSize = (size: number) => {
 };
 
 const shouldCreateImgixClient = (): ImgixClient | null => {
-  if (
-    typeof domain === 'string' &&
-    !!domain.length &&
-    typeof secureURLToken === 'string' &&
-    !!secureURLToken.length
-  ) {
+  if (typeof secureURLToken === 'string' && !!secureURLToken.length) {
     return new ImgixClient({
-      domain,
+      domain: IMAGE_CDN_HOST,
       includeLibraryParam: false,
       secureURLToken,
     });
   }
   logger.error(
     new RainbowError(
-      '[Imgix] Image signing disabled. Please ensure you have specified both IMGIX_DOMAIN and IMGIX_TOKEN inside your .env.',
+      '[Imgix] Image signing disabled. Please ensure you have specified IMGIX_TOKEN inside your .env.',
     ),
   );
   return null;
