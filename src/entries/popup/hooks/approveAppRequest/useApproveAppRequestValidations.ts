@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Hex } from 'viem';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
@@ -13,16 +14,18 @@ export const useApproveAppRequestValidations = ({
   session,
   dappStatus,
   signingWithDevice,
+  nativeValueHex,
 }: {
   session: ActiveSession;
   dappStatus?: DAppStatus;
   signingWithDevice?: boolean;
+  nativeValueHex?: Hex;
 }) => {
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
 
   const { hasEnough: enoughNativeAssetForGas, isLoading: isGasLoading } =
-    useHasEnoughGas(session);
+    useHasEnoughGas(session, { nativeValueHex });
 
   const buttonLabel = useMemo(() => {
     const activeChainId = chainIdToUse(

@@ -1,6 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address, getAddress } from 'viem';
+import { Address, type Hex, getAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -120,6 +121,21 @@ export function SendTransaction({
     chainId,
     selectedWallet,
   ]);
+
+  /** Hex wei for tx `value` — included in `useHasEnoughGas` so balance covers value + gas. */
+  const nativeValueHexForBalanceCheck = useMemo((): Hex | undefined => {
+    if (isSendCalls || !transactionRequest) return undefined;
+    const raw = transactionRequest.value;
+    if (raw === undefined || raw === null) return '0x0';
+    try {
+      return BigNumber.from(raw).toHexString() as Hex;
+    } catch (e) {
+      logger.info('SendTransaction: invalid tx value for balance check', {
+        message: (e as Error)?.message,
+      });
+      return '0x0';
+    }
+  }, [isSendCalls, transactionRequest]);
 
   const simulationTransaction = useMemo((): SimulateTransactionInput | null => {
     if (!sendCallsFlowReady || !transactionRequest) return null;
@@ -416,6 +432,7 @@ export function SendTransaction({
         dappStatusForUi={effectiveDappStatus}
         simulationResult={simulationResult}
         onRejectRequest={rejectRequest}
+        nativeValueHex={nativeValueHexForBalanceCheck}
       />
       <Stack space="20px" padding="20px">
         <Bleed vertical="4px">
@@ -459,6 +476,7 @@ export function SendTransaction({
           loading={loading || (isSendCalls && envelopePending)}
           dappStatus={effectiveDappStatus}
           signingWithDevice={isSigningWithDevice}
+          nativeValueHex={nativeValueHexForBalanceCheck}
         />
       </Stack>
     </Box>

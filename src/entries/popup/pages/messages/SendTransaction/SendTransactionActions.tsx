@@ -1,3 +1,5 @@
+import { Hex } from 'viem';
+
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -17,6 +19,7 @@ export const SendTransactionActions = ({
   loading = false,
   dappStatus,
   signingWithDevice,
+  nativeValueHex,
 }: {
   session: ActiveSession;
   onAcceptRequest: () => void;
@@ -25,9 +28,15 @@ export const SendTransactionActions = ({
   loading: boolean;
   dappStatus?: DAppStatus;
   signingWithDevice: boolean;
+  nativeValueHex?: Hex;
 }) => {
   const { enoughNativeAssetForGas, buttonLabel } =
-    useApproveAppRequestValidations({ session, dappStatus, signingWithDevice });
+    useApproveAppRequestValidations({
+      session,
+      dappStatus,
+      signingWithDevice,
+      nativeValueHex,
+    });
 
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({

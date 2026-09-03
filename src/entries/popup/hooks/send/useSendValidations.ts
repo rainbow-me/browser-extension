@@ -5,6 +5,7 @@ import { Address } from 'viem';
 import { i18n } from '~/core/languages';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
+import { hasEnoughNativeBalanceForSend } from '~/core/send/nativeSendBalance';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
@@ -13,10 +14,8 @@ import { UniqueAsset } from '~/core/types/nfts';
 import { getChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import {
-  add,
   convertAmountToRawAmount,
   lessOrEqualThan,
-  lessThan,
 } from '~/core/utils/numbers';
 
 import { useUserNativeAsset } from '../useUserNativeAsset';
@@ -81,16 +80,16 @@ export const useSendValidations = ({
   ]);
 
   const enoughNativeAssetForGas = useMemo(() => {
-    if (asset?.isNativeAsset) {
-      return lessOrEqualThan(
-        add(toWei(assetAmount || '0'), selectedGas?.gasFee?.amount || '0'),
-        toWei(nativeAsset?.balance?.amount || '0'),
-      );
-    }
-    return lessThan(
-      selectedGas?.gasFee?.amount || '0',
-      toWei(nativeAsset?.balance?.amount || '0'),
-    );
+    const balanceWei = BigInt(toWei(nativeAsset?.balance?.amount || '0'));
+    const gasFeeWei = BigInt(selectedGas?.gasFee?.amount || '0');
+    const valueWei = asset?.isNativeAsset
+      ? BigInt(toWei(assetAmount || '0'))
+      : 0n;
+    return hasEnoughNativeBalanceForSend({
+      balanceWei,
+      valueWei,
+      gasFeeWei,
+    });
   }, [
     asset?.isNativeAsset,
     assetAmount,
