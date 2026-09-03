@@ -36,12 +36,16 @@ export const getSigningRequestDisplayDetails = (
           address = payload?.params?.[0] as Address;
         }
 
+        const originalHexMessage = isHex(message) ? message : null;
         try {
           const strippedMessage = isHex(message)
             ? message.slice(2)
             : `${Buffer.from(message, 'utf8').toString('hex')}`; // Some dapps send the message as a utf8 string
           const buffer = Buffer.from(strippedMessage, 'hex');
-          message = buffer.length === 32 ? message : buffer.toString('utf8');
+          // Preserve original hex for signing (raw bytes). The buffer.length === 32 check was
+          // too narrow—short hex like 0x80 (invalid UTF-8) was decoded to replacement chars,
+          // causing wrong bytes to be signed. All hex must be passed through as raw.
+          message = originalHexMessage ?? buffer.toString('utf8');
         } catch (error) {
           logger.error(
             new RainbowError('Error decoding personal_sign message'),
