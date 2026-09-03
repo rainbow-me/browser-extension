@@ -130,7 +130,7 @@ test.todo(
       quote: doesntNeedUnlockQuote,
       chainId: 1,
       assetToSell: ETH_MAINNET_ASSET,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       assetToBuy: USDC_ARBITRUM_ASSET,
     });
     swapGasLimit = Number(gasLimit);
@@ -145,7 +145,7 @@ test.todo(
       quote: needsUnlockQuote,
       chainId: 1,
       assetToSell: ENS_MAINNET_ASSET,
-      sellAmount: '1000000000000000000',
+      sellAmount: 1000000000000000000n,
       assetToBuy: USDC_ARBITRUM_ASSET,
     });
     expect(Number(gasLimit)).toBeGreaterThan(0);
@@ -157,7 +157,7 @@ test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap wit
   const rap = await createUnlockAndCrosschainSwapRap({
     quote: doesntNeedUnlockQuote,
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ETH_MAINNET_ASSET,
     assetToBuy: USDC_ARBITRUM_ASSET,
   });
@@ -168,7 +168,7 @@ test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap wit
   const rap = await createUnlockAndCrosschainSwapRap({
     quote: needsUnlockQuote,
     chainId: 1,
-    sellAmount: '1000000000000000000',
+    sellAmount: 1000000000000000000n,
     assetToSell: ENS_MAINNET_ASSET,
     assetToBuy: USDC_ARBITRUM_ASSET,
   });

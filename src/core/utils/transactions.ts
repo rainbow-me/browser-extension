@@ -390,7 +390,12 @@ export function parseTransaction({
     value: value.toString(),
     changes,
     asset,
-    approvalAmount: meta.quantity,
+    approvalAmount:
+      meta.quantity === 'UNLIMITED'
+        ? 'UNLIMITED'
+        : meta.quantity
+        ? BigInt(meta.quantity)
+        : undefined,
     minedAt: tx.mined_at,
     blockNumber: tx.block_number,
     confirmations: tx.block_confirmations,
@@ -724,7 +729,7 @@ export const getAdditionalDetails = (transaction: RainbowTransaction) => {
       : undefined;
 
   const approval = type === 'approve' &&
-    approvalAmount && {
+    approvalAmount !== undefined && {
       value: approvalAmount,
       label: getApprovalLabel(transaction),
     };
@@ -760,7 +765,7 @@ export const getApprovalLabel = ({
   if (!approvalAmount || !asset) return;
   if (approvalAmount === 'UNLIMITED') return i18n.t('approvals.unlimited');
   if (type === 'revoke') return i18n.t('approvals.no_allowance');
-  return `${formatNumber(
-    formatUnits(BigInt(approvalAmount), asset.decimals),
-  )} ${asset.symbol}`;
+  return `${formatNumber(formatUnits(approvalAmount, asset.decimals))} ${
+    asset.symbol
+  }`;
 };

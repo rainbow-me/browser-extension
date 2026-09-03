@@ -10,6 +10,10 @@ import {
 } from './createMessenger';
 import { isValidReply } from './isValidReply';
 import { isValidSend } from './isValidSend';
+import {
+  decodeExtensionRpcPayload,
+  encodeExtensionRpcPayload,
+} from './rpcPayloadCodec';
 
 let activeTab: chrome.tabs.Tab;
 
@@ -78,14 +82,21 @@ function createTabMessenger() {
 
           const { response: response_, error } = message.payload;
           if (error) reject(new Error(error.message));
-          resolve(response_);
+          resolve(decodeExtensionRpcPayload<TResponse>(response_));
           sendResponse({});
           return true;
         };
         chrome.runtime.onMessage?.addListener(listener);
 
         getActiveTabs().then(([tab]) => {
-          sendMessage({ topic: `> ${topic}`, payload, id }, { tabId: tab?.id });
+          sendMessage(
+            {
+              topic: `> ${topic}`,
+              payload: encodeExtensionRpcPayload(payload),
+              id,
+            },
+            { tabId: tab?.id },
+          );
         });
       });
     },
@@ -114,7 +125,8 @@ function createTabMessenger() {
         const [tab] = await getActiveTabs();
 
         try {
-          const response = await callback(message.payload, {
+          const payload = decodeExtensionRpcPayload<TPayload>(message.payload);
+          const response = await callback(payload, {
             id: message.id,
             sender,
             topic: message.topic,
@@ -122,7 +134,7 @@ function createTabMessenger() {
           sendMessage(
             {
               topic: repliedTopic,
-              payload: { response },
+              payload: { response: encodeExtensionRpcPayload(response) },
               id: message.id,
             },
             { tabId: tab?.id },

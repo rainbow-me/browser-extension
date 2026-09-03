@@ -6,6 +6,10 @@ import {
 } from './createMessenger';
 import { isValidReply } from './isValidReply';
 import { isValidSend } from './isValidSend';
+import {
+  decodeExtensionRpcPayload,
+  encodeExtensionRpcPayload,
+} from './rpcPayloadCodec';
 
 /**
  * Creates an "extension messenger" that can be used to communicate between
@@ -42,7 +46,8 @@ export const extensionMessenger = createMessenger({
 
         const { response: response_, error } = message.payload;
         if (error) reject(new Error(error.message));
-        resolve({ ...response_, sender });
+        const response = decodeExtensionRpcPayload<TResponse>(response_);
+        resolve({ ...response, sender });
         sendResponse({});
         return true;
       };
@@ -51,7 +56,7 @@ export const extensionMessenger = createMessenger({
 
       chrome.runtime.sendMessage({
         topic: `> ${topic}`,
-        payload,
+        payload: encodeExtensionRpcPayload(payload),
         id,
       });
     });
@@ -80,7 +85,8 @@ export const extensionMessenger = createMessenger({
       const repliedTopic = message.topic.replace('>', '<');
 
       try {
-        const response = await callback(message.payload, {
+        const payload = decodeExtensionRpcPayload<TPayload>(message.payload);
+        const response = await callback(payload, {
           id: message.id,
           sender,
           topic: message.topic,
@@ -88,7 +94,7 @@ export const extensionMessenger = createMessenger({
 
         chrome.runtime.sendMessage({
           topic: repliedTopic,
-          payload: { response, sender },
+          payload: { response: encodeExtensionRpcPayload(response), sender },
           id: message.id,
         });
       } catch (error_) {

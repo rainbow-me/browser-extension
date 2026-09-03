@@ -15,7 +15,7 @@ import { getQuoteAllowanceTargetAddress } from './validation';
 export const estimateUnlockAndCrosschainSwap = async (
   swapParameters: RapSwapActionParameters<'crosschainSwap'>,
 ) => {
-  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
+  const { sellAmount, quote, chainId } = swapParameters;
 
   if (!crosschainQuoteTargetsRecipient(quote, quote.from)) {
     throw new Error('Crosschain quote does not target recipient');
@@ -35,7 +35,6 @@ export const estimateUnlockAndCrosschainSwap = async (
       spender: allowanceTargetAddress,
       amount: sellAmount,
       chainId,
-      decimals: assetToSell.decimals,
     });
   }
 
@@ -88,7 +87,6 @@ export const createUnlockAndCrosschainSwapRap = async (
       spender: allowanceTargetAddress,
       amount: sellAmount,
       chainId,
-      decimals: assetToSell.decimals,
     });
   }
 
@@ -109,7 +107,6 @@ export const createUnlockAndCrosschainSwapRap = async (
     requiresApprove: swapAssetNeedsUnlocking,
     quote,
     gasParams: swapParameters.gasParams,
-    meta: swapParameters.meta,
     assetToSell,
     sellAmount,
     assetToBuy,

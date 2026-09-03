@@ -4,6 +4,7 @@ import { Address } from 'viem';
 import { RainbowTransaction } from '~/core/types/transactions';
 
 import { createExtensionStoreOptions } from '../../_internal';
+import { migrateApprovalAmountToBigInt } from '../migrateApprovalAmount';
 
 export interface CustomNetworkTransactionsState {
   customNetworkTransactions: Record<
@@ -78,6 +79,23 @@ export const useCustomNetworkTransactionsStore =
     }),
     createExtensionStoreOptions({
       storageKey: 'customNetworkTransactions',
-      version: 0,
+      version: 1,
+      migrate(persistedState, version) {
+        const state = persistedState as CustomNetworkTransactionsState;
+        if (version === 0) {
+          return {
+            ...state,
+            customNetworkTransactions: Object.fromEntries(
+              Object.entries(state.customNetworkTransactions).map(
+                ([address, chainTxs]) => [
+                  address,
+                  migrateApprovalAmountToBigInt(chainTxs),
+                ],
+              ),
+            ),
+          };
+        }
+        return state;
+      },
     }),
   );
