@@ -1,6 +1,7 @@
+import { bytesToHex } from 'viem';
 import { expect, test } from 'vitest';
 
-import { joinSignature } from './hex';
+import { joinSignature, personalSignMessageBytes } from './hex';
 
 // Valid 32-byte (64 hex char) test values
 const validR =
@@ -79,4 +80,25 @@ test('[utils/hex -> joinSignature] :: should throw on non-hex s value', () => {
 test('[utils/hex -> joinSignature] :: should throw on non-hex v string', () => {
   const sig = { r: validR, s: validS, v: 'zz' };
   expect(() => joinSignature(sig)).toThrow('v must be a valid hex string');
+});
+
+// #2285: the Ledger path signed a hex personal_sign message as its UTF-8 text.
+test('[utils/hex -> personalSignMessageBytes] :: a 0x hex string is raw bytes', () => {
+  const safeTransactionHash =
+    '0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658';
+  const bytes = personalSignMessageBytes(safeTransactionHash);
+  expect(bytes.length).toBe(32);
+  expect(bytesToHex(bytes)).toBe(safeTransactionHash);
+});
+
+test('[utils/hex -> personalSignMessageBytes] :: plain text is UTF-8', () => {
+  expect(bytesToHex(personalSignMessageBytes('Hello'))).toBe('0x48656c6c6f');
+  expect(personalSignMessageBytes('Sign in to example.com').length).toBe(22);
+});
+
+test('[utils/hex -> personalSignMessageBytes] :: hex without 0x stays text', () => {
+  // Same rule as RainbowSigner: only a 0x-prefixed string is hex.
+  expect(bytesToHex(personalSignMessageBytes('deadbeef'))).toBe(
+    '0x6465616462656566',
+  );
 });

@@ -2,6 +2,7 @@ import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 import { Bytes, isBytes, isHexString } from '@ethersproject/bytes';
 import BigNumber from 'bignumber.js';
 import { startsWith } from 'lodash';
+import { type ByteArray, hexToBytes, isHex, stringToBytes } from 'viem';
 
 export type BigNumberish = number | string | BigNumber;
 
@@ -124,3 +125,14 @@ export const joinSignature = (signature: {
 
   return `0x${r}${s}${vHex.padStart(2, '0')}`;
 };
+
+/**
+ * @desc The bytes to sign for a personal_sign message. A 0x-prefixed hex string
+ * is raw bytes, as MetaMask and RainbowSigner treat it (dapps send hex-encoded
+ * byte arrays such as 32-byte Safe transaction hashes). Anything else is UTF-8
+ * text. UTF-8 encoding the hex characters would give a different EIP-191 hash.
+ * @param message The personal_sign message.
+ * @return The bytes to sign.
+ */
+export const personalSignMessageBytes = (message: string): ByteArray =>
+  isHex(message) ? hexToBytes(message) : stringToBytes(message);
