@@ -10,16 +10,7 @@ import {
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import {
-  Address,
-  ByteArray,
-  Hex,
-  bytesToHex,
-  hashDomain,
-  hashStruct,
-  hexToBytes,
-  stringToBytes,
-} from 'viem';
+import { Address, Hex, bytesToHex, hashDomain, hashStruct } from 'viem';
 
 import { i18n } from '~/core/languages';
 import {
@@ -28,9 +19,8 @@ import {
   isTypedDataMessage,
 } from '~/core/types/messageSigning';
 import { sanitizeTypedData } from '~/core/utils/ethereum';
-import { joinSignature } from '~/core/utils/hex';
+import { joinSignature, personalSignMessageBytes } from '~/core/utils/hex';
 import { getProvider } from '~/core/viem/clientToProvider';
-import { logger } from '~/logger';
 
 import { popupClient } from './background';
 
@@ -158,19 +148,10 @@ export async function signMessageByTypeFromLedger(
 
   // Personal sign
   if (isPersonalSignMessage(message)) {
-    let messageBytes: ByteArray;
-    try {
-      messageBytes = stringToBytes(message.message);
-    } catch (e) {
-      logger.info('the message is not a utf8 string, will sign as hex');
-      // If stringToBytes fails, treat as hex string and convert to bytes
-      const hexMessage = message.message.startsWith('0x')
-        ? (message.message as Hex)
-        : (`0x${message.message}` as Hex);
-      messageBytes = hexToBytes(hexMessage);
-    }
-
-    const messageHex = bytesToHex(messageBytes).slice(2);
+    // A hex string is signed as raw bytes, the same as RainbowSigner (#2224).
+    const messageHex = bytesToHex(
+      personalSignMessageBytes(message.message),
+    ).slice(2);
 
     const sig = await appEth.signPersonalMessage(path, messageHex);
     await (transport as TransportWebHID)?.close();
