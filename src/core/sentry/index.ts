@@ -222,17 +222,6 @@ const INTEGRATIONS: Array<{
       }),
     ],
   },
-  {
-    on: 'popup',
-    lazy: true,
-    integrations: [
-      Sentry.replayIntegration({
-        maskAllText: true,
-        maskAllInputs: true,
-        blockAllMedia: true,
-      }), // This masks all inputs and texts, so it should be safe
-    ],
-  },
 ];
 
 export function initializeSentry(entrypoint: 'popup' | 'background') {
@@ -249,8 +238,6 @@ export function initializeSentry(entrypoint: 'popup' | 'background') {
         dsn: process.env.SENTRY_DSN,
         integrations,
         tracesSampleRate: INTERNAL_BUILD ? 1.0 : 0.1, // 10% sampling in prod
-        replaysSessionSampleRate: INTERNAL_BUILD ? 1.0 : 0.1, // 10% sampling in prod
-        replaysOnErrorSampleRate: 1.0, // 100% sampling in prod
         release: pkg.version,
         environment: IS_TESTING
           ? 'e2e'
