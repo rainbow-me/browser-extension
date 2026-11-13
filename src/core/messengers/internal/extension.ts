@@ -7,6 +7,12 @@ import {
 import { isValidReply } from './isValidReply';
 import { isValidSend } from './isValidSend';
 
+// Replies travel as separate messages, so the native response is an unused
+// ack; it rejects whenever the receiving page closes or has no listener.
+const sendMessage = (message: unknown) => {
+  chrome.runtime.sendMessage(message).catch(() => undefined);
+};
+
 /**
  * Creates an "extension messenger" that can be used to communicate between
  * scripts where `chrome.runtime` is defined.
@@ -49,7 +55,7 @@ export const extensionMessenger = createMessenger({
 
       chrome.runtime.onMessage.addListener(listener);
 
-      chrome.runtime.sendMessage({
+      sendMessage({
         topic: `> ${topic}`,
         payload,
         id,
@@ -86,7 +92,7 @@ export const extensionMessenger = createMessenger({
           topic: message.topic,
         });
 
-        chrome.runtime.sendMessage({
+        sendMessage({
           topic: repliedTopic,
           payload: { response, sender },
           id: message.id,
@@ -98,7 +104,7 @@ export const extensionMessenger = createMessenger({
         for (const key of Object.getOwnPropertyNames(error_)) {
           error[key] = (<Error>error_)[<keyof Error>key];
         }
-        chrome.runtime.sendMessage({
+        sendMessage({
           topic: repliedTopic,
           payload: { error },
           id: message.id,
