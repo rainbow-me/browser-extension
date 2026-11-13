@@ -28,11 +28,12 @@ function sendMessage<TPayload>(
   message: SendMessage<TPayload>,
   { tabId }: { tabId?: number } = {},
 ) {
-  if (!tabId) {
-    chrome?.runtime?.sendMessage?.(message);
-  } else {
-    chrome.tabs?.sendMessage(tabId, message);
-  }
+  // Replies travel as separate messages, so the native response is an unused
+  // ack; it rejects whenever the receiving page closes or has no listener.
+  const ack = tabId
+    ? chrome.tabs?.sendMessage(tabId, message)
+    : chrome?.runtime?.sendMessage?.(message);
+  ack?.catch(() => undefined);
 }
 
 function createTabMessenger() {
